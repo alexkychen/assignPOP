@@ -1,0 +1,14 @@
+Package: assignPOP
+Type: Package
+Title: Genetic or genomic population assignment under supervised machine
+    learning framework
+Version: 1.0
+Author: Kuan-Yu Alex Chen
+Maintainer: Kuan-Yu Alex Chen <alexkychen@gmail.com>
+Description: The package allows to perform population assignment tests using
+    genetic (and non-genetic) data in a machine-learning framework.
+Depends:
+    stringr,e1071,klaR,tree,randomForest,doParallel,ggplot2,caret,reshape2,MASS
+License: MIT
+LazyData: TRUE
+RoxygenNote: 5.0.1
