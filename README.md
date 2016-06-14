@@ -1,2 +1,2 @@
 # assignPOP
-Population assignment using supervised machine learning framework
+Genetic or genomic population assignment under supervised machine learning framework
