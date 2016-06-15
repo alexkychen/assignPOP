@@ -22,17 +22,67 @@
       <h3>
 <a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h3>
 
-<p>Recent advances in next-generation sequencing techniques allow genome-wide loci to be vastly discovered for population ecology studies in both model and non-model species. To more efficiently analyze large genomic data for population assignment, we have developed an R package, <em>assignPOP</em>, to help perform population assignment tests and understand whether the collected data can be used to build a robust predicting model. We employ several machine learning methods to the package, including Monte-Carlo and K-fold cross-validation for resampling training individuals, random and Fst-based subsampling for training loci, PCA for dimensionality reduction, and a variety of machine learning estimators for building predicting models. Not only our methodology helps speed up the analyses but prevents upwardly biased results that could occur when using some other programs (see Anderson 2010).    </p>
+<p>Recent advances in next-generation sequencing techniques allow genome-wide loci to be vastly discovered for population ecology studies in both model and non-model species. To more efficiently analyze large genomic data for population assignment, we have developed an R package, <em>assignPOP</em>, to help perform population assignment tests and understand whether the collected data can be used to build a robust predicting model. We employ several machine learning methods to the package, including Monte-Carlo and K-fold cross-validation, PCA dimensionality reduction, and a variety of machine learning estimators for building predicting models. Not only our methodology helps speed up the analyses but prevents upwardly biased results that could occur when using some other programs (see Anderson 2010).    </p>
 
 <h3>
 <a id="monte-carlo-cross-validation" class="anchor" href="#monte-carlo-cross-validation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Monte-Carlo cross-validation</h3>
 
-<p><img src="https://raw.githubusercontent.com/alexkychen/assignPOP/master/pic/Figure%201.%20Monte-Carlo%20cross-validation.png" alt="MCCV framework"></p>
+<p>We use Monte-Carlo (or K-fold) cross-validation as the framework to perform assignment tests. It assigns arbitrary proportions (or fixed numbers) of individuals from each population to the training set and the remaining to the test set. Next, if locus FST priority is preferred, the loci will be sorted by the FST values estimated based on the training set, and subsetted by the proportions (e.g., top 5% or 50% high FST loci). If not, the loci will be randomly subsetted. Next, PCA is performed on the training data, and the principal components (PCs) will be used as new variables for both training and test individuals. Afterward, a predicting model is built using the training set and then tested on the test set. Here, we provide several machine learning estimators, including linear discriminant analysis (LDA), support vector machine (SVM), naive Bayes (NB), decision tree (DT), and random forest (RF), to build predicting models. Once a test is completed, the program will resample the training individuals and repeat the process. Multiple levels of training sample size and iterations can be implemented in one single run, using the function <em>assign.MC()</em>. 
+<img src="https://raw.githubusercontent.com/alexkychen/assignPOP/master/pic/Figure%201.%20Monte-Carlo%20cross-validation.png" alt="MCCV framework"></p>
 
 <h3>
 <a id="k-fold-sampling" class="anchor" href="#k-fold-sampling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>K-fold sampling</h3>
 
-<p><img src="https://raw.githubusercontent.com/alexkychen/assignPOP/master/pic/Figure%202.%20K-fold%20sampling.png" alt="K-fold sampling"></p>
+<p>To ensure that every individual was assigned to the test set once, we include K-fold cross-validation (<em>assign.kfold()</em>) to complement the Monte-Carlo method. Unlike the Monte-Carlo sampling, the K-fold divides the individuals of each population into a number (K) of folds and uses one fold of the populations as the test set (the remaining are the training set) to a perform assignment test until every fold was tested. As such, the results of K-fold cross-validation can help us visualize the membership probability for every individual.<br>
+<img src="https://raw.githubusercontent.com/alexkychen/assignPOP/master/pic/Figure%202.%20K-fold%20sampling.png" alt="K-fold sampling"></p>
+
+<h3>
+<a id="data-conversion-and-dimension-reduction" class="anchor" href="#data-conversion-and-dimension-reduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data conversion and dimension reduction</h3>
+
+<p>To read genetic data, we developed the function <em>read.genpop()</em> that allows users to import a Genepop format file into R. The function converts genotypic data to numeric that is also used in other programs (e.g, adegenet, Jombart 2008).  Each allele is encoded with 0 (absence), 0.5 (heterozygote), or 1 (homozygote). For example, if one locus has two alleles, A and T, the numeric data for three different genotypes are as follows.</p>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Genotype</th>
+<th></th>
+<th>allele A</th>
+<th>allele T</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Individual 1</td>
+<td>AA</td>
+<td></td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Individual 2</td>
+<td>AT</td>
+<td>=&gt;</td>
+<td>0.5</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>Individual 3</td>
+<td>TT</td>
+<td></td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+<p>If a locus has only one allele across samples, the locus will be automatically disregarded. In addition, users can also combine genetic data with non-genetic data, such as morphometry or biogeochemistry, using the function <em>compile.data()</em>.
+When analyzing a large genomic dataset, the number of variables are often too large to be computed in a regular desktop computer. Even with a small subset of loci (e.g., 2,000 SNPs), using an ensemble method like random forest to create a predicting model could still be problematic. Therefore, to reduce data dimension, we applied PCA that can convert a great number of allele variables to considerably fewer PCs. The eigenvalues and eigenvectors are estimated using correlation matrix so that data will be standardized if other non-genetic data with different ranges of numbers were used. The loadings of selected PCs (estimated based on the training data) are used to calculate the scores (coordinates) for both training and test individuals. This PCA is internally performed when running the function <em>assign.MC()</em> or <em>assign.kfold()</em>, and it, by default, retains the PC that has an eigenvalue greater than 1 (the Kaiser-Guttman criterion). Users can also specify a certain number of PCs to be retained in the function's argument.  </p>
+
+<h3>
+<a id="data-visualization-for-correct-assignment-rate-and-membership-probability" class="anchor" href="#data-visualization-for-correct-assignment-rate-and-membership-probability" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data visualization for correct assignment rate and membership probability</h3>
+
+<p>The correct assignment rates of test individuals across the tests can be estimated and visualized using a box plot. After the Monte-Carlo or K-fold cross-validation is completed, we can use the function <em>assign.rate.MC()</em> or <em>assign.rate.kfold()</em> to calculate correct assignment rates. The predicting population of a test individual is determined by the highest membership probability. We then can use <em>car.plot()</em> to create a box plot of correct assignment rates across the tests. In addition, the results of membership probability based on the K-fold cross-validation can be visualized using a stacked-bar plot (similar to the STRUCTURE output). We cannot use the Monte-Carlo cross-validation results because of the following reasons. First, it is possible that certain individuals are not used as test individuals when using the Monte-Carlo cross-validation. Second, the membership probability of an individual may vary from one test to another because of different sets of training individuals. We can use <em>prob.plot()</em> to create such membership probability plot.</p>
 
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
