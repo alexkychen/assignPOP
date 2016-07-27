@@ -1,16 +1,16 @@
 #' Population assignment test using Monte-Carlo cross-validation
 #'
-#' This function uses Monte-Carlo cross-validation to perform assignment tests. It takes the object returned from the function read.genpop(), reduce.allele(), or compile.data() as input file, and saves output in text files. It is recommended to specify a folder name using the argument "dir" for saving output files. See argument description for more details.
+#' This function employs Monte-Carlo cross-validation for assignment tests. It uses the object returned from the function read.genpop(), reduce.allele(), or compile.data() as input, and outputs results to text files. Typing a folder name in the argument "dir" is recommended. See below for more details.
 #' @param x An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data().
-#' @param train.inds The number (integer greater than 1) or proportion (float between 0 and 1) of individuals (observations) from each population to be used as training data. Use a vector to specify multiple sets of training individuals. No mixture of integer and float in the vector.
-#' @param train.loci The proportion (float between 0 and 1) of loci to be used as training data. Use a vector to specify multiple sets of training loci.
-#' @param loci.sample Locus sampling method, "fst" or "random". If loci.sample="fst" (default), training sample's locus Fst will be estimated and prioritized. The loci will be sampled based on the Fst values. For example, when train.loci=0.1, the top 10 percents high Fst loci are sampled as training loci. If loci.sample="random", then random 10 percents of loci will be sampled as training loci.
+#' @param train.inds The number (integer greater than 1) or proportion (float between 0 and 1) of individuals (observations) from each population to be used as training data. Use a numeric vector to specify multiple sets of training individuals. No mixture of integer and float in a vector.
+#' @param train.loci The proportion (float between 0 and 1) of loci to be used as training data. Use a numeric vector to specify multiple sets of training loci.
+#' @param loci.sample Locus sampling method, "fst" or "random". If loci.sample="fst" (default) and train.loci=0.1, it means that top 10 percent of high Fst loci will be sampled as training loci. On the other hand, if loci.sample="random", then random 10 percent of loci will be sampled as training loci.
 #' @param iterations Resampling times (an integer) for each combination of training individuals and loci.
-#' @param dir A character string to specify the name of output directory. A slash at the end must be included (e.g., dir="YourFolderName/")
-#' @param pca.method A criterion to retain number of PCs. By default, it used Kaiser-Guttman criterion that the PC has eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
-#' @param pca.loadings A logical variable (False or True) to determine whether it prints the loadings of training data to output text files.
-#' @param model A character string to specify which method to use for creating predicting models. The options include "lda", "svm", "naiveBayes", "tree", and "randomForest".
-#' @param svm.kernel A character string to specify which kernel to be used when using "svm" method.
+#' @param dir A character string to specify the folder name for saving output files. A slash at the end must be included (e.g., dir="YourFolderName/"). Otherwise, the files will be saved under your working directory.
+#' @param pca.method A criterion to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
+#' @param pca.loadings A logical variable (False or True) to determine whether it prints the loadings of training data to output text files. Default is False, if set True, the overall output files could be large.
+#' @param model A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest".
+#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier.
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
 #' @param processors The number of processors to be used for parallel running. By default, it uses N-1 processors in your computer.
