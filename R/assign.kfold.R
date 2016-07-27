@@ -1,6 +1,6 @@
 #' Population assignment test using K-fold cross-validation
 #'
-#' This function uses K-fold cross-validation to perform assignment tests. It takes the object returned from the function read.genpop(), reduce.allele(), or compile.data() as input file, and saves output in text files. It is recommended to specify a folder name using the argument "dir" for saving output files. See argument description for more details.
+#' This function employs K-fold cross-validation for assignment tests. It uses the object returned from the function read.genpop(), reduce.allele(), or compile.data() as input, and outputs results to text files. Typing a folder name in the argument "dir" is recommended. See below for more details.
 #' @param x An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data().
 #' @param k.fold The number of groups to be divided for each population. Use a vector to specify multiple sets of k-folds.
 #' @param train.loci The proportion (float between 0 and 1) of loci to be used as training data. Use a vector to specify multiple sets of training loci.
