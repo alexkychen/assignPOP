@@ -1,14 +1,14 @@
-#' Make a boxplot of correct assignment rate results from cross-validation (ggplot2 style)
+#' Make a boxplot (ggplot2 style) of assignment accuracy from cross-validation results
 #'
-#' This functions allows you to make a boxplot of correct assignment rate results estimated from Monte-Carlo or K-fold cross-validation.
-#' @param df A dataframe of your correct assignment rate results. It can be the object returned from the function assign.rate.MC() or assign.rate.kfold() or a data frame that is later imported using the function such as read.table().
-#' @param pop A population name for making its plot. By default, it uses "all", meaning overall correct assignment rates. If a population name is specified, it only creates the plot for that population. The specified population name should match what you entered in read.genpop() earlier.
-#' @return This function returns a boxplot plot using the ggplot2 library. Users can modified (e.g., change color, text, etc.) the plot using functions provided by ggplot2 library.
+#' This functions allows you to make a boxplot of assignment accuracies estimated from Monte-Carlo or K-fold cross-validation results.
+#' @param df A dataframe of your assignment accuracy results. It could be the object returned from the function accuracy.MC() or accuracy.kfold() or a data frame imported to R via other functions (e.g., read.table(...)).
+#' @param pop A population name for making the plot. By default, it uses "all", meaning overall assignment accuracies. If a population name is specified, it only creates the plot for that population. The specified population name should match what you entered in read.genpop() earlier.
+#' @return This function returns a boxplot plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @examples Your_df <- read.table("YourFolderName/Rate_of_N_tests_M_pops.txt", header=T)
-#' car.plot(Your_df, pop="all")
+#' accuracy.plot(Your_df, pop="all")
 #' @export
 #'
-car.plot <- function(df, pop="all"){
+accuracy.plot <- function(df, pop="all"){
   #check if assignment results of either Monte-Carlo or K-fold
   firstColname <- names(df)[1]
   if(firstColname=="train.inds"){
@@ -27,7 +27,7 @@ car.plot <- function(df, pop="all"){
     if(length(unique(df$train.loci)) > 1 ){ #see if multiple levels of train loci used.(e.g.,10%, 20%...of loci)
       boxplot <- ggplot(df, aes_string(y=col, x="train.inds", fill="train.loci"))+
         geom_boxplot()+
-        xlab(x_label) + ylab("Correct assignment rate")+
+        xlab(x_label) + ylab("Assignment accuracy")+
         scale_fill_discrete(guide = guide_legend(reverse=TRUE), #Reverse box order in legend
                             name="Prop. of\ntrain loci")+
         theme_bw()+
@@ -43,7 +43,7 @@ car.plot <- function(df, pop="all"){
     }else if(length(unique(df$fst.level))==1){ #see if only one level of train loci used (e.g.,used all loci)
       boxplot <- ggplot(df, aes_string(y=col, x="train.inds"))+
         geom_boxplot()+
-        xlab(x_label) + ylab("Correct assignment rate")+
+        xlab(x_label) + ylab("Assignment accuracy")+
         theme_bw()+
         theme(legend.position="none",
               panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
@@ -68,7 +68,7 @@ car.plot <- function(df, pop="all"){
       boxplot <- ggplot(df, aes_string(y=col, x="KF" ,fill="train.loci"))+
         geom_boxplot()+
         #geom_point(size=5, position=dodge)+
-        xlab("K") + ylab("Correct assignment rate")+
+        xlab("K") + ylab("Assignment accuracy")+
         scale_fill_discrete(guide = guide_legend(reverse=TRUE), #Reverse box order in legend
                             name="Prop. of\ntrain loci")+
         theme_bw()+
@@ -84,7 +84,7 @@ car.plot <- function(df, pop="all"){
     }else if(length(unique(df$fst.level))==1){ #see if only one level of train loci used (e.g.,used all loci)
       boxplot <- ggplot(df, aes_string(y=col, x="KF"))+
         geom_boxplot()+
-        xlab("K") + ylab("Correct assignment rate")+
+        xlab("K") + ylab("Assignment accuracy")+
         theme_bw()+
         theme(legend.position="none",
               panel.grid.major = element_blank(), panel.grid.minor=element_blank(),

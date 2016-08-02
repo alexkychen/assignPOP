@@ -1,11 +1,11 @@
-#' Estimate correct assignment rate restuls of Monte-Carlo cross-validation
+#' Estimate assignment accuracies of Monte-Carlo cross-validation results
 #'
-#' This function allows you to estimate correct assignment rates of Monte-Carlo cross-validation results. The output results can be used to make correct assignment rate plots (use function car.plot).
-#' @param dir A character string to specify the folder that has your Monte-Carlo cross-validation results. A slash should be entered at the end.
-#' @return This function outputs the results in a text file (a table). If a returning object is specify, it returns the results in a data frame.
-#' @examples results <- assign.rate.MC(dir="YourFolderName/")
+#' This function allows you to estimate assignment accuracies of Monte-Carlo cross-validation results. The output results can be used to make assignment accuracy plots (use function accuracy.plot).
+#' @param dir A character string to specify the folder that has your Monte-Carlo cross-validation results. A slash should be included at the end (e.g., dir="YourFolderName/").
+#' @return This function outputs the results in a text file (a table). It can return a data frame when a returning object is specified.
+#' @examples results <- accuracy.MC(dir="YourFolderName/")
 #' @export
-assign.rate.MC <- function(dir=NULL){
+accuracy.MC <- function(dir=NULL){
   #Read all "Out_*" file names in a specified directory
   fileName_vec <- list.files(path=dir, pattern="Out_*")
   fileName_vec <- sort(fileName_vec)
@@ -54,7 +54,7 @@ assign.rate.MC <- function(dir=NULL){
   cat("\n  Correct assignment rates were estimated!!")
   cat(paste0("\n  A total of ",nrow(assign_rate_df)," assignment tests for ",noPops," pops."))
   cat(paste0("\n  Results were also saved in a 'Rate_of_",nrow(assign_rate_df),"_tests_",noPops,"_pops.txt' file in the directory."))
-
+  
   return(assign_rate_df)
-
+  
 }

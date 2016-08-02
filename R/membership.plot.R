@@ -3,11 +3,11 @@
 #' This function allows you to make a membership probability plot (stacked-bar plot) using results estimated from K-fold cross-validation.
 #' @param dir A character string to specify the folder that has your K-fold cross-validation assignment results. A slash should be entered at the end.
 #' @param style An option for output style. If style=1, it creates the plot which individuals on the x-axis are sorted by default/random. If style=2, individuals are sorted by the probabilities. If style=3, individuals are separated by each fold. If style=4, individuals are separated by fold and sorted by probability.
-#' @return his function returns a stacked-bar plot using the ggplot2 library. Users can modified (e.g., change color, text, etc.) the plot using functions provided by ggplot2 library.
-#' @examples prob.plot(dir="YourFolderName/")
+#' @return his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
+#' @examples membership.plot(dir="YourFolderName/")
 #' #If style is not specified, the program will ask you to enter after executing the function.
 #' @export
-prob.plot <- function(dir=NULL, style=NULL ,...){
+membership.plot <- function(dir=NULL, style=NULL ,...){
   #Read all "Out_*" file names in a specified directory
   fileName_vec <- list.files(path=dir, pattern="Out_*")
   fileName_vec <- sort(fileName_vec)

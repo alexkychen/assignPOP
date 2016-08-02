@@ -12,21 +12,21 @@ assign.kfold(x, k.fold = c(3, 4, 5), train.loci = c(0.1, 0.25, 0.5, 1),
 \arguments{
 \item{x}{An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data().}
 
-\item{k.fold}{The number of groups to be divided for each population. Use a vector to specify multiple sets of k-folds.}
+\item{k.fold}{The number of groups to be divided for each population. Use a numeric vector to specify multiple sets of k-folds.}
 
-\item{train.loci}{The proportion (float between 0 and 1) of loci to be used as training data. Use a vector to specify multiple sets of training loci.}
+\item{train.loci}{The proportion (float between 0 and 1) of loci to be used as training data. Use a numeric vector to specify multiple sets of training loci.}
 
-\item{loci.sample}{Locus sampling method, "fst" or "random". If loci.sample="fst" (default), training sample's locus Fst will be estimated and prioritized. The loci will be sampled based on the Fst values. For example, when train.loci=0.1, the top 10 percents high Fst loci are sampled as training loci. If loci.sample="random", then random 10 percents of loci will be sampled as training loci.}
+\item{loci.sample}{Locus sampling method, "fst" or "random". If loci.sample="fst" (default) and train.loci=0.1, it means that top 10 percent of high Fst loci will be sampled as training loci. On the other hand, if loci.sample="random", then random 10 percent of loci will be sampled as training loci.}
 
-\item{dir}{A character string to specify the name of output directory. A slash at the end must be included (e.g., dir="YourFolderName/")}
+\item{dir}{A character string to specify the folder name for saving output files. A slash at the end must be included (e.g., dir="YourFolderName/"). Otherwise, the files will be saved under your working directory.}
 
-\item{pca.method}{A criterion to retain number of PCs. By default, it used Kaiser-Guttman criterion that the PC has eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.}
+\item{pca.method}{A criterion to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.}
 
-\item{pca.loadings}{A logical variable (False or True) to determine whether it prints the loadings of training data to output text files.}
+\item{pca.loadings}{A logical variable (False or True) to determine whether it prints the loadings of training data to output text files. Default is False, if set True, the overall output files could be large.}
 
-\item{model}{A character string to specify which method to use for creating predicting models. The options include "lda", "svm", "naiveBayes", "tree", and "randomForest".}
+\item{model}{A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest".}
 
-\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" method.}
+\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier.}
 
 \item{svm.cost}{A number to specify the cost for "svm" method.}
 
@@ -38,6 +38,6 @@ assign.kfold(x, k.fold = c(3, 4, 5), train.loci = c(0.1, 0.25, 0.5, 1),
 You don't need to specify a name for the returned object when using this function. It automatically output results in text files to your designated folder.
 }
 \description{
-This function uses K-fold cross-validation to perform assignment tests. It takes the object returned from the function read.genpop(), reduce.allele(), or compile.data() as input file, and saves output in text files. It is recommended to specify a folder name using the argument "dir" for saving output files. See argument description for more details.
+This function employs K-fold cross-validation for assignment tests. It uses the object returned from the function read.genpop(), reduce.allele(), or compile.data() as input, and outputs results to text files. Typing a folder name in the argument "dir" is recommended. See below for more details.
 }
 
