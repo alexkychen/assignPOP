@@ -54,7 +54,7 @@ accuracy.kfold <- function(dir=NULL){
   cat("\n  Correct assignment rates were estimated!!")
   cat(paste0("\n  A total of ",nrow(assign_rate_df)," assignment tests for ",noPops," pops."))
   cat(paste0("\n  Results were also saved in a 'Rate_of_",nrow(assign_rate_df),"_tests_",noPops,"_pops.txt' file in the directory."))
-
+  
   return(assign_rate_df)
-
+  
 }
