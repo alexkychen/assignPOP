@@ -2,7 +2,7 @@
 An R package for population assignment using genomic or integrated data in a machine-learning framework
 
 ## Description
-This package is designed to perform population assignment tests using large genomic data or integrated (genetic plus non-genetic) data. It employs resampling (Monte-Carlo and K-fold) cross-validation approaches coupled with multiple machine-learning classification algorithms to evaluate perfomance of predictive models of population assignment.  
+This package is designed to perform population assignment tests using large genomic data or integrated (genetic plus non-genetic) data. It employs resampling (Monte-Carlo and K-fold) cross-validation approaches coupled with multiple machine-learning classification algorithms to evaluate perfomance of predictive models of population assignment. It allows users to subset varying sample sizes of individuals and loci, either random or based on locus Fst, for cross-validation. It uses PCA for data dimension reduction and outputs results in publication-quality graphs.   
 
 ## Install assignPOP to R/Rstudio from github
 In your R/Rstudio console,
