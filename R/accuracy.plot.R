@@ -40,7 +40,7 @@ accuracy.plot <- function(df, pop="all"){
               axis.title.x=element_text(size=20, vjust=0.1))
       return(boxplot)
 
-    }else if(length(unique(df$fst.level))==1){ #see if only one level of train loci used (e.g.,used all loci)
+    }else if(length(unique(df$train.loci))==1){ #see if only one level of train loci used (e.g.,used all loci)
       boxplot <- ggplot(df, aes_string(y=col, x="train.inds"))+
         geom_boxplot()+
         xlab(x_label) + ylab("Assignment accuracy")+
@@ -81,7 +81,7 @@ accuracy.plot <- function(df, pop="all"){
               axis.title.x=element_text(size=20, vjust=0.1))
       return(boxplot)
 
-    }else if(length(unique(df$fst.level))==1){ #see if only one level of train loci used (e.g.,used all loci)
+    }else if(length(unique(df$train.loci))==1){ #see if only one level of train loci used (e.g.,used all loci)
       boxplot <- ggplot(df, aes_string(y=col, x="KF"))+
         geom_boxplot()+
         xlab("K") + ylab("Assignment accuracy")+
