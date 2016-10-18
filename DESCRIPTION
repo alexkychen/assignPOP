@@ -2,7 +2,7 @@ Package: assignPOP
 Type: Package
 Title: Genetic or genomic population assignment under supervised machine
     learning framework
-Version: 1.0
+Version: 2.0
 Author: Kuan-Yu Alex Chen
 Maintainer: Kuan-Yu Alex Chen <alexkychen@gmail.com>
 Description: The package allows to perform population assignment tests using
