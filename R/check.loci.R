@@ -15,7 +15,7 @@ check.loci <- function(dir=NULL, top.loci=20){
 
   ana_info <- readLines(paste0(dir,"AnalysisInfo.txt"))
   locusSampleMethod <- ana_info[8]
-  if(grepl(pat="prior", locusSampleMethod)){ #check if results from prior fst sampling method
+  if(grepl(pat="fst", locusSampleMethod)){ #check if results from prior fst sampling method
     train_level <- NULL
     for(i in 1:noFiles){
       oneFileName <- unlist(strsplit(fileName_vec[i], split="_")) #split file name to 4 elements (e.g.,"Loci"  "4"  "0.1"  "1.txt");"4"is train.level,"0.1"is fst.level,"1"is iter
