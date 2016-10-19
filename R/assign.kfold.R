@@ -442,7 +442,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
   stopCluster(cl)
   #
   #Output a metadata file
-  cat(" Analysis Description (R - assignPOP ver.2.0)\n",
+  cat(" Analysis Description (R - assignPOP ver.1.0)\n",
       "Perform assign.kfold() @", format(Sys.time()),"\n\n",
       "k.fold =",k.fold,"\n",
       "train.loci =",train.loci,"\n",

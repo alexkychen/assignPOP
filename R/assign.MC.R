@@ -476,7 +476,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
   }#else if(length(x)==4)
   stopCluster(cl)
   #Output a metadata file
-  cat(" Analysis Description (R - assignPOP ver.2.0)\n",
+  cat(" Analysis Description (R - assignPOP ver.1.0)\n",
       "Perform assign.MC() @", format(Sys.time()),"\n\n",
       "train.inds =",train.inds,"\n",
       "train.loci =",train.loci,"\n",

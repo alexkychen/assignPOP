@@ -134,7 +134,7 @@ read.genpop <- function(x, pop.names = NULL){
   genoMatrix <- cbind(genoMatrix, popNames_vector)
 
   #Print some message to console
-  cat("\n  ############### assingPOP v2.0 ###############\n")
+  cat("\n  ############### assingPOP v1.0 ###############\n")
   cat("\n  A GENEPOP format file was successfully imported!\n")
   cat(paste0("\n  DataInfo: ",noInds," obs. by ",noLocus," loci (with ",noLociVar," var.)"))
   cat(paste0("\n  DataMatrix: ",nrow(genoMatrix)," rows by ",ncol(genoMatrix), " columns"))
