@@ -6,6 +6,8 @@
 #' @param method A method to match sample ID between genetic and non-genetic data. The "common" method only concatenate the data that has sample ID in both files. If an individual only exists in one of the files, this individual will be discarded.
 #' @return This function returns a new object (list) that comprises 5 items. [[1]] data matrix including genetic and non-genetic data, [[2]] a sample ID vector, [[3]] a locus name vector, [[4]] a vector of non-genetic variable names, and [[5]] the number of non-genetic variables.
 #' @examples infile_com <- compile.data(x, "YourAddFile.txt")
+#' @import stringr
+#' @import reshape2
 #' @export
 #'
 compile.data <- function(x, add.x, method="common"){

@@ -6,6 +6,8 @@
 #' @return This function returns a list that comprises three items. [[1]] A matrix of genetic data with a population name label ($popNameVector) in the last column. [[2]] A vector of sample ID. [[3]] A vector of locus name.
 #' @examples infile <- read.genpop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
 #' @references Rousset, F., 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106.
+#' @import stringr
+#' @import reshape2
 #' @export
 #'
 read.genpop <- function(x, pop.names = NULL){

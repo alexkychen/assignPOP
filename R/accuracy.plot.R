@@ -6,6 +6,7 @@
 #' @return This function returns a boxplot plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @examples Your_df <- read.table("YourFolderName/Rate_of_N_tests_M_pops.txt", header=T)
 #' accuracy.plot(Your_df, pop="all")
+#' @import ggplot2
 #' @export
 #'
 accuracy.plot <- function(df, pop="all"){

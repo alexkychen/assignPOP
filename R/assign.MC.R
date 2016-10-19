@@ -15,6 +15,15 @@
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
 #' @param processors The number of processors to be used for parallel running. By default, it uses N-1 processors in your computer.
 #' @return You don't need to specify a name for the returned object when using this function. It automatically output results in text files to your designated folder.
+#' @import reshape2
+#' @import stringr
+#' @import caret
+#' @import MASS
+#' @import e1071
+#' @import klaR
+#' @import doParallel
+#' @importFrom tree tree
+#' @importFrom randomForest randomForest
 #' @export
 #'
 assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1), loci.sample="fst", iterations=20, dir=NULL,

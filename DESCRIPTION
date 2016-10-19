@@ -1,12 +1,22 @@
 Package: assignPOP
 Type: Package
-Title: population assignment using genomic or integrated data in a machine-learning framework
+Title: Population assignment using genomic or integrated data in a machine-learning framework
 Version: 1.0
 Author: Kuan-Yu Alex Chen
 Maintainer: Kuan-Yu Alex Chen <alexkychen@gmail.com>
-Description: This package is designed to perform population assignment tests using large genomic data or integrated (genetic plus non-genetic) data. It employs resampling (Monte-Carlo and K-fold) cross-validation approaches coupled with multiple machine-learning classification algorithms to evaluate perfomance of predictive models of population assignment. It allows users to subset varying sample sizes of individuals and loci (either randomly or based on locus Fst) for resampling cross-validation. Additionally, it uses PCA for data dimension reduction and outputs results in publication-quality graphs. Overall, this package helps evaluate the discriminatory power of a dataset for poulation assignment and identify relatively informative loci in a reliable way.
-Depends:
-    stringr,e1071,klaR,tree,randomForest,doParallel,ggplot2,caret,reshape2,MASS
-License: MIT
+Description: It is designed to perform population assignment tests using large genomic data or integrated (genetic plus non-genetic) data. It employs resampling (Monte-Carlo and K-fold) cross-validation approaches coupled with multiple machine-learning classification algorithms to evaluate perfomance of predictive models of population assignment. It allows users to subset varying sample sizes of individuals and loci (either randomly or based on locus Fst) for resampling cross-validation. Additionally, it uses PCA for data dimension reduction and outputs results in publication-quality graphs. Overall, this package helps evaluate the discriminatory power of a dataset for poulation assignment and identify relatively informative loci in a reliable way.
+Depends: R (>= 2.3.2)
+Imports:
+    caret,
+    doParallel,
+    e1071,
+    ggplot2,
+    klaR,
+    MASS,
+    randomForest,
+    reshape2,
+    strigr,
+    tree
+License: CC BY-NC-SA 4.0
 LazyData: TRUE
 RoxygenNote: 5.0.1

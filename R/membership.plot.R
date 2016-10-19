@@ -6,6 +6,7 @@
 #' @return his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @examples membership.plot(dir="YourFolderName/")
 #' #If style is not specified, the program will ask you to enter after executing the function.
+#' @import ggplot2
 #' @export
 membership.plot <- function(dir=NULL, style=NULL ,...){
   #Read all "Out_*" file names in a specified directory
