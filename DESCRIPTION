@@ -15,7 +15,7 @@ Imports:
     MASS,
     randomForest,
     reshape2,
-    strigr,
+    stringr,
     tree
 License: CC BY-NC-SA 4.0
 LazyData: TRUE
