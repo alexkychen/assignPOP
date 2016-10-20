@@ -13,6 +13,7 @@
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
 #' @param processors The number of processors to be used for parallel running. By default, it uses N-1 processors in your computer.
+#' @param ... Other arguments that could be potentially used for various models
 #' @return You don't need to specify a name for the returned object when using this function. It automatically output results in text files to your designated folder.
 #' @import reshape2
 #' @import stringr
@@ -21,12 +22,16 @@
 #' @import e1071
 #' @import klaR
 #' @import doParallel
+#' @import parallel
+#' @import foreach
 #' @importFrom tree tree
 #' @importFrom randomForest randomForest
+#' @importFrom randomForest importance
 #' @export
 #'
 assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), loci.sample="fst", dir=NULL,
                          pca.method="kaiser-guttman", pca.loadings=F, model="svm", svm.kernel="linear", svm.cost=1, ntree=50, processors=999, ...){
+  popNames_vector <- NULL; i <- NULL #some NULL variable to handle R CMD check
   genoMatrix <- x[[1]]
   popSizes <- table(genoMatrix$popNames_vector)#get number of individual for each pop in table
   pops <- names(popSizes)#Get what pops in data
@@ -66,7 +71,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             trainLocusName <- as.character(fstTable[trainLocusIndex_fstTable,]$Locus)#Get training locus name
             trainLocusIndex_genoMatrix <- NULL #create a train locus index for genoMatrix to be extracted
             for(m in 1:length(trainLocusName)){
-              tempAlleleIndex <- grep(pat=paste0(trainLocusName[m],"_"), alleleName)#alleleName is colnames(genoMatrix)
+              tempAlleleIndex <- grep(pattern=paste0(trainLocusName[m],"_"), alleleName)#alleleName is colnames(genoMatrix)
               trainLocusIndex_genoMatrix <- c(trainLocusIndex_genoMatrix,tempAlleleIndex )
             }
             trainLocusIndex_genoMatrix <- sort(trainLocusIndex_genoMatrix)
@@ -156,7 +161,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             trainLocusName <- locusNames[tempLocusIndex]
             trainLocusIndex_genoMatrix <- NULL #create a train locus index for genoMatrix to be extracted
             for(m in 1:length(trainLocusName)){
-              tempAlleleIndex <- grep(pat=paste0(trainLocusName[m],"_"), alleleName)
+              tempAlleleIndex <- grep(pattern=paste0(trainLocusName[m],"_"), alleleName)
               trainLocusIndex_genoMatrix <- c(trainLocusIndex_genoMatrix,tempAlleleIndex )
             }
             trainLocusIndex_genoMatrix <- sort(trainLocusIndex_genoMatrix)
@@ -270,7 +275,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             trainLocusName <- as.character(fstTable[trainLocusIndex_fstTable,]$Locus)#Get training locus name
             trainLocusIndex_genoMatrix <- NULL #create a train locus index for genoMatrix to be extracted
             for(m in 1:length(trainLocusName)){
-              tempAlleleIndex <- grep(pat=paste0(trainLocusName[m],"_"), alleleName)#alleleName is colnames(genoMatrix)
+              tempAlleleIndex <- grep(pattern=paste0(trainLocusName[m],"_"), alleleName)#alleleName is colnames(genoMatrix)
               trainLocusIndex_genoMatrix <- c(trainLocusIndex_genoMatrix,tempAlleleIndex )
             }
             trainLocusIndex_genoMatrix <- sort(trainLocusIndex_genoMatrix)
@@ -360,7 +365,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             trainLocusName <- locusNames[tempLocusIndex]
             trainLocusIndex_genoMatrix <- NULL #create a train locus index for genoMatrix to be extracted
             for(m in 1:length(trainLocusName)){
-              tempAlleleIndex <- grep(pat=paste0(trainLocusName[m],"_"), alleleName)
+              tempAlleleIndex <- grep(pattern=paste0(trainLocusName[m],"_"), alleleName)
               trainLocusIndex_genoMatrix <- c(trainLocusIndex_genoMatrix,tempAlleleIndex )
             }
             trainLocusIndex_genoMatrix <- sort(trainLocusIndex_genoMatrix)

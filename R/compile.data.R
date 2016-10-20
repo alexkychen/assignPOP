@@ -5,7 +5,7 @@
 #' @param add.x A filename of additional non-genetic data that has sample ID in the first column of the data frame. The sample ID of an individual in your GENEPOP and this additional data must be identifcal.
 #' @param method A method to match sample ID between genetic and non-genetic data. The "common" method only concatenate the data that has sample ID in both files. If an individual only exists in one of the files, this individual will be discarded.
 #' @return This function returns a new object (list) that comprises 5 items. [[1]] data matrix including genetic and non-genetic data, [[2]] a sample ID vector, [[3]] a locus name vector, [[4]] a vector of non-genetic variable names, and [[5]] the number of non-genetic variables.
-#' @examples infile_com <- compile.data(x, "YourAddFile.txt")
+#' @examples # infile_com <- compile.data(x, "YourAddFile.txt")
 #' @import stringr
 #' @import reshape2
 #' @export
@@ -13,7 +13,7 @@
 compile.data <- function(x, add.x, method="common"){
   #Read genetic and non-genetic data
   genoMatrix <- x[[1]]
-  if(grepl(pat=".csv", add.x)){
+  if(grepl(pattern=".csv", add.x)){
     cat("  Import a .CSV file.")
     add.df <- read.csv(add.x, header=T)
 
@@ -32,7 +32,7 @@ compile.data <- function(x, add.x, method="common"){
     cat(paste0("   ",var_name,"(",var_type,")"))
   }
   ans_0 <- readline("  Are they correct? (enter Y/N): ")
-  if(grepl(pat="N",toupper(ans_0))){
+  if(grepl(pattern="N",toupper(ans_0))){
     cat("  please enter variable names for changing data type (separate names by a whitespace if multiple)\n")
     ans_1 <- readline("  enter here: ")
     ans_1 <- str_trim(ans_1, side="both")
@@ -41,9 +41,9 @@ compile.data <- function(x, add.x, method="common"){
     #Process variables and convert factor data to dummy variable (binary data)
     for(name in ans_1){
       ans_2 <- readline(paste0("  Which data type should '",name,"' be? (enter numeric or factor): "))
-      if(grepl(pat="N",toupper(ans_2))){
+      if(grepl(pattern="N",toupper(ans_2))){
         add.df[,name] <- as.numeric(as.character(add.df[,name]))
-      }else if(grepl(pat="F",toupper(ans_2))){
+      }else if(grepl(pattern="F",toupper(ans_2))){
         add.df[,name] <- as.factor(add.df[,name])
       }
     }
@@ -58,7 +58,7 @@ compile.data <- function(x, add.x, method="common"){
         add.df <- cbind(add.df, dummyData) #append new dummy variable column
       }
     }
-  }else if(grepl(pat="Y",toupper(ans_0))){
+  }else if(grepl(pattern="Y",toupper(ans_0))){
     #Look through non-genetic variables and convert to dummy if is factor
     for(name in varNames){
       if(is.factor(add.df[,name])){

@@ -3,7 +3,7 @@
 #' This function allows you to estimate assignment accuracies of K-fold cross-validation results. The output results can be used to make assignment accuracy plots (use function accuracy.plot) and membership probability plot (use function membership.plot)
 #' @param dir A character string to specify the folder that has your K-fold cross-validation results. A slash should be included at the end (e.g., dir="YourFolderName/").
 #' @return This function outputs the results in a text file (a table). It can return a data frame when a returning object is specified.
-#' @examples results <- accuracy.kfold(dir="YourFolderName/")
+#' @examples # results <- accuracy.kfold(dir="YourFolderName/")
 #' @export
 accuracy.kfold <- function(dir=NULL){
   #Read all "Out_*" file names in a specified directory
@@ -15,6 +15,7 @@ accuracy.kfold <- function(dir=NULL){
   pops <- names(result01)[4:length(names(result01))] #read column name and get the pop names between 4th to last column
   noPops <- length(pops)#Number of pops
   #create vectors for saving data
+  Var1 <- NULL; Var2 <- NULL
   KF <- NULL
   fold <- NULL
   train.loci <- NULL

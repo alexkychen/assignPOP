@@ -4,7 +4,7 @@
 #' @param dir A character string to specify the folder with your cross-validation results. A slash should be entered at the end.
 #' @param top.loci An integer to specify how many top informative loci to output.
 #' @return This function output the results in a text file. It includes the top N informative loci in N rows, and each row has a list of loci sorted by its occurrence.
-#' @examples check.loci(dir="YourFolderName/", top.loci=20)
+#' @examples # check.loci(dir="YourFolderName/", top.loci=20)
 #' @import stringr
 #' @export
 #'
@@ -16,7 +16,7 @@ check.loci <- function(dir=NULL, top.loci=20){
 
   ana_info <- readLines(paste0(dir,"AnalysisInfo.txt"))
   locusSampleMethod <- ana_info[8]
-  if(grepl(pat="fst", locusSampleMethod)){ #check if results from prior fst sampling method
+  if(grepl(pattern="fst", locusSampleMethod)){ #check if results from prior fst sampling method
     train_level <- NULL
     for(i in 1:noFiles){
       oneFileName <- unlist(strsplit(fileName_vec[i], split="_")) #split file name to 4 elements (e.g.,"Loci"  "4"  "0.1"  "1.txt");"4"is train.level,"0.1"is fst.level,"1"is iter
@@ -29,7 +29,7 @@ check.loci <- function(dir=NULL, top.loci=20){
     cat("\n  Which levels would you like to check? (separate levels by a whitespace if multiple)")
     cat("\n  Options: ");cat(trainLevels, sep=", ");cat(", or all")
     ans_0 <- readline("\n  enter here: ")
-    if(grepl(pat="ALL",toupper(ans_0))){ #if answer is "all"
+    if(grepl(pattern="ALL",toupper(ans_0))){ #if answer is "all"
       cat(paste0("Loci occur in top ",top.loci," high Fst across all training data\n"), file=paste0(dir,"High_Fst_Locus_Freq.txt")) #Output the following result to text file
       lociMatrix <- NULL
       #Read through each Loci_ file.
@@ -54,7 +54,7 @@ check.loci <- function(dir=NULL, top.loci=20){
       cat("\n  Results were saved in a 'High_Fst_Locus_Freq.txt' file in the directory.")
 
       #Process data if only a portion is selected
-    }else if(!grepl(pat="ALL",toupper(ans_0))){ #else if answer contains no "all"
+    }else if(!grepl(pattern="ALL",toupper(ans_0))){ #else if answer contains no "all"
       #parse user input
       ans_0 <- str_trim(ans_0, side="both")
       ans_0 <- unlist(strsplit(ans_0," "))
@@ -97,7 +97,7 @@ check.loci <- function(dir=NULL, top.loci=20){
       cat("\n  Results were saved in a 'High_Fst_Locus_Freq.txt' file in the directory.")
     }
 
-  }else if(grepl(pat="random", locusSampleMethod)){
+  }else if(grepl(pattern="random", locusSampleMethod)){
     #save for future development
   }
 }

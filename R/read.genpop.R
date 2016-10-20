@@ -3,14 +3,15 @@
 #' This function allows you to import a GENEPOP format file into R. Population names can be specified in the argument. See http://genepop.curtin.edu.au/help_input.html for details about GENEPOP format.
 #' @param x The GENEPOP file name or path to the file. The filename extension should be included.
 #' @param pop.names A character string vector for population names. The order of the name should be the same with the order (top to down) in your GENEPOP file.
+#' @param pos defaults to 1 which equals an assingment to global environment
 #' @return This function returns a list that comprises three items. [[1]] A matrix of genetic data with a population name label ($popNameVector) in the last column. [[2]] A vector of sample ID. [[3]] A vector of locus name.
-#' @examples infile <- read.genpop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
+#' @examples # infile <- read.genpop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
 #' @references Rousset, F., 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106.
 #' @import stringr
 #' @import reshape2
 #' @export
 #'
-read.genpop <- function(x, pop.names = NULL){
+read.genpop <- function(x, pop.names = NULL, pos=1){
   df <- readLines(x)
   df <- df[-1]#skip the first line file info
   popIndex <- grep("pop",df,ignore.case=TRUE)
@@ -37,10 +38,10 @@ read.genpop <- function(x, pop.names = NULL){
   for (i in 1:noPops){
     if (i < noPops){
       start <- popIndex[i] + 1; end <- popIndex[i+1] - 1
-      assign(paste0("pop_",i,"_index"), start : end, env = .GlobalEnv )
+      assign(paste0("pop_",i,"_index"), start : end, envir=as.environment(pos) )
     } else if (i == noPops){
       start <- popIndex[i] + 1; end <- length(df)
-      assign(paste0("pop_",i,"_index"), start : end, env = .GlobalEnv)
+      assign(paste0("pop_",i,"_index"), start : end, envir=as.environment(pos) )
     }
   }
   pop_all <- lapply(paste0("pop_", seq_along(1:noPops),"_index"), FUN = get)
@@ -152,7 +153,7 @@ read.genpop <- function(x, pop.names = NULL){
   cat("\n  LocusNames @ YOUR_LIST_NAME[[3]]")
   cat("\n\n")
   #Remove variables from GlobalEnv.
-  rm(list = ls(pattern="_index", envir = .GlobalEnv), envir = .GlobalEnv)
+  #rm(list = ls(pattern="_index", envir = .GlobalEnv), envir = .GlobalEnv)
 
   return(list(genoMatrix, id_vector, locusNames))
 }

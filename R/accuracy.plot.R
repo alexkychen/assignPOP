@@ -4,8 +4,8 @@
 #' @param df A dataframe of your assignment accuracy results. It could be the object returned from the function accuracy.MC() or accuracy.kfold() or a data frame imported to R via other functions (e.g., read.table(...)).
 #' @param pop A population name for making the plot. By default, it uses "all", meaning overall assignment accuracies. If a population name is specified, it only creates the plot for that population. The specified population name should match what you entered in read.genpop() earlier.
 #' @return This function returns a boxplot plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
-#' @examples Your_df <- read.table("YourFolderName/Rate_of_N_tests_M_pops.txt", header=T)
-#' accuracy.plot(Your_df, pop="all")
+#' @examples # Your_df <- read.table("YourFolderName/Rate_of_N_tests_M_pops.txt", header=T)
+#' ## accuracy.plot(Your_df, pop="all")
 #' @import ggplot2
 #' @export
 #'
