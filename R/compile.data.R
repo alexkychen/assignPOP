@@ -97,7 +97,7 @@ compile.data <- function(x, add.x, method="common"){
     #Print some message
     cat("\n  New data set created!!")
     cat(paste0("\n  It has ",nrow(comMatrix)," observations by ",ncol(comMatrix)," variables"))
-    cat(paste0("\n  including ",length(x[[3]])," loci(",ncol(genoMatrix)-1," alleles) plus ",noVars," additional classifiers(",ncol(add.df)-1," columns)"))
+    cat(paste0("\n  including ",length(x[[3]])," loci(",ncol(genoMatrix)-1," alleles) plus ",noVars," additional variables(",ncol(add.df)-1," columns)"))
 
     return(list(comMatrix, common_indID, x[[3]], varNames, noVarCols ))
 
