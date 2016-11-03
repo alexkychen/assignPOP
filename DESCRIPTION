@@ -19,6 +19,7 @@ Imports:
     reshape2,
     stringr,
     tree
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
 License: CC BY-NC-SA 4.0
-LazyData: TRUE
 RoxygenNote: 5.0.1
