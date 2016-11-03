@@ -15,18 +15,16 @@
 #' @param processors The number of processors to be used for parallel running. By default, it uses N-1 processors in your computer.
 #' @param ... Other arguments that could be potentially used for various models
 #' @return You don't need to specify a name for the returned object when using this function. It automatically output results in text files to your designated folder.
-#' @import reshape2
 #' @import stringr
-#' @import caret
-#' @import MASS
-#' @import e1071
-#' @import klaR
-#' @import doParallel
-#' @import parallel
 #' @import foreach
+#' @importFrom reshape2 melt
+#' @importFrom caret createFolds
+#' @importFrom MASS lda
+#' @importFrom e1071 svm naiveBayes
+#' @importFrom doParallel registerDoParallel
+#' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom tree tree
-#' @importFrom randomForest randomForest
-#' @importFrom randomForest importance
+#' @importFrom randomForest randomForest importance
 #' @export
 #'
 assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), loci.sample="fst", dir=NULL,

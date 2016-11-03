@@ -7,7 +7,7 @@ Maintainer: Kuan-Yu Alex Chen <alexkychen@gmail.com>
 Description: It is designed to perform population assignment tests using large genomic data or integrated (genetic plus non-genetic) data. It employs resampling (Monte-Carlo and K-fold) cross-validation approaches coupled with multiple machine-learning classification algorithms to evaluate perfomance of predictive models of population assignment. It allows users to subset varying sample sizes of individuals and loci (either randomly or based on locus Fst) for resampling cross-validation. Additionally, it uses PCA for data dimension reduction and outputs results in publication-quality graphs. Overall, this package helps evaluate the discriminatory power of a dataset for poulation assignment and identify relatively informative loci in a reliable way.
 Depends: R (>= 2.3.2)
 Imports:
-    caret, combinat, doParallel, e1071, foreach, ggplot2, gtable, iterators, klaR, magrittr, MASS, parallel, randomForest, reshape2, scales, stringi, stringr, tree
+    caret, doParallel, e1071, foreach, ggplot2, klaR, MASS, parallel, randomForest, reshape2, stringr, tree
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 License: CC BY-NC-SA 4.0

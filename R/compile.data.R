@@ -7,7 +7,7 @@
 #' @return This function returns a new object (list) that comprises 5 items. [[1]] data matrix including genetic and non-genetic data, [[2]] a sample ID vector, [[3]] a locus name vector, [[4]] a vector of non-genetic variable names, and [[5]] the number of non-genetic variables.
 #' @examples # infile_com <- compile.data(x, "YourAddFile.txt")
 #' @import stringr
-#' @import reshape2
+#' @importFrom reshape2 melt
 #' @export
 #'
 compile.data <- function(x, add.x, method="common"){

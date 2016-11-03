@@ -8,7 +8,7 @@
 #' @examples # infile <- read.genpop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
 #' @references Rousset, F., 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106.
 #' @import stringr
-#' @import reshape2
+#' @importFrom reshape2 melt
 #' @export
 #'
 read.genpop <- function(x, pop.names = NULL, pos=1){
