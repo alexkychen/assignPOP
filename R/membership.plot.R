@@ -2,7 +2,7 @@
 #'
 #' This function allows you to make a membership probability plot (stacked-bar plot) using results estimated from K-fold cross-validation.
 #' @param dir A character string to specify the folder that has your K-fold cross-validation assignment results. A slash should be entered at the end.
-#' @param style An option for output style. If style=1, it creates the plot which individuals on the x-axis are in random order. If style=2, individuals are sorted by probabilities within each population. If style=3, individuals of different folds are in seperated plots. If style=4, individuals are separated by fold and sorted by probability.
+#' @param style An option for output style. If style=1, it creates the plot which individuals on the x-axis are in random order. If style=2, individuals are sorted by probabilities within each population. If style=3, individuals of different folds are in seperate plots. If style=4, individuals are separated by fold and sorted by probability.
 #' @return his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @examples # membership.plot(dir="YourFolderName/")
 #' #If style is not specified, the program will ask you to enter after executing the function.
@@ -61,7 +61,7 @@ membership.plot <- function(dir=NULL, style=NULL){
     cat("\n  Finally, select one of the output styles.")
     cat("\n  [1] Random order (Individuals on x-axis are in random order)")
     cat("\n  [2] Sorted by probability (Individuals are sorted by probabilities within each group)")
-    cat("\n  [3] Separated by fold (Individuals of different folds are in separated plots)")
+    cat("\n  [3] Separated by fold (Individuals of different folds are in separate plots)")
     cat("\n  [4] Separated and Sorted (Individuals are separated by fold and sorted by probability)")
     style <- readline("  Please enter 1, 2, 3, or 4: ")
     style <- str_trim(style, side="both")
