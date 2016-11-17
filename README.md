@@ -11,8 +11,8 @@ In your R/Rstudio console,
 * step 3. Call the function, `install_github("alexkychen/assignPOP")` 
 
 ## Package web page
-Please visit our website for more infomration
-* [http://alexkychen.github.io/assignPOP](http://alexkychen.github.io/assignPOP)
+Please visit the following page for more infomration
+* [http://rpubs.com/alexkychen/assignPOP](http://rpubs.com/alexkychen/assignPOP)
 
 ## Note
 This package was tested under R-3.2.4
