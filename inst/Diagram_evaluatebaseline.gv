@@ -1,0 +1,50 @@
+digraph evaluatebaseline {
+  
+  graph [rankdir = LR, ranksep=0.2, nodesep=0.3]
+  
+  node [shape=box, fontname=Arial]
+  A [label='Step 1. Import data']
+  B [label='Step 2. Perform resampling\ncross-validation']
+  C [label='Step 3. Visualize results']
+  
+  node [shape=plaintext, fontname=Arial]
+  1 [label='For genetic data, use\nread.genpop( ), reduce.allele( )']
+  2 [label='For non-genetic data, use\nread.table( ), read.csv( )\n*data imported as a data frame']
+  3 [label='For integrated data, use\nread.genpop( ), compile.data( )']
+  5 [label='Monte-Carlo cross-validation\nassign.MC( )']
+  6 [label='K-fold cross-validation\nassign.kfold( )']
+  7 [label='Optional: Identify informative loci\ncheck.loci( )']
+  8 [label='Assignment accuracy\naccuracy.MC( ), accuracy.kfold( ),\naccuracy.plot( )']
+  9 [label='Membership probability\nmembership.plot( )']
+  
+  node [shape=plaintext, fontname=Arial, fontsize=20]
+  TT [label='Evaluate known individuals']
+  
+  edge [arrowhead=normal]
+  A -> B B -> C
+  
+  edge [arrowhead=tee]
+  A -> 1 
+  B -> 5
+  C -> 8
+  
+  edge [color=transparent]
+  TT -> A
+  1 -> 2 -> 3
+  5 -> 6 -> 7
+  8 -> 9
+  
+  edge [arrowhead=normal, color=gray]
+  5 -> 7 6 -> 7
+
+  subgraph {
+    rank=same; TT; A; 1; 2; 3;
+  }
+
+  subgraph {
+    rank=same; B; 5; 6; 7;
+  }
+  subgraph {
+    rank=same; C; 8; 9;
+  }
+}
