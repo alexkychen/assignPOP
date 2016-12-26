@@ -1,6 +1,12 @@
 # assignPOP
 An R package for population assignment using genomic, non-genetic or integrated data in a machine-learning framework
 
+### Version 
+1.1
+
+### Latest update
+'`r Sys.Date()`'
+
 ## Description
 The assignPOP package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. Other features are listed below.
 
@@ -18,9 +24,6 @@ In your R/Rstudio console,
 * step 2. Import the library, `library(devtools)`
 * step 3. Call the function, `install_github("alexkychen/assignPOP")` 
 
-## Package web page
+## Package tutorial
 Please visit the following page for more infomration
 * [http://rpubs.com/alexkychen/assignPOP](http://rpubs.com/alexkychen/assignPOP)
-
-## Note
-This package was tested under R-3.2.4
