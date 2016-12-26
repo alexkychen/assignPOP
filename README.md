@@ -1,4 +1,5 @@
-# assignPOP (v1.1) ![alt tag](https://www.r-project.org/logo/Rlogo.svg)
+# assignPOP (v1.1) 
+![ ](https://www.r-project.org/logo/Rlogo.svg)
 An R package for population assignment using genomic, non-genetic or integrated data in a machine-learning framework
 
 ## Description
