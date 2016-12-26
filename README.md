@@ -1,11 +1,5 @@
-# assignPOP
+# assignPOP (v1.1)
 An R package for population assignment using genomic, non-genetic or integrated data in a machine-learning framework
-
-### Version 
-1.1
-
-### Latest update
-'`r Sys.Date()`'
 
 ## Description
 The assignPOP package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. Other features are listed below.
