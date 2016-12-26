@@ -187,7 +187,7 @@ getwd()
 ```
 
 ```{r read accuMC file, include = FALSE}
-accuMC <- read.table("../inst/extdata/AA-MC-fst-svm-3pop-genetics.txt", header=T)
+accuMC <- read.table("../inst/extdata/AAMC_fst_svm_Genetics.txt", header=T)
 ```
 
 To visualize the results of assignment accuracy, use the following function to create a boxplot. 
@@ -242,7 +242,7 @@ ggplot(accuMC_rs, aes(x = train.inds, y = value, fill = train.loci )) +
 The above results were estimated from the genetic-only dataset. Assignment accuracies between populations A and B are relatively low, indicating that the genetic data could not distinguish between them well. However, assignment accuracies of population C are much higher, suggesting that the genetic loci can be used to differentiate population C from the other two populations. Next, we can perform the assignment test on the genetic-morphometric dataset (using object `infile_con` returned from `compile.data()`) to see if using integrated data improves assignment success. (We skip the codes and show the final result below)
 
 ```{r create faceted plots for integrated data, echo=FALSE, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using genetic and morphometric data. Each box is the results of using a proportion of training loci plus 4 morphometric variables"}
-accuMC_con <- read.table("../inst/extdata/AA-MC-fst-svm-3pop-gen-morph.txt", header=T)
+accuMC_con <- read.table("../inst/extdata/AAMC_fst_svm_GeneMorph.txt", header=T)
 accuMC_con$train.inds <- as.factor(accuMC_con$train.inds)
 accuMC_con$train.loci <- as.factor(accuMC_con$train.loci)
 accuMC_con_rs <- melt(accuMC_con, id = 1:3)
