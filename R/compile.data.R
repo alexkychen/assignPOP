@@ -1,8 +1,8 @@
 #' Compile genetic and other non-genetic data
 #'
-#' This function allows you to combine genetic and other non-genetic classifier data, such as morphometrics, of the observations for assignment tests.
+#' This function allows you to combine genetic and other non-genetic data, such as morphometrics, of the observations for assignment tests.
 #' @param x A returned object (list) from the function read.genpop() or reduce.allele().
-#' @param add.x A filename of additional non-genetic data that has sample ID in the first column of the data frame. The sample ID of an individual in your GENEPOP and this additional data must be identifcal.
+#' @param add.x A file containing non-genetic data that has sample ID in the first column. The sample ID must be the same as your GENEPOP file.
 #' @param method A method to match sample ID between genetic and non-genetic data. The "common" method only concatenate the data that has sample ID in both files. If an individual only exists in one of the files, this individual will be discarded.
 #' @return This function returns a new object (list) that comprises 5 items. [[1]] data matrix including genetic and non-genetic data, [[2]] a sample ID vector, [[3]] a locus name vector, [[4]] a vector of non-genetic variable names, and [[5]] the number of non-genetic variables.
 #' @examples # infile_com <- compile.data(x, "YourAddFile.txt")
@@ -38,6 +38,10 @@ compile.data <- function(x, add.x, method="common"){
     ans_1 <- str_trim(ans_1, side="both")
     ans_1 <- unlist(strsplit(ans_1,split=" "))#check out variable name to be processed
     noChangeVar <- length(ans_1)
+    #Check if entry is correct
+    if(!all(ans_1 %in% varNames)){ #if any of entry not in varNames is true 
+      stop("Please enter correct feature names.")
+    }
     #Process variables and convert factor data to dummy variable (binary data)
     for(name in ans_1){
       ans_2 <- readline(paste0("  Which data type should '",name,"' be? (enter numeric or factor): "))
@@ -59,7 +63,7 @@ compile.data <- function(x, add.x, method="common"){
       }
     }
   }else if(grepl(pattern="Y",toupper(ans_0))){
-    #Look through non-genetic variables and convert to dummy if is factor
+    #Look through non-genetic variables and convert to dummy if it is factor
     for(name in varNames){
       if(is.factor(add.df[,name])){
         #Convert factor variable to numeric binary variable (dummy variable)
@@ -90,7 +94,7 @@ compile.data <- function(x, add.x, method="common"){
       colnames(comMatrix)[ncol(comMatrix)] <- "popNames_vector"#rename the last column
       rownames(comMatrix) <- NULL
     }else {
-      stop("  Error: Individual ID are not identical between two data sets")
+      stop("Individual ID are not identical between two data sets")
     }
     #Count number of non-genetic columns (new variables)
     noVarCols <- ncol(add.df_com)-1 #total number of columns minus first ID column

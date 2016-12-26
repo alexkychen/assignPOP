@@ -35,10 +35,10 @@ reduce.allele <- function(x, p = 0.95){
   #check if any locus is gone (all alleles gone) and edit the locus name vector
   newLocusNames <- NULL
   newAlleleLeft <- names(genoMatrix) #get remaining allele names
-  for(i in 1:length(locusNames)){
-    checking <- grep(locusNames[i], newAlleleLeft)
+  for(j in 1:length(locusNames)){
+    checking <- grep(paste0(locusNames[j],"_"), newAlleleLeft)
     if(!length(checking)==0){
-      newLocusNames <- c(newLocusNames,locusNames[i])
+      newLocusNames <- c(newLocusNames,locusNames[j])
     }
   }
   newNoLocus <- length(newLocusNames)

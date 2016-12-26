@@ -7,6 +7,7 @@
 #' @examples # membership.plot(dir="YourFolderName/")
 #' #If style is not specified, the program will ask you to enter after executing the function.
 #' @import ggplot2
+#' @importFrom reshape2 melt
 #' @export
 membership.plot <- function(dir=NULL, style=NULL){
   Ind.ID <- NULL; value <- NULL; variable <- NULL #some NULL variable to handle R CMD check
@@ -37,20 +38,41 @@ membership.plot <- function(dir=NULL, style=NULL){
     cat("\n  Entry is not correct.")
     break
   }
-
-  cat(paste0("\n  ",length(train.loci)," levels of training loci are found."))
-  cat("\n  Levels[train.loci]: ");cat(paste0(train.loci," "))
-  ans_t <- readline("  Please enter one of the levels: ")
-  ans_t <- str_trim(ans_t, side="both")
-  if(!ans_t %in% train.loci){
-    cat("\n  Entry is not correct.")
-    break
-  }
-
+  #Check training loci proportions (levels) or if it is non-genetic data only
+  if(length(train.loci) > 1){
+    cat(paste0("\n  ", length(train.loci)," proportions of training loci are found."))
+    cat("\n  Levels[train.loci]: ");cat(paste0(train.loci," "))
+    ans_t <- readline("  Please enter one of the proportions: ")
+    ans_t <- str_trim(ans_t, side="both")
+    if(!ans_t %in% train.loci){
+      cat("\n  Entry is not correct.")
+      break
+    }
+    pltext <- paste0(" , training locus proportion = ",ans_t)
+  #If there is only one proportion of training loci or it is non-genetic data only  
+  }else if(length(train.loci)==1){
+    cat(paste0("\n  Only one proportion of training loci is found."))
+    ans_t <- readline("  Does data include genetic loci? (enter Y/N): ")
+    ans_t <- str_trim(ans_t, side="both")
+    if(!toupper(ans_t) %in% c("N","Y","NO","YES")){
+      cat("\n  Entry is not correct.")
+      break
+    }
+    if(grepl(pattern="Y",toupper(ans_t))){
+      pltext <- paste0(" , training locus proportion = ",train.loci)
+    }else if(grepl(pattern="N",toupper(ans_t))){
+      pltext <- " " #If it is non-genetic dataset, assign nothing to plot title
+    }
+  }  
+  
   #Read selected files
   df_mas <- data.frame(matrix(ncol=0,nrow=0))
   for(i in 1:ans_k){
-    oneFile <- read.table(paste0(dir,"Out_",ans_t,"_K",ans_k,"_",i,".txt"), header=T)
+    if(length(train.loci) > 1){
+      oneFile <- read.table(paste0(dir,"Out_",ans_t,"_K",ans_k,"_",i,".txt"), header=T)
+    }else if(length(train.loci)==1){
+      oneFile <- read.table(paste0(dir,"Out_",train.loci,"_K",ans_k,"_",i,".txt"), header=T)
+    }
     sampleSize <- nrow(oneFile)
     fold_n <- rep(paste0("fold_",i),sampleSize)
     oneFile <- cbind(oneFile, fold_n)
@@ -87,7 +109,7 @@ membership.plot <- function(dir=NULL, style=NULL){
       #scale_fill_grey()+ # Make the bar color in grey scale
       facet_grid( . ~ origin.pop, scales="free_x", space="free_x")+ #scales="free" allows each facet includes the data that exist; space="free" allows facet size being proportionally adjusted
       ylab("Probability")+
-      labs(title=paste0("K = ",ans_k,"  ,  ","train locus level = ",ans_t))+
+      labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
       guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
       theme_bw()+
@@ -107,7 +129,7 @@ membership.plot <- function(dir=NULL, style=NULL){
       #scale_fill_grey()+ # Make the bar color in grey scale
       facet_grid( fold_n ~ origin.pop, scales="free_x", space="free_x")+ #scales="free" allows each facet includes the data that exist; space="free" allows facet size being proportionally adjusted
       ylab("Probability")+
-      labs(title=paste0("K = ",ans_k,"  ,  ","train locus level = ",ans_t))+
+      labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
       guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
       theme_bw()+
@@ -135,7 +157,7 @@ membership.plot <- function(dir=NULL, style=NULL){
       #scale_fill_grey()+ # Make the bar color in grey scale
       facet_grid( fold_n ~ origin.pop, scales="free_x", space="free_x")+ #scales="free" allows each facet includes the data that exist; space="free" allows facet size being proportionally adjusted
       ylab("Probability")+
-      labs(title=paste0("K = ",ans_k,"  ,  ","train locus level = ",ans_t))+
+      labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
       guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
       theme_bw()+
@@ -155,7 +177,7 @@ membership.plot <- function(dir=NULL, style=NULL){
       #scale_fill_grey()+ # Make the bar color in grey scale
       facet_grid( . ~ origin.pop, scales="free_x", space="free_x")+ #scales="free" allows each facet includes the data that exist; space="free" allows facet size being proportionally adjusted
       ylab("Probability")+
-      labs(title=paste0("K = ",ans_k,"  ,  ","train locus level = ",ans_t))+
+      labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
       guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
       theme_bw()+

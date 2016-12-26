@@ -1,7 +1,7 @@
 ---
 title: "R package [assignPOP v1.1] tutorial"
 author: "Alex Chen"
-date: "`r Sys.Date()`"
+date: '`r Sys.Date()`'
 output:
   html_document:
     toc: yes
@@ -10,7 +10,7 @@ output:
   word_document:
     fig_caption: yes
 ---
-The assignPOP package helps perform population assignment using a machine learning framework. It employs [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evalute the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710. doi:10.1111/j.1755-0998.2010.02846.x.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601. doi:10.1111/j.1365-294X.2010.04675.x.]). Other features are listed below.
+The assignPOP package helps perform population assignment using a machine learning framework. It employs [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710. doi:10.1111/j.1755-0998.2010.02846.x.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601. doi:10.1111/j.1365-294X.2010.04675.x.]). Other features are listed below.
 
 - Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
 - Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy
@@ -485,4 +485,3 @@ Please leave your comments or questions at [https://github.com/alexkychen/assign
 
 ***
 ## References and footnotes
-

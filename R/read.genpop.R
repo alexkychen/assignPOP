@@ -44,7 +44,7 @@ read.genpop <- function(x, pop.names = NULL, pos=1){
       assign(paste0("pop_",i,"_index"), start : end, envir=as.environment(pos) )
     }
   }
-  pop_all <- lapply(paste0("pop_", seq_along(1:noPops),"_index"), FUN = get)
+  pop_all <- lapply(paste0("pop_", seq_along(1:noPops),"_index"), FUN = get )
 
   #save individual index in one vector "ind_all_index"
   ind_all_index <- NULL
@@ -137,7 +137,7 @@ read.genpop <- function(x, pop.names = NULL, pos=1){
   genoMatrix <- cbind(genoMatrix, popNames_vector)
 
   #Print some message to console
-  cat("\n  ############### assignPOP v1.0 ###############\n")
+  cat("\n  ############### assignPOP v1.1 ###############\n")
   cat("\n  A GENEPOP format file was successfully imported!\n")
   cat(paste0("\n  DataInfo: ",noInds," obs. by ",noLocus," loci (with ",noLociVar," var.)"))
   cat(paste0("\n  DataMatrix: ",nrow(genoMatrix)," rows by ",ncol(genoMatrix), " columns"))
@@ -152,8 +152,10 @@ read.genpop <- function(x, pop.names = NULL, pos=1){
   cat("\n  IndividualNames @ YOUR_LIST_NAME[[2]]")
   cat("\n  LocusNames @ YOUR_LIST_NAME[[3]]")
   cat("\n\n")
-  #Remove variables from GlobalEnv.
-  #rm(list = ls(pattern="_index", envir = .GlobalEnv), envir = .GlobalEnv)
 
+  #Remove variables from GlobalEnv.
+  rm(list = ls(pattern="^pop_.*_index$", envir = .GlobalEnv), envir = .GlobalEnv)
+  
   return(list(genoMatrix, id_vector, locusNames))
+  
 }
