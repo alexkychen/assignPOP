@@ -1,6 +1,6 @@
 Package: assignPOP
 Type: Package
-Title: Population assignment using genomic or integrated data in a machine-learning framework
+Title: Population assignment using genomic, non-genetic or integrated data in a machine-learning framework
 Version: 1.1
 Author: Kuan-Yu Alex Chen
 Maintainer: Kuan-Yu Alex Chen <alexkychen@gmail.com>
