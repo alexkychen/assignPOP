@@ -1,8 +1,16 @@
 # assignPOP
-An R package for population assignment using genomic or integrated data in a machine-learning framework
+An R package for population assignment using genomic, non-genetic or integrated data in a machine-learning framework
 
 ## Description
-This package is designed to perform population assignment tests using large genomic data or integrated (genetic plus non-genetic) data. It employs resampling (Monte-Carlo and K-fold) cross-validation approaches coupled with multiple machine-learning classification algorithms to evaluate perfomance of predictive models of population assignment. It allows users to subset varying sample sizes of individuals and loci (either randomly or based on locus Fst) for resampling cross-validation. Additionally, it uses PCA for data dimension reduction and outputs results in publication-quality graphs. Overall, this package helps evaluate the discriminatory power of a dataset for poulation assignment and identify relatively informative loci in a reliable way.
+The assignPOP package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. Other features are listed below.
+
+- Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
+- Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy
+- Use K-fold cross-validation to estimate membership probability
+- Allow to resample training individuals with various proportions or numbers
+- Allow to resample training loci with various proportions either randomly or based on locus FST value
+- Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
+- Output results in publication-quality plots while being editable using ggplot2 library
 
 ## Install assignPOP to R/Rstudio from github
 In your R/Rstudio console,
