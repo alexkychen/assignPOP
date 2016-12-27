@@ -27,6 +27,8 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom tree tree
 #' @importFrom randomForest randomForest importance
+#' @importFrom utils write.table
+#' @importFrom stats model.matrix prcomp predict
 #' @export
 #'
 assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), loci.sample="fst", dir=NULL, scaled=FALSE,

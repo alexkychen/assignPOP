@@ -8,6 +8,7 @@
 #' #If style is not specified, the program will ask you to enter after executing the function.
 #' @import ggplot2
 #' @importFrom reshape2 melt
+#' @importFrom stats reorder
 #' @export
 membership.plot <- function(dir=NULL, style=NULL){
   Ind.ID <- NULL; value <- NULL; variable <- NULL #some NULL variable to handle R CMD check

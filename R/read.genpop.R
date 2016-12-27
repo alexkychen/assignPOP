@@ -9,6 +9,7 @@
 #' @references Rousset, F., 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106.
 #' @import stringr
 #' @importFrom reshape2 melt
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @export
 #'
 read.genpop <- function(x, pop.names = NULL, pos=1){

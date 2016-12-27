@@ -8,6 +8,7 @@
 #' @examples # infile_com <- compile.data(x, "YourAddFile.txt")
 #' @import stringr
 #' @importFrom reshape2 melt
+#' @importFrom utils read.csv read.table
 #' @export
 #'
 compile.data <- function(x, add.x, method="common"){
