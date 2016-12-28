@@ -4,11 +4,10 @@ Title: Population Assignment using Genomic, Non-Genetic or Integrated Data in a 
 Version: 1.1
 Author: Kuan-Yu Alex Chen
 Maintainer: Kuan-Yu Alex Chen <alexkychen@gmail.com>
-Description: The assignPOP package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. A comprehensive user guide can be found at <http://rpubs.com/alexkychen/assignPOP>. 
+Description: The assignPOP package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. The package tutorial can be found at <http://rpubs.com/alexkychen/assignPOP>. 
 Depends: R (>= 2.3.2)
 Imports:
     caret, doParallel, e1071, foreach, ggplot2, MASS, parallel, randomForest, reshape2, stringr, tree,
-Suggests: knitr, rmarkdown, gtable, iterators, klaR, stringi,
-VignetteBuilder: knitr
+Suggests: gtable, iterators, klaR, stringi,
 License: GPL (>=2)
 RoxygenNote: 5.0.1
