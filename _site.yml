@@ -1,4 +1,5 @@
 name: "my-website"
+output_dir: "."
 navbar:
   title: "assignPOP tutorial"
   left:
