@@ -8,5 +8,5 @@ navbar:
     - text: "About"
       href: about.html
   right:
-    - icon: fa-github
+    - icon: ion-social-github
       href: https://github.com/alexkychen/assignPOP
