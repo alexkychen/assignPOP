@@ -3,10 +3,6 @@ Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine
 
 ### Version 1.1.1
 
-```{r, echo=TRUE}
-packageVersion("assignPOP")
-```
-
 ## Description
 This R package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data** sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. Other features are listed below.
 
