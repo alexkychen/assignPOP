@@ -11,7 +11,7 @@
 
 
 
-<title>assignPOP website</title>
+<title>Intro to assignPOP</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,6 +22,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -171,7 +172,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">assignPOP tutorial</a>
+      <a class="navbar-brand" href="index.html">assignPOP</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -183,7 +184,12 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/alexkychen/assignPOP">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -193,12 +199,28 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">assignPOP website</h1>
+<h1 class="title toc-ignore">Intro to assignPOP</h1>
 
 </div>
 
 
-<p>Hello Website!</p>
+<p>The assignPOP package helps perform population assignment using a machine learning framework. It employs <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised machine learning</a> methods to evaluate the discriminatory power of your known data set, and is capable of analyzing <strong>large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets</strong>. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>; Waples 2010<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>). Other features are listed below.</p>
+<ul>
+<li>Use principle component analysis (PCA) for dimensionality reduction (or data transformation)</li>
+<li>Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy</li>
+<li>Use <em>K</em>-fold cross-validation to estimate membership probability</li>
+<li>Allow to resample training individuals with various proportions or numbers</li>
+<li>Allow to resample training loci with various proportions either randomly or based on locus <em>F<sub>ST</sub></em> value</li>
+<li>Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.</li>
+<li>Output results in publication-quality plots while being editable using ggplot2 library</li>
+</ul>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. <em>Molecular Ecology Resources</em> 10(4): 701–710. <a href="doi:10.1111/j.1755-0998.2010.02846.x" class="uri">doi:10.1111/j.1755-0998.2010.02846.x</a>.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. <em>Molecular Ecology</em> 19(13): 2599–2601. <a href="doi:10.1111/j.1365-294X.2010.04675.x" class="uri">doi:10.1111/j.1365-294X.2010.04675.x</a>.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
 
 
 

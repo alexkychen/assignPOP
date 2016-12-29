@@ -1,9 +1,12 @@
-name: "my-website"
+name: "assignPOP website"
 output_dir: "."
 navbar:
-  title: "assignPOP tutorial"
+  title: "assignPOP"
   left:
     - text: "Home"
       href: index.html
     - text: "About"
       href: about.html
+  right:
+    - icon: fa-github
+      href: https://github.com/alexkychen/assignPOP
