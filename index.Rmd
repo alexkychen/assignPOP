@@ -1,8 +1,10 @@
 ---
-title: "Intro to assignPOP"
+title: "Intro to assignPOP" 
 ---
 
-The assignPOP package helps perform population assignment using a machine learning framework. It employs [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710. doi:10.1111/j.1755-0998.2010.02846.x.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601. doi:10.1111/j.1365-294X.2010.04675.x.]). Other features are listed below.
+<img src="https://www.r-project.org/logo/Rlogo.svg" width="70" align="right"> 
+
+**assignPOP** is an R package that helps perform population assignment using a machine learning framework. It employs [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710. doi:10.1111/j.1755-0998.2010.02846.x.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601. doi:10.1111/j.1365-294X.2010.04675.x.]). Other features are listed below.
 
 - Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
 - Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy
@@ -11,3 +13,109 @@ The assignPOP package helps perform population assignment using a machine learni
 - Allow to resample training loci with various proportions either randomly or based on locus *F~ST~* value
 - Provide several machine learning classifiers, including  LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
 - Output results in publication-quality plots while being editable using ggplot2 library
+
+***
+### Conceptual Framework
+
+The ability to assign unknown individuals to source populations relies on a robust baseline collected from the source populations. Therefore, samples collected from the known populations as a baseline should be self-evaluated via cross-validation before it can be used to assign unknown individuals. The diagram below illustrates how the assignPOP package incorporates into the assignment framework, whether it is for evaluating a baseline or predicting unknown individuals. 
+
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+digraph conceptframe {
+node [shape=box, fontname=Arial]
+A [label='START:\nEvaluate a baseline collected\nfrom source populations\n(known individuals)']
+B [label='Results:\nassignment accuracy\nor\nmembership probability']
+C [label='Collect more data (features)\nfrom known individuals']
+D [label='Collect unknown individuals\nto be predicted']
+E [label='Perform assignment test\non unknown individuals']
+F [label='Results:\npredicted populations\nand\nmembership probability']
+
+edge [arrowhead=normal]
+A -> B [label='analyze data via assignPOP', fontcolor=firebrick]
+B -> C [label='bad results']
+B -> D [label='good results']
+D -> E 
+E -> F [label='analyze data via assignPOP',fontcolor=firebrick]
+C -> A [label='re-evaluate']
+
+subgraph { rank=same; C; D; }
+subgraph { rank=same; A; E; }
+}
+", height=350)
+```
+
+***
+### Analytical Workflow {#analyticalworkflow}
+
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+digraph evaluatebaseline {
+graph [rankdir = LR, ranksep=0.1, nodesep=0.3]
+  
+  node [shape=box, fontname=Arial]
+  A [label='Step 1-1. Import data']
+  B [label='Step 1-2.\nPerform resampling\ncross-validation']
+  C [label='Step 1-3. Visualize results']
+  
+  node [shape=plaintext, fontname=Arial]
+  1 [label='For genetic data, use\nread.genpop( ), reduce.allele( )']
+  2 [label='For non-genetic data, use\nread.table( ), read.csv( )\n*data imported as a data frame']
+  3 [label='For integrated data, use\nread.genpop( ), compile.data( )']
+  5 [label='Monte-Carlo cross-validation\nassign.MC( )']
+  6 [label='K-fold cross-validation\nassign.kfold( )']
+  7 [label='Optional: Identify informative loci\ncheck.loci( )']
+  8 [label='Assignment accuracy\naccuracy.MC( ), accuracy.kfold( ),\naccuracy.plot( )']
+  9 [label='Membership probability\nmembership.plot( )']
+
+  node [shape=plaintext, fontname=Arial, label='Step 1. Evaluate known individuals', fontsize=20]
+  TT
+  edge [arrowhead=normal]
+  A -> B B -> C
+  edge [arrowhead=tee]
+  A -> 1  B -> 5  C -> 8
+  edge [color=transparent]
+  TT -> A
+  1 -> 2 -> 3  5 -> 6 -> 7  8 -> 9
+  edge [arrowhead=normal, color=gray]
+  5 -> 7 6 -> 7
+  subgraph { rank=same; TT; A; 1; 2; 3;}
+  subgraph { rank=same; B; 5; 6; 7;}
+  subgraph { rank=same; C; 8; 9;}
+}
+", height=280)
+```
+
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+digraph assignunknown {
+  graph [rankdir = LR, ranksep=0.2, nodesep=0.25]
+  node [shape=box, fontname=Arial]
+  A [label='Step 2-1. Import data']
+  B [label='Step 2-2. Perform assignment\ntest and visualize results']
+  
+  node [shape=plaintext, fontname=Arial]
+  1 [label='Use read.genpop( ), compile.data( ),\nread.table( ), or read.csv( )']
+  2 [label='Known and unknown data sets\nshould be imported separately']
+  5 [label='Use assign.X( )']
+  6 [label='Output results and\ngenerate membership\nprobability plot']
+  
+  node [shape=plaintext, fontname=Arial, fontsize=20]
+  TT [label='Step 2. Assign unknown individuals']
+  
+  edge [arrowhead=normal]
+  A -> B
+  5 -> 6
+  edge [arrowhead=tee]
+  A -> 1 
+  B -> 5
+  edge [arrowhead=none, color=transparent]
+  TT -> A
+  1 -> 2
+  B -> 5
+  subgraph {rank=same; TT; A; 1; 2;}
+  subgraph {rank=same; B; 5; 6}
+}          
+", height=200)
+
+```
+

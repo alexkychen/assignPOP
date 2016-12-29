@@ -11,7 +11,7 @@
 
 
 
-<title>About the site</title>
+<title>Get Started</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,7 +22,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
-<link href="site_libs/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -180,13 +180,22 @@ $(document).ready(function () {
   <a href="index.html">Home</a>
 </li>
 <li>
-  <a href="about.html">About</a>
+  <a href="start.html">Get Started</a>
+</li>
+<li>
+  <a href="analyze.html">Data Analysis</a>
+</li>
+<li>
+  <a href="visualize.html">Result Visualization</a>
+</li>
+<li>
+  <a href="examples.html">Examples</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/alexkychen/assignPOP">
-    <span class="ion ion-social-github"></span>
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -199,12 +208,43 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">About the site</h1>
+<h1 class="title toc-ignore">Get Started</h1>
 
 </div>
 
 
-<p>This is About page</p>
+<p>The assignPOP package is built and used in R, so be sure to have R (and RStudio) pre-installed in your computer.</p>
+<p>Download and install R from CRAN <a href="https://cran.r-project.org/"><a href="https://cran.r-project.org/" class="uri">https://cran.r-project.org/</a></a></p>
+<p>Download and install RStudio from <a href="https://www.rstudio.com/"><a href="https://www.rstudio.com/" class="uri">https://www.rstudio.com/</a></a></p>
+<hr />
+<div id="install-assignpop-to-your-r-environment" class="section level3">
+<h3>Install assignPOP to your R environment</h3>
+<p>Once you have R/RStudio installed in your computer, you can enter the following command in R console to install the package from CRAN.</p>
+<pre class="r"><code>install.packages(&quot;assignPOP&quot;)</code></pre>
+<p>Or, install from Github site (which requires the package <code>devtools</code> pre-installed).</p>
+<pre class="r"><code>install.packages(&quot;devtools&quot;)
+library(devtools)
+install_github(&quot;alexkychen/assignPOP&quot;)</code></pre>
+<hr />
+</div>
+<div id="import-assignpop-to-r" class="section level3">
+<h3>Import assignPOP to R</h3>
+<pre class="r"><code>library(assignPOP)</code></pre>
+<hr />
+<p><strong>The assignPOP package includes the following functions.</strong></p>
+<p><code>read.genpop()</code> Read genetic data in GENEPOP format</p>
+<p><code>reduce.allele()</code> Reduce low variance loci</p>
+<p><code>compile.data()</code> Concatenate genetic and non-genetic data</p>
+<p><code>assign.MC()</code> Perform population assignment using Monte-Carlo cross-validation</p>
+<p><code>assign.kfold()</code> Perform population assignment using K-fold cross-validation</p>
+<p><code>assign.X()</code> Assign unknown individuals to source populations</p>
+<p><code>accuracy.MC()</code> Calculate assignment accuracy from Monte-Carlo cross-validation results</p>
+<p><code>accuracy.kfold()</code> Calculate assignment accuracy from K-fold cross-validation results</p>
+<p><code>accuracy.plot()</code> Make assignment accuracy box plots</p>
+<p><code>membership.plot()</code> Make membership probability stacked bar plots</p>
+<p><code>check.loci()</code> Identify informative loci used in resampling cross-validation</p>
+<p><strong>Enter <code>?</code> and function name in R console (e.g.,<code>?read.genpop</code>) to learn more about the functions and what arguments are used in the functions.</strong></p>
+</div>
 
 
 

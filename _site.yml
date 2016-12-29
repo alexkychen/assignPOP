@@ -5,8 +5,14 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "About"
-      href: about.html
+    - text: "Get Started"
+      href: start.html
+    - text: "Data Analysis"
+      href: analyze.html
+    - text: "Result Visualization"
+      href: visualize.html
+    - text: "Examples"
+      href: examples.html
   right:
-    - icon: ion-social-github
+    - icon: fa-github fa-lg
       href: https://github.com/alexkychen/assignPOP

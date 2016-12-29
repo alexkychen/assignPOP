@@ -1,0 +1,65 @@
+---
+title: "Get Started"
+output: html_document
+---
+
+The assignPOP package is built and used in R, so be sure to have R (and RStudio) pre-installed in your computer.
+
+Download and install R from CRAN [https://cran.r-project.org/](https://cran.r-project.org/) 
+
+Download and install RStudio from [https://www.rstudio.com/](https://www.rstudio.com/)
+
+***
+### Install assignPOP to your R environment
+
+Once you have R/RStudio installed in your computer, you can enter the following command in R console to install the package from CRAN.
+
+```{r, eval=FALSE}
+install.packages("assignPOP")
+```
+
+Or, install from Github site (which requires the package `devtools` pre-installed).
+
+```{r, eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("alexkychen/assignPOP")
+
+```
+
+***
+### Import assignPOP to R
+
+```{r, eval=FALSE}
+library(assignPOP)
+
+```
+
+***
+
+**The assignPOP package includes the following functions.**
+
+`read.genpop()` Read genetic data in GENEPOP format
+
+`reduce.allele()` Reduce low variance loci
+
+`compile.data()` Concatenate genetic and non-genetic data
+
+`assign.MC()` Perform population assignment using Monte-Carlo cross-validation
+
+`assign.kfold()` Perform population assignment using K-fold cross-validation
+
+`assign.X()` Assign unknown individuals to source populations
+
+`accuracy.MC()` Calculate assignment accuracy from Monte-Carlo cross-validation results
+
+`accuracy.kfold()` Calculate assignment accuracy from K-fold cross-validation results
+
+`accuracy.plot()` Make assignment accuracy box plots
+
+`membership.plot()` Make membership probability stacked bar plots
+
+`check.loci()` Identify informative loci used in resampling cross-validation
+
+**Enter `?` and function name in R console (e.g.,`?read.genpop`) to learn more about the functions and what arguments are used in the functions.**
+

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Result Visualization</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">assignPOP</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="start.html">Get Started</a>
+</li>
+<li>
+  <a href="analyze.html">Data Analysis</a>
+</li>
+<li>
+  <a href="visualize.html">Result Visualization</a>
+</li>
+<li>
+  <a href="examples.html">Examples</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/alexkychen/assignPOP">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Result Visualization</h1>
+
+</div>
+
+
+<p>In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectivly.</p>
+<div id="assignment-accuracy-box-plot" class="section level2">
+<h2>Assignment accuracy box plot</h2>
+<p>To visualize the results of assignment accuracy, use the following function to create a boxplot.</p>
+<pre class="r"><code>accuracy.plot(accuMC, pop = &quot;all&quot;)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="visualize_files/figure-html/run%20accuracy.plot-1.png" alt="Figure 1. Assignment accuracies estimated via Monte-Carlo cross-validation, with three levels of training individuals (50%, 70% and 90% of individuals from each population, on x-axis) by four levels of training loci (top 10%, 25% and 50% highest Fst loci and all loci in color-coded boxes) by 30 resampling events." width="960" />
+<p class="caption">
+Figure 1. Assignment accuracies estimated via Monte-Carlo cross-validation, with three levels of training individuals (50%, 70% and 90% of individuals from each population, on x-axis) by four levels of training loci (top 10%, 25% and 50% highest Fst loci and all loci in color-coded boxes) by 30 resampling events.
+</p>
+</div>
+<p>Note that the argument <code>pop</code> is used to specify which population to be included in the plot. You can specify multiple populations in the argument (e.g., <code>pop=c(&quot;pop_A&quot;,&quot;pop_B&quot;)</code>) to make a faceted plot (population names are those you provided in the function <code>read.genpop()</code>). If the population is not specified, assignment accuracy of overall population (arg. <code>pop=&quot;all&quot;</code>) will be plotted as the default.</p>
+<p>The function <code>accuracy.plot()</code> is built based on the <a href="https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf">ggplot2</a> library, so you can import the library <code>library(ggplot2)</code> and modify the plot using <a href="http://docs.ggplot2.org/current/">ggplot2 functions/arguments</a>. For example, set the <em>y</em>-axis (assignment accuracy) limits (<code>ylim()</code>), draw a horizontal line (<code>annotate()</code>), or add a plot title (<code>ggtitle()</code>).</p>
+<pre class="r"><code>library(ggplot2)
+accuracy.plot(accuMC, pop=c(&quot;all&quot;, &quot;pop_A&quot;, &quot;pop_B&quot;, &quot;pop_C&quot;)) +
+  ylim(0, 1) + #Set y limit between 0 and 1
+  annotate(&quot;segment&quot;,x=0.4,xend=3.6,y=0.33,yend=0.33,colour=&quot;red&quot;,size=1) + #Add a red horizontal line at y = 0.33 (null assignment rate for 3 populations)
+  ggtitle(&quot;Monte-Carlo cross-validation using genetic loci&quot;)+ #Add a plot title
+  theme(plot.title = element_text(size=20, face=&quot;bold&quot;)) #Edit plot title text size</code></pre>
+<div class="figure" style="text-align: center">
+<img src="visualize_files/figure-html/modify%20AA%20plot-1.png" alt="Figure 2. Assignment accuracies estimated via Monte-Carlo cross-validation, with genetic data (693 SNP loci) for three hypothetical populations of 30 individuals. Red horizontal lines indicate 0.33 null assignment rate." width="960" />
+<p class="caption">
+Figure 2. Assignment accuracies estimated via Monte-Carlo cross-validation, with genetic data (693 SNP loci) for three hypothetical populations of 30 individuals. Red horizontal lines indicate 0.33 null assignment rate.
+</p>
+</div>
+<p>The above results were estimated from the genetic-only dataset. Assignment accuracies between populations A and B are relatively low, indicating that the genetic data could not distinguish between them well. However, assignment accuracies of population C are much higher, suggesting that the genetic loci can be used to differentiate population C from the other two populations. Next, we can perform the assignment test on the genetic-morphometric dataset (using object <code>comin</code> returned from <code>compile.data()</code>) to see if using integrated data improves assignment success. (We skip the codes and show the final result below)</p>
+<div class="figure" style="text-align: center">
+<img src="visualize_files/figure-html/create%20faceted%20plots%20for%20integrated%20data-1.png" alt="Figure 3. Assignment accuracies estimated via Monte-Carlo cross-validation, using genetic and morphometric data. Each box is the results of using a proportion of training loci plus 4 morphometric variables" width="960" />
+<p class="caption">
+Figure 3. Assignment accuracies estimated via Monte-Carlo cross-validation, using genetic and morphometric data. Each box is the results of using a proportion of training loci plus 4 morphometric variables
+</p>
+</div>
+<p>When using the genetic-morphometric dataset, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate morphormetric data alone. The results are as follows.</p>
+<div class="figure" style="text-align: center">
+<img src="visualize_files/figure-html/unnamed-chunk-2-1.png" alt="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphormetric measurements." width="960" />
+<p class="caption">
+Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphormetric measurements.
+</p>
+</div>
+<p>The above results indicate that morphormetric data helps distinguish population A from the other two. Therefore, it is exepected that using integrated data would best discriminate among the three populations (Figure 3) despite that fact that using genetics or morphormetrics alone was unable to distinguish population B from the other two (see population B in Figure 2 and 4).</p>
+</div>
+<div id="membership-probability-stacked-bar-plot" class="section level2">
+<h2>Membership probability stacked bar plot</h2>
+<p>In addition to estimating assignment accuracy, we can also use probabilities to understand how individuals are assigned to populations. To visualize membership probility, we use the results from <em>K</em>-fold cross-validation and create a stacked bar plot (also known as <a href="http://pritchardlab.stanford.edu/structure.html"><strong>STRUCTURE plot</strong></a>) that is commonly used in molecular biology papers. To create the plot, use the following function and specify the folder containing your <em>K</em>-fold cross-validation results.</p>
+<pre class="r"><code>membership.plot(dir = &quot;Result-folder2/&quot;)</code></pre>
+<p>After entering the code, it will prompt a few questions and allow you to choose which dataset and plot style to be used. The interactive conversation is shown as follows.</p>
+<pre><code>## K = 3  4  5  are found.
+## Please enter one of the K numbers: (You will enter your answer here)</code></pre>
+<p>Next, it will ask you to enter which proportion of training loci you would like to make the plot for.</p>
+<pre><code>## 4 levels of training loci are found.
+## Levels[train.loci]: 0.1  0.25  0.5  1
+## Please enter one of the levels: (You will enter your answer here)</code></pre>
+<p>Lastly, if you didn’t specify the output style (e.g., <code>style = 1</code>) in <code>membership.plot()</code>, then it will print the following text and ask you to choose an output style.</p>
+<pre><code>## Finally, select one of the output styles.
+## [1] Random order (Individuals on x-axis are in random order)
+## [2] Sorted by probability (Individuals are sorted by probabilities within each group)
+## [3] Separated by fold (Individuals of different folds are in separate plots)
+## [4] Separated and Sorted (Individuals are separated by fold and sorted by probability)
+## Please enter 1, 2, 3, or 4: (You will enter your answer here)</code></pre>
+<p>Below we use the results of 3-fold and all loci (train.loci = 1) to demonstrate membership probability plots, with four different output styles.</p>
+<div class="figure">
+<img src="figure/Membership-genetic-only-style1.png" alt="Figure 5. Membership probability of three hypothetical populations, with results estimated via 3-fold cross-validation using overall loci (693 SNPs). Output style = 1." /><p class="caption">Figure 5. Membership probability of three hypothetical populations, with results estimated via 3-fold cross-validation using overall loci (693 SNPs). Output style = 1.</p>
+</div>
+<div class="figure">
+<img src="figure/Membership-genetic-only-style2.png" alt="Figure 6. Output style = 2. Individuals are sorted based on the probability of assignment to their original populations." /><p class="caption">Figure 6. Output style = 2. Individuals are sorted based on the probability of assignment to their original populations.</p>
+</div>
+<div class="figure">
+<img src="figure/Membership-genetic-only-style3.png" alt="Figure 7. Output style = 3. Similar to Figure 5, but with individuals assigned to different folds in separate panels." /><p class="caption">Figure 7. Output style = 3. Similar to Figure 5, but with individuals assigned to different folds in separate panels.</p>
+</div>
+<div class="figure">
+<img src="figure/Membership-genetic-only-style4.png" alt="Figure 8. Output style = 4. Similar to Figure 7, but with individuals sorted based on probability of assignment to their original populations." /><p class="caption">Figure 8. Output style = 4. Similar to Figure 7, but with individuals sorted based on probability of assignment to their original populations.</p>
+</div>
+<p>The above Figures 5 to 8 are the results from the genetic-only dataset. Here we also analyzed the genetic-morphometric data and created the following membership probability plot.</p>
+<div class="figure">
+<img src="figure/Membership-genetic-morph-style1.png" alt="Figure 9. Membership probability of three hypothetical populations, with results estimated based on 693 loci plus 4 morphometric measurements." /><p class="caption">Figure 9. Membership probability of three hypothetical populations, with results estimated based on 693 loci plus 4 morphometric measurements.</p>
+</div>
+<p>Using the integrated dataset allowed many more correct assignments than using the genetic data alone (see Figure 5 or 6 vs. 9).</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
