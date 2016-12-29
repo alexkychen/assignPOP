@@ -10,7 +10,7 @@ This R package helps perform population assignment using a machine learning fram
 - Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy
 - Use *K*-fold cross-validation to estimate membership probability
 - Allow to resample training individuals with various proportions or numbers
-- Allow to resample training loci with various proportions either randomly or based on locus *F~ST~* value
+- Allow to resample training loci with various proportions either randomly or based on locus *Fst* value
 - Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
 - Output results in publication-quality plots while being editable using ggplot2 library
 
