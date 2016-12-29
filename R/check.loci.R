@@ -4,7 +4,6 @@
 #' @param dir A character string to specify the folder with your cross-validation results. A slash should be entered at the end.
 #' @param top.loci An integer to specify how many top informative loci to output.
 #' @return This function output the results in a text file. It includes the top N informative loci in N rows, and each row has a list of loci sorted by its occurrence.
-#' @examples # check.loci(dir="YourFolderName/", top.loci=20)
 #' @import stringr
 #' @export
 #'

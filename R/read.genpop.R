@@ -9,7 +9,10 @@
 #' @references Rousset, F., 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106.
 #' @import stringr
 #' @importFrom reshape2 melt
-#' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
+#' @examples 
+#' genin <- read.genpop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
+#' #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 #' @export
 #'
 read.genpop <- function(x, pop.names = NULL, pos=1){
@@ -138,7 +141,7 @@ read.genpop <- function(x, pop.names = NULL, pos=1){
   genoMatrix <- cbind(genoMatrix, popNames_vector)
 
   #Print some message to console
-  cat("\n  ############### assignPOP v1.1 ###############\n")
+  cat(paste0("\n  ################ assignPOP v",packageVersion("assignPOP")," ################\n"))
   cat("\n  A GENEPOP format file was successfully imported!\n")
   cat(paste0("\n  DataInfo: ",noInds," obs. by ",noLocus," loci (with ",noLociVar," var.)"))
   cat(paste0("\n  DataMatrix: ",nrow(genoMatrix)," rows by ",ncol(genoMatrix), " columns"))

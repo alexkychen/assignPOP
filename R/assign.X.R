@@ -25,6 +25,7 @@
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom tree tree
 #' @importFrom randomForest randomForest importance
+#' @importFrom utils packageVersion
 #' @export
 #' 
 assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="kaiser-guttman", pca.loadings=F, 
@@ -289,7 +290,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     res_popSizes <- table(outcome_matrix$pred.pop)
     
     #Output a metadata file
-    cat(" Analysis Description (R - assignPOP ver.1.1)\n",
+    cat(" Analysis Description (R - assignPOP ver.",packageVersion("assignPOP"),")\n",
         "Perform assign.X() @", format(Sys.time()),"\n\n",
         "Data scaled and centerd:",scaled,"\n",
         "PC retaining criteria:",pca.PCs,"\n",
@@ -515,7 +516,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     #Count number of unknown inds assigned to pops
     res_popSizes <- table(outcome_matrix$pred.pop)
     #Output a metadata file
-    cat(" Analysis Description (R - assignPOP ver.1.1)\n",
+    cat(" Analysis Description (R - assignPOP ver.",packageVersion("assignPOP"),")\n",
         "Perform assign.X() @", format(Sys.time()),"\n\n",
         "Data scaled and centerd:",scaled,"\n",
         "PC retaining criteria:",pca.PCs,"\n",

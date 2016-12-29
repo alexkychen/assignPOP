@@ -18,10 +18,7 @@ This function returns a boxplot plot using the ggplot2 library. Users can modifi
 This functions allows you to make a boxplot of assignment accuracies estimated from Monte-Carlo or K-fold cross-validation results.
 }
 \examples{
-# Your_df <- read.table("YourFolderName/Rate_of_N_tests_M_pops.txt", header=T)
-# Output assignment accuracy of overall population
-# accuracy.plot(Your_df, pop="all") 
-# Make faceted plots with each population on one panel
-# accuracy.plot(Your_df, pop=c("all", "pop1", "pop2"))
+Your_df <- read.table(system.file("extdata/Rate.txt", package="assignPOP"), header=TRUE)
+accuracy.plot(Your_df, pop="all")
 }
 

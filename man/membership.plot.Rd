@@ -17,8 +17,4 @@ his function returns a stacked-bar plot using the ggplot2 library. Users can mod
 \description{
 This function allows you to make a membership probability plot (stacked-bar plot) using results estimated from K-fold cross-validation.
 }
-\examples{
-# membership.plot(dir="YourFolderName/")
-#If style is not specified, the program will ask you to enter after executing the function.
-}
 

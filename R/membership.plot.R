@@ -4,8 +4,6 @@
 #' @param dir A character string to specify the folder that has your K-fold cross-validation assignment results. A slash should be entered at the end.
 #' @param style An option for output style. If style=1, it creates the plot which individuals on the x-axis are in random order. If style=2, individuals are sorted by probabilities within each population. If style=3, individuals of different folds are in seperate plots. If style=4, individuals are separated by fold and sorted by probability.
 #' @return his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
-#' @examples # membership.plot(dir="YourFolderName/")
-#' #If style is not specified, the program will ask you to enter after executing the function.
 #' @import ggplot2
 #' @importFrom reshape2 melt
 #' @importFrom stats reorder

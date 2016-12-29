@@ -4,13 +4,11 @@
 #' @param df A dataframe of your assignment accuracy results. It could be the object returned from the function accuracy.MC() or accuracy.kfold() or a data frame imported to R via other functions (e.g., read.table(...)).
 #' @param pop Population names (one or multiple string characters) for making the plot. By default, it uses "all", meaning overall assignment accuracies. It creates faceted plot with one population per panel, if multiple population names are given. The specified population name should match what you entered in read.genpop() earlier.
 #' @return This function returns a boxplot plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
-#' @examples # Your_df <- read.table("YourFolderName/Rate_of_N_tests_M_pops.txt", header=T)
-#' # Output assignment accuracy of overall population
-#' # accuracy.plot(Your_df, pop="all") 
-#' # Make faceted plots with each population on one panel
-#' # accuracy.plot(Your_df, pop=c("all", "pop1", "pop2"))
 #' @import ggplot2
 #' @importFrom reshape2 melt
+#' @examples
+#' Your_df <- read.table(system.file("extdata/Rate.txt", package="assignPOP"), header=TRUE)
+#' accuracy.plot(Your_df, pop="all")
 #' @export
 #'
 accuracy.plot <- function(df, pop="all"){
