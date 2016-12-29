@@ -3,7 +3,7 @@ Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine
 
 ### Version 1.1.1
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 packageVersion("assignPOP")
 ```
 
