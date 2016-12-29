@@ -1,0 +1,8 @@
+name: "my-website"
+navbar:
+  title: "assignPOP tutorial"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html

@@ -1,0 +1,38 @@
+digraph ConceptualFramework {
+  
+  #graph statement
+  graph [compound=true, ranksep=0.5,  nodesep=0.5]
+  
+  node [shape=box, fontname=Arial]
+  A [label="@@1"]
+  B [label="@@2"]
+  C [label="@@3"]
+  D [label="@@4"]
+  E [label="@@5"]
+  F [label="@@6"]
+  
+  edge [arrowhead=normal]
+  A -> B [label="analyze data via assignPOP", fontcolor=firebrick]
+  B -> C [label="bad results"]
+  B -> D [label="good results"]
+  D -> E 
+  E -> F [label="analyze data via assignPOP",fontcolor=firebrick]
+  C -> A [label="re-evaluate"]
+  
+  edge [arrowhead=none]
+  
+  subgraph {
+    rank=same; C; D;
+  }
+  subgraph {
+    rank=same; A; E;
+  }
+  
+}
+[1]: "START:\nEvaluate a baseline collected\nfrom source populations\n(known individuals)"
+[2]: "Results:\nassignment accuracy\nor\nmembership probability"
+[3]: "Collect more data (features)\nfrom known individuals"
+[4]: "Collect unknown individuals\nto be predicted"
+[5]: "Perform assignment test\non unknown individuals"
+[6]: "Results:\npredicted populations\nand\nmembership probability"
+
