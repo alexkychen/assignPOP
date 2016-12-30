@@ -5,7 +5,8 @@ output: html_document
 
 The following chunks of codes demonstrate how functions are used to perform assignment for different data types and tasks. Please change file and variable names accordingly. Use different argument values if desired. 
 
-### Workflow 1. Evaluate genetic data from known individuals
+***
+### Example 1. Evaluate genetic data from known individuals
 ```{r, eval=FALSE}
 #Import a GENEPOP file
 geninfile <- read.genpop("YourGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"))
@@ -13,7 +14,7 @@ geninfile <- read.genpop("YourGenepop.txt", pop.names=c("pop_A","pop_B","pop_C")
 #Reduce low variance loci (optional)
 geninfile_rd <- reduce.allele(geninfile, p=0.95)
 
-#Perform Monte-Carlo cross-validation (use subsets of high Fst loci as training loci, LDA to build predictive models)
+#Perform Monte-Carlo cross-validation, with using subsets of high Fst loci as training loci, LDA to build predictive models
 assign.MC(geninfile_rd, train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1), loci.sample="fst",
           iterations=30, model="lda", dir="ResultFolder_MC/")
 
@@ -36,4 +37,63 @@ check.loci(dir="ResultFolder_MC/", top.loci=20)
 ```
 
 ***
-### Workflow 2. Evaluate integrated data from known individuals
+### Example 2. Evaluate integrated data from known individuals
+```{r, eval=FALSE}
+#Import a GENEPOP file
+geninfile <- read.genpop("YourGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"))
+
+#Concatenate genepop and non-genetic data
+conData <- compile.data(geninfile, "OtherFeature.csv")
+
+#Perform Monte-Carlo cross-validation, with subsets of random loci plus additional features as training data. The whole data is scaled (scaled=TRUE) before performing PCA and cross-validation. Each PC summarizes variance of genetic and non-genetic data (pca.method="mixed").
+assign.MC(conData, train.inds=c(30, 40, 50), train.loci=c(0.1, 0.25, 0.5, 1), loci.sample="random",
+          iterations=30, pca.method="mixed", scaled=TRUE, model="svm", dir="ResultFolder_MC/")
+
+#Calculate assignment accuracy
+accuRes_MC <- accuracy.MC(dir="ResultFolder_MC/")
+
+#Make assignment accuracy boxplot
+accuracy.plot(accuRes_MC, pop=c("all","pop_A","pop_B","pop_C"))
+
+#See Example 1 for performing K-fold cross-validation and making membership probability plot.
+```
+
+***
+### Example 3. Evaluate non-genetic data from known individuals
+```{r, eval=FALSE}
+#Import non-genetic data set. Note that this data set should include a population label in the last column
+infile <- read.csv("YourNonGenetics.csv", header=TRUE)
+
+#Perform Monte-Carlo cross-validation, with transformed data (pca.method=TRUE, transform original data to PCs for dimentionality reduction) as new features to build decision tree predictive models 
+assign.MC(infile, train.inds=c(0.5, 0.7, 0.9), iterations=30, pca.method=TRUE, model="tree",
+          dir="ResultFolder_MC/")
+
+#Calculate assignment accuracy
+accuRes_MC <- accuracy.MC(dir="ResultFolder_MC/")
+
+#Make assignment accuracy boxplot
+accuracy.plot(accuRes_MC, pop=c("all","pop_A","pop_B","pop_C"))
+
+#See Example 1 for performing K-fold cross-validation and making membership probability plot.
+```
+
+***
+### Example 4. Assign unknown individuals using integrated data 
+```{r, eval=FALSE}
+#Import genetic data of known individuals
+genin_known <- read.genpop("YourGenepop_Known.txt", pop.names=c("pop_A","pop_B","pop_C"))
+
+#Concatenate genetic and non-genetic data of known individuals
+conData_known <- compile.data(genin_known, "OtherFeatures_Known.csv")
+
+#Import genetic data of unknown individuals. Note that this Genepop file should only have one "pop" label
+genin_unknown <- read.genpop("YourGenepop_Unknown.txt")
+
+#Concatenate genetic and non-genetic data of unknown individuals
+conData_unknown <- compile.data(genin_unknown, "OtherFeatures_Unknown.csv")
+
+#Perform assignment test using original non-genetic data as features (pca.method="original") to build random forest (tree number=50) predictive model
+assign.X(conData_known, conData_unknown, pca.method="original", model="randomForest", ntree=50,
+         dir="ResultFolder/")
+
+```

@@ -5,6 +5,7 @@ output: html_document
 
 In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectivly.
 
+***
 ```{r, echo=FALSE}
 library(assignPOP)
 ```
