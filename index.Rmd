@@ -1,5 +1,5 @@
 ---
-title: "Intro to assignPOP" 
+title: "Intro to assignPOP"
 ---
 
 <img src="https://www.r-project.org/logo/Rlogo.svg" width="70" align="right"> 

@@ -6,7 +6,7 @@ output:
     toc_float: yes
 ---
 
-In this page, we describe how to prepare and import your data sets, whether it is genetic or non-genetic, and how to concatenate genetic and non-genetic data for analyses. We also introduce two resampling cross-validation methods, Monte-Carlo and K-fold cross-validation, to evaluate performance of your baseline or knonw data, as well as a function to perform an assignment test on unknown individuals using your known data. Lastly, we describe how to identify informative loci when your baseline data has a large number of genetic markers.  
+In this page, we describe how to prepare and import your data sets, whether it is genetic or non-genetic, and how to concatenate genetic and non-genetic data for analyses. We also introduce two resampling cross-validation methods, Monte-Carlo and K-fold cross-validation, to evaluate performance of your baseline or known data, as well as a function to perform an assignment test on unknown individuals using your known data. Lastly, we describe how to identify informative loci when your baseline data has a large number of genetic markers.  
 
 ***
 ## Prepare and import data
@@ -51,7 +51,7 @@ genin_unknown <- read.genpop( "simGenepopX.txt" )
 
 ### Remove low variance loci (optional)
 
-For a very large data file (e.g, tens of thousands of loci), you can choose to remove loci that have low variance^[A low variance locus is one in which a single (major) allele occurs in most individuals, with an alternate (minor) allele occuring in only a few individuals. Removal of these low variance loci will help avoid the problem of a minor allele ending up being assigned to either only training or only test sets. For example, if 9 out of 10 individuals have the same genotype (e.g., AA, A is major allele) and only 1 individual has the minor allele (e.g., Aa, a is minor allele with 0.05 frequency), the locus will not help predict the group of individuals regardless of whether the rare Aa individul is assigned to a training or test set. Therefore, removal of low variance loci does not influence results but helps accelerate post analyses.] across the data set in advance of further analyses. The default of variance threshold is 0.95, meaning that any locus with a major allele occuring in over 95% of individuals across all populations will be removed from the data set. 
+For a very large data file (e.g., tens of thousands of loci), you can choose to remove loci that have low variance^[A low variance locus is one in which a single (major) allele occurs in most individuals, with an alternate (minor) allele occurring in only a few individuals. Removal of these low variance loci will help avoid the problem of a minor allele ending up being assigned to either only training or only test sets. For example, if 9 out of 10 individuals have the same genotype (e.g., AA, A is major allele) and only 1 individual has the minor allele (e.g., Aa, a is minor allele with 0.05 frequency), the locus will not help predict the group of individuals regardless of whether the rare Aa individual is assigned to a training or test set. Therefore, removal of low variance loci does not influence results but helps accelerate post analyses.] across the data set in advance of further analyses. The default of variance threshold is 0.95, meaning that any locus with a major allele occurring in over 95% of individuals across all populations will be removed from the data set. 
 
 To remove low variance loci, use the following function and provide a new object name (e.g., `genin_rd`) : 
 
@@ -80,7 +80,7 @@ To concatenate data, use the following function and provide a new object name (e
 comin <- compile.data(genin_rd, "morphData.csv")
 ```
 
-The above [*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv) file has the same individuals as in [*simGenepop.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepop.txt) and contains 4 numeric variables (morphormetric measurements) for each individual. After executing the function, it will prompt the following message and wait for your answer to verify the data type (numeric or categorical). 
+The above [*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv) file has the same individuals as in [*simGenepop.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepop.txt) and contains 4 numeric variables (morphometric measurements) for each individual. After executing the function, it will prompt the following message and wait for your answer to verify the data type (numeric or categorical). 
 
 ```{r print compile.data dialogue, echo=FALSE, collapse=TRUE}
 cat("Import a .CSV file.\
@@ -103,10 +103,10 @@ If you are evaluating a baseline using integrated data, the return object (e.g.,
 
 ### Prepare and import non-genetic data
 
-In addition to analyzing genetic and integrated data, you can perform assignment tests using only non-genetic data. This allows you to compare the results between data types. A non-genetic data set for baseline evaluation should include 1) sample IDs in the first column, 2) population label^[A column includes population names for each individual. Also be sure to include a column name in table header.] in the last column, and 3) features in columns between the first and last column. The file should be saved in a .csv (comma dilimited) or table-like text file that can be read into R using `read.csv()` or `read.table()`. For example, if we are going to perform assignment test using the morphormetric data ([*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv)) alone, we would need to add a population column after the last feature column. It can be done by either manually editing the file or adding a column after the file was imported (as shown below).
+In addition to analyzing genetic and integrated data, you can perform assignment tests using only non-genetic data. This allows you to compare the results between data types. A non-genetic data set for baseline evaluation should include 1) sample IDs in the first column, 2) population label^[A column includes population names for each individual. Also be sure to include a column name in table header.] in the last column, and 3) features in columns between the first and last column. The file should be saved in a .csv (comma delimited) or table-like text file that can be read into R using `read.csv()` or `read.table()`. For example, if we are going to perform assignment test using the morphometric data ([*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv)) alone, we would need to add a population column after the last feature column. It can be done by either manually editing the file or adding a column after the file was imported (as shown below).
 
 ```{r, eval=FALSE}
-#Import morphormetric data containing sample IDs and features
+#Import morphometric data containing sample IDs and features
 morphdf <- read.csv( "morphData.csv", header=TRUE )
 #Create a string vector for population label (repeat each name for 30 individuals)
 pop_label <- c( rep("pop_A", 30), rep("pop_B", 30), rep("pop_C", 30) ) 
@@ -123,7 +123,7 @@ To evaluate discriminatory power of a baseline, the package uses Monte-Carlo cro
 
 ### Monte-Carlo cross-validation for baseline evaluation
 
-When performing Monte-Carlo cross-validation using genetic or integrated data, users can specify multiple proportions or multiple fixed numbers of individuals from each population to be used as training individuals (arg. `train.inds`) and multiple porportions of loci to be used as training loci (arg. `train.loci`). A set of training loci can be chosen either randomly (arg. `loci.sample="random"`) or based on locus *F~ST~* estimated within training individuals (arg. `loci.sample="fst"`). Each combination of training individuals and loci can be resampled multiple times (arg. `iterations`). For example, the following code performs a total of 360 assignment tests, sampling 50%, 70% and 90% of individuals randomly from each population, using the highest 10%, 25%, 50% of *F~ST~* loci as well as all loci for the training data. Each sample size combination was resampled 30 times.
+When performing Monte-Carlo cross-validation using genetic or integrated data, users can specify multiple proportions or multiple fixed numbers of individuals from each population to be used as training individuals (arg. `train.inds`) and multiple proportions of loci to be used as training loci (arg. `train.loci`). A set of training loci can be chosen either randomly (arg. `loci.sample="random"`) or based on locus *F~ST~* estimated within training individuals (arg. `loci.sample="fst"`). Each combination of training individuals and loci can be resampled multiple times (arg. `iterations`). For example, the following code performs a total of 360 assignment tests, sampling 50%, 70% and 90% of individuals randomly from each population, using the highest 10%, 25%, 50% of *F~ST~* loci as well as all loci for the training data. Each sample size combination was resampled 30 times.
 
 ```{r run assign.MC, eval=FALSE}
 assign.MC(genin_rd, train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1), 
@@ -140,7 +140,7 @@ In addition, you can use the argument `model` to select a classifier for predict
 
 ### *K*-fold cross-validation for baseline evaluation
 
-While Monte-Carlo cross-validation helps evaluate variation in assignment accuracy through resampling, it does not guarantee that every individual was tested, and multiple tests on an individual also makes it difficult to estimate membership probabilities across individuals and populations. As such, we introduced *K*-fold cross-validation to help estimate membership probability because it gurantees that every individual will be tested once while none of them will be used as training and test individuals in the same test. To perform *K*-fold cross-validation, use the following function:
+While Monte-Carlo cross-validation helps evaluate variation in assignment accuracy through resampling, it does not guarantee that every individual was tested, and multiple tests on an individual also makes it difficult to estimate membership probabilities across individuals and populations. As such, we introduced *K*-fold cross-validation to help estimate membership probability because it guarantees that every individual will be tested once while none of them will be used as training and test individuals in the same test. To perform *K*-fold cross-validation, use the following function:
 
 ```{r run assign.kfold, eval=FALSE}
 assign.kfold(genin_rd, k.fold=c(3, 4, 5), train.loci=c(0.1, 0.25, 0.5, 1), 
@@ -157,7 +157,7 @@ Depending on the size of your dataset, running `assign.MC()` may take a few minu
 
 ### Assign unknown individuals
 
-In addition to evaluting a known data set, the package also provides a function `assign.X()` that allows you to perform an assignment test on unknown individuals using the known data that was evaluated (assuming the results are satisfactory). After importing your known and unknown data sets (they should be the same data type and have same feature names), use the arguments `x1` and `x2` to specify the known and unknown data, respectively. 
+In addition to evaluating a known data set, the package also provides a function `assign.X()` that allows you to perform an assignment test on unknown individuals using the known data that was evaluated (assuming the results are satisfactory). After importing your known and unknown data sets (they should be the same data type and have same feature names), use the arguments `x1` and `x2` to specify the known and unknown data, respectively. 
 
 ```{r, eval=FALSE}
 # Perform an assignment test using decision tree as the predictive model
@@ -172,7 +172,7 @@ The assignment result will be saved in a text file named *AssignmentResult.txt* 
 
 The assignment functions, `assign.MC()`, `assign.kfold()` and `assign.X()`, use PCA for dimensionality reduction. It converts your independent variables to Principle Components and retain the PCs that have eigenvalues greater than 1 (the Kaiser-Guttman criterion) as new features (arg. `pca.PCs="kaiser-guttman"`). Or, you can specify an integer in the argument `pca.PCs` (e.g., `pca.PCs = 10`) to choose a specific number of PCs to be retained. 
 
-The PCA will always perform on the genetic data, whether you are analyzing genetic-only or integrated data. When analyzing integrated data, you have three options to perform PCA on the data. First, you can perform PCA across all features (set arg. `pca.method="mixed"`), meaning that each PC includes information of genetic and non-genetic data. This is default setting. Second, you can perform PCA on genetic and non-genetic data indpendently (set arg. `pca.method="independent"`), meaning that your transformed data includes genetic PCs and non-genetic PCs. Third, you can choose to use original non-genetic data as features without peforming PCA on them (set. arg. `pca.method="original"`). This option ends up using genetic PCs and original non-genetic data to build predictive models. 
+The PCA will always perform on the genetic data, whether you are analyzing genetic-only or integrated data. When analyzing integrated data, you have three options to perform PCA on the data. First, you can perform PCA across all features (set arg. `pca.method="mixed"`), meaning that each PC includes information of genetic and non-genetic data. This is default setting. Second, you can perform PCA on genetic and non-genetic data independently (set arg. `pca.method="independent"`), meaning that your transformed data includes genetic PCs and non-genetic PCs. Third, you can choose to use original non-genetic data as features without performing PCA on them (set. arg. `pca.method="original"`). This option ends up using genetic PCs and original non-genetic data to build predictive models. 
 
 When analyzing non-genetic data alone, you can determine whether PCA is performed on the data. You set the argument `pca.method=TRUE` to perform PCA, or `pca.method=FALSE` to not perform PCA. 
 

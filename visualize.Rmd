@@ -3,7 +3,7 @@ title: "Result Visualization"
 output: html_document
 ---
 
-In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectivly.
+In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectively.
 
 ***
 ```{r, echo=FALSE}
@@ -45,9 +45,9 @@ accuracy.plot(accuMC_con, pop=c("all", "pop_A", "pop_B", "pop_C")) +
   theme(plot.title = element_text(size=20, face="bold")) #Edit plot title text size
 ```
 
-When using the genetic-morphometric dataset, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate morphormetric data alone. The results are as follows.
+When using the genetic-morphometric dataset, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate morphometric data alone. The results are as follows.
 
-```{r , echo=FALSE, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphormetric measurements."}
+```{r , echo=FALSE, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphometric measurements."}
 accuMC_morph <- read.table("data/AAMC_svm_pcat_Morphs.txt", header=T)
 accuracy.plot(accuMC_morph, pop=c("all", "pop_A", "pop_B", "pop_C")) +
   ylim(0, 1) + #Set y limit between 0 and 1
@@ -56,11 +56,11 @@ accuracy.plot(accuMC_morph, pop=c("all", "pop_A", "pop_B", "pop_C")) +
   theme(plot.title = element_text(size=20, face="bold")) #Edit plot title text size
 ```
 
-The above results indicate that morphormetric data helps distinguish population A from the other two. Therefore, it is exepected that using integrated data would best discriminate among the three populations (Figure 3) despite that fact that using genetics or morphormetrics alone was unable to distinguish population B from the other two (see population B in Figure 2 and 4).      
+The above results indicate that morphometric data helps distinguish population A from the other two. Therefore, it is expected that using integrated data would best discriminate among the three populations (Figure 3) despite that fact that using genetics or morphometrics alone was unable to distinguish population B from the other two (see population B in Figure 2 and 4).      
 
 ## Membership probability stacked bar plot
 
-In addition to estimating assignment accuracy, we can also use probabilities to understand how individuals are assigned to populations. To visualize membership probility, we use the results from *K*-fold cross-validation and create a stacked bar plot (also known as [**STRUCTURE plot**](http://pritchardlab.stanford.edu/structure.html)) that is commonly used in molecular biology papers. To create the plot, use the following function and specify the folder containing your *K*-fold cross-validation results.
+In addition to estimating assignment accuracy, we can also use probabilities to understand how individuals are assigned to populations. To visualize membership probability, we use the results from *K*-fold cross-validation and create a stacked bar plot (also known as [**STRUCTURE plot**](http://pritchardlab.stanford.edu/structure.html)) that is commonly used in molecular biology papers. To create the plot, use the following function and specify the folder containing your *K*-fold cross-validation results.
 
 ```{r create membership plot, eval=FALSE }
 membership.plot(dir = "Result-folder2/")
