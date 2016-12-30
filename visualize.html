@@ -213,7 +213,7 @@ $(document).ready(function () {
 </div>
 
 
-<p>In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectivly.</p>
+<p>In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectively.</p>
 <hr />
 <div id="assignment-accuracy-box-plot" class="section level2">
 <h2>Assignment accuracy box plot</h2>
@@ -246,18 +246,18 @@ Figure 2. Assignment accuracies estimated via Monte-Carlo cross-validation, with
 Figure 3. Assignment accuracies estimated via Monte-Carlo cross-validation, using genetic and morphometric data. Each box is the results of using a proportion of training loci plus 4 morphometric variables
 </p>
 </div>
-<p>When using the genetic-morphometric dataset, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate morphormetric data alone. The results are as follows.</p>
+<p>When using the genetic-morphometric dataset, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate morphometric data alone. The results are as follows.</p>
 <div class="figure" style="text-align: center">
-<img src="visualize_files/figure-html/unnamed-chunk-2-1.png" alt="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphormetric measurements." width="960" />
+<img src="visualize_files/figure-html/unnamed-chunk-2-1.png" alt="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphometric measurements." width="960" />
 <p class="caption">
-Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphormetric measurements.
+Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphometric measurements.
 </p>
 </div>
-<p>The above results indicate that morphormetric data helps distinguish population A from the other two. Therefore, it is exepected that using integrated data would best discriminate among the three populations (Figure 3) despite that fact that using genetics or morphormetrics alone was unable to distinguish population B from the other two (see population B in Figure 2 and 4).</p>
+<p>The above results indicate that morphometric data helps distinguish population A from the other two. Therefore, it is expected that using integrated data would best discriminate among the three populations (Figure 3) despite that fact that using genetics or morphometrics alone was unable to distinguish population B from the other two (see population B in Figure 2 and 4).</p>
 </div>
 <div id="membership-probability-stacked-bar-plot" class="section level2">
 <h2>Membership probability stacked bar plot</h2>
-<p>In addition to estimating assignment accuracy, we can also use probabilities to understand how individuals are assigned to populations. To visualize membership probility, we use the results from <em>K</em>-fold cross-validation and create a stacked bar plot (also known as <a href="http://pritchardlab.stanford.edu/structure.html"><strong>STRUCTURE plot</strong></a>) that is commonly used in molecular biology papers. To create the plot, use the following function and specify the folder containing your <em>K</em>-fold cross-validation results.</p>
+<p>In addition to estimating assignment accuracy, we can also use probabilities to understand how individuals are assigned to populations. To visualize membership probability, we use the results from <em>K</em>-fold cross-validation and create a stacked bar plot (also known as <a href="http://pritchardlab.stanford.edu/structure.html"><strong>STRUCTURE plot</strong></a>) that is commonly used in molecular biology papers. To create the plot, use the following function and specify the folder containing your <em>K</em>-fold cross-validation results.</p>
 <pre class="r"><code>membership.plot(dir = &quot;Result-folder2/&quot;)</code></pre>
 <p>After entering the code, it will prompt a few questions and allow you to choose which dataset and plot style to be used. The interactive conversation is shown as follows.</p>
 <pre><code>## K = 3  4  5  are found.
