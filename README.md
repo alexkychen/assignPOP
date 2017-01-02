@@ -18,13 +18,17 @@ This R package helps perform population assignment using a machine learning fram
 - Output results in publication-quality plots while being editable using ggplot2 library
 
 ## Install assignPOP
-- Install from CRAN [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
+You can install the package from CRAN or this Github respository. The lastest version should be on the Github, whereas the CRAN hosts the stable version. Check the version on the badges. 
+
+- To install from CRAN [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
   * Simply enter `install.packages("assignPOP")` in your R console
 
-- Install from Github [![GitHub release](https://img.shields.io/github/release/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/releases)
+- To install from Github [![GitHub release](https://img.shields.io/github/release/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/releases)
   * step 1. Install devtools package by entering `install.packages("devtools")`
   * step 2. Import the library, `library(devtools)`
   * step 3. Then enter `install_github("alexkychen/assignPOP")` 
+
+Note: When you install the package from Github, you may need to install additional packages before the assignPOP can be successfully installed. Follow the hints your R provides and then re-install the assignPOP. 
 
 ## Package tutorial
 Please visit the following site for more infomration
