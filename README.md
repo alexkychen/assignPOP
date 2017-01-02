@@ -17,11 +17,14 @@ This R package helps perform population assignment using a machine learning fram
 - Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
 - Output results in publication-quality plots while being editable using ggplot2 library
 
-## Install assignPOP to R/Rstudio from github
-In your R/Rstudio console,
-* step 1. Install devtools package by entering `install.packages("devtools")`
-* step 2. Import the library, `library(devtools)`
-* step 3. Call the function, `install_github("alexkychen/assignPOP")` 
+## Install assignPOP
+- Install from CRAN [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
+  * Simply enter `install.packages("assignPOP")` in your R console
+
+- Install from Github [![GitHub release](https://img.shields.io/github/release/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/releases)
+  * step 1. Install devtools package by entering `install.packages("devtools")`
+  * step 2. Import the library, `library(devtools)`
+  * step 3. Then enter `install_github("alexkychen/assignPOP")` 
 
 ## Package tutorial
 Please visit the following site for more infomration
