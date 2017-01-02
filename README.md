@@ -1,5 +1,7 @@
 # assignPOP <img src="https://www.r-project.org/logo/Rlogo.svg" width="48">
+[![Travis-CI Build Status](https://travis-ci.org/alexkychen/assignPOP.svg?branch=master)](https://travis-ci.org/alexkychen/assignPOP)
 [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
+
 Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-Learning Framework
 
 ### Version 1.1.2
