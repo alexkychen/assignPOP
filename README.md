@@ -1,7 +1,9 @@
 # assignPOP <img src="https://www.r-project.org/logo/Rlogo.svg" width="48">
 Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-Learning Framework
 
-### Version 1.1.1
+### Version 1.1.2
+
+- Update tutorial website URL
 
 ## Description
 This R package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data** sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. Other features are listed below.
@@ -21,5 +23,5 @@ In your R/Rstudio console,
 * step 3. Call the function, `install_github("alexkychen/assignPOP")` 
 
 ## Package tutorial
-Please visit the following page for more infomration
-* [http://rpubs.com/alexkychen/assignPOP](http://rpubs.com/alexkychen/assignPOP)
+Please visit the following site for more infomration
+* [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
