@@ -28,8 +28,11 @@ You can install the package from CRAN or this Github respository. The lastest ve
   * step 2. Import the library, `library(devtools)`
   * step 3. Then enter `install_github("alexkychen/assignPOP")` 
 
-Note: When you install the package from Github, you may need to install additional packages before the assignPOP can be successfully installed. Follow the hints your R provides and then re-install the assignPOP. 
+Note: When you install the package from Github, you may need to install additional packages before the assignPOP can be successfully installed. Follow the hints your R provided and then re-install the assignPOP. 
 
 ## Package tutorial
 Please visit the following site for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
+
+## Previous version
+Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
