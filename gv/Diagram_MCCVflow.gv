@@ -1,0 +1,25 @@
+Digraph MCCVflow {
+  
+  node [shape=record]
+  box1 [label='Individuals collected from populations A, B, C...']
+  box2_1 [label='<trainInds> Training individuals\nfrom each population']
+  box2_2 [label='<testInds> Test individuals\nfrom each population'] 
+  box3 [label='<loci10> Use 10% of high Fst\nloci as training loci | <loci50> Use 50% of high Fst\nloci as training loci | <loci100> Use all loci\nas training loci' fontsize=9]
+  box4 [label='Principal components\nas new features']
+  box5 [label='Predictive model\n(LDA/SVM/naive Bayes/\nDecision Tree/Random Forest)']
+  box6 [label='Assignment result']
+  
+  
+  box1 -> box2_1 [label='Randomly subset\na proportion or number' fontsize=8]
+  box1 -> box2_2 [label='Rest used as test data' fontsize=8]
+  box2_1 -> box3:loci50 [label='Subset a proportion of loci\nfrom training individuals' fontsize=8]
+  box3:loci50 -> box4 [label='Dimensionality reduction\nusing PCA' fontsize=8]
+  box4 -> box5 [label='Use machine learning classifiers\nto build predictive models' fontsize=8]
+  box5 -> box2_2 [label='Perform assignment\non test individuals' fontsize=9]
+  box2_2 -> box6
+  box6 -> box1 [label='Repeat assignment\nthrough resampling' fontsize=8]
+  
+  subgraph {rank=same; box4; box6;}
+  subgraph {rank=same; box2_1; box2_2}
+  
+}
