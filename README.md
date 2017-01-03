@@ -34,5 +34,8 @@ Note: When you install the package from Github, you may need to install addition
 Please visit the following site for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
+## Citation
+Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-Learning Framework. R package version 1.1.2. https://CRAN.R-project.org/package=assignPOP 
+
 ## Previous version
 Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
