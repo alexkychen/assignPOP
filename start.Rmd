@@ -64,5 +64,5 @@ library(assignPOP)
 
 `check.loci()` Identify informative loci used in resampling cross-validation
 
-**Enter `?` and function name in R console (e.g.,`?read.genpop`) to learn more about the functions and what arguments are used in the functions.**
+**Enter `?` and function name in R console (e.g.,`?read.genpop`) to learn more about the functions and what arguments are used in the function.**
 
