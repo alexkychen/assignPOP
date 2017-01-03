@@ -27,6 +27,9 @@ install_github("alexkychen/assignPOP")
 
 ```
 
+*Note*: When installing the package from Github, additional packages may need to be installed before the assignPOP can be successfully installed. Follow the hints that R provided and then re-run `install_github("alexkychen/assignPOP")`.
+
+
 ***
 ### Import assignPOP to R
 
