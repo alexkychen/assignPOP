@@ -18,7 +18,7 @@ vignette: >
 - Use *K*-fold cross-validation to estimate membership probability
 - Allow to resample training individuals with various proportions or numbers
 - Allow to resample training loci with various proportions either randomly or based on locus *F~ST~* value
-- Provide several machine learning classifiers, including  LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
+- Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
 - Output results in publication-quality plots while being editable using ggplot2 library
 
 **This page provides a brief description and usage about the assignPOP package. For more details and up-to-date instructions, please visit our site at [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/).**
@@ -62,7 +62,7 @@ To import non-genetic data for analyses, use `read.table()` or `read.csv()`
 ***
 ## Assignment test for evaluating baseline data
 
-The package provides two resampling cross-validation methods: Monte-Carlo cross-validation for evaluting assignment accuracy; *K*-fold cross-validation for estimating membership probability.
+The package provides two resampling cross-validation methods: Monte-Carlo cross-validation for evaluating assignment accuracy; *K*-fold cross-validation for estimating membership probability.
 
 ### Monte-Carlo cross-validation
 
@@ -96,7 +96,7 @@ integrate_uknown <- compile.data(genetic_unknown, "NonGeneticData_Un.csv")
 
 ```
 
-Third, perform an assignment test using a desired predicitive model, for example, naive Bayes.
+Third, perform an assignment test using a desired predictive model, for example, naive Bayes.
 ```{r, eval=FALSE}
 assign.X(x1=integrate_known, x2=integrate_uknown, model="naiveBayes", dir="ResultFolder3/")
 
@@ -128,7 +128,7 @@ To visualize **assignment accuracy**, we make a box plot using Monte-Carlo cross
 #Import ggplot2 library to fine tune the plot
 library(ggplot2)
 
-#Make a assignment accuracy box plot and set Y-axis range between 0 and 1
+#Make an assignment accuracy box plot and set Y-axis range between 0 and 1
 accuracy.plot(accuRes_MC, pop=c("all", "pop_A", "pop_B", "pop_C")) + ylim(0,1)
 ```
 
