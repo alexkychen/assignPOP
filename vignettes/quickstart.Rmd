@@ -11,13 +11,13 @@ vignette: >
 
 ## Intro to assignPOP
 
-**assignPOP** is an R package that helps perform population assignment using a machine learning framework. It employs [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710. doi:10.1111/j.1755-0998.2010.02846.x.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601. doi:10.1111/j.1365-294X.2010.04675.x.]). Other features are listed below.
+**assignPOP** is an R package that helps perform population assignment using a machine learning framework. It employs [supervised machine learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601.]). Other features are listed below.
 
 - Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
 - Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy
 - Use *K*-fold cross-validation to estimate membership probability
 - Allow to resample training individuals with various proportions or numbers
-- Allow to resample training loci with various proportions either randomly or based on locus *F~ST~* value
+- Allow to resample training loci with various proportions either randomly or based on locus *F~ST~* value within training data.
 - Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
 - Output results in publication-quality plots while being editable using ggplot2 library
 
@@ -36,7 +36,7 @@ install.packages("devtools")
 library(devtools)
 install_github("alexkychen/assignPOP")
 ```
-*Note*: If install from Github, additional packages might need to be installed before the assignPOP can be successfully installed. Follow the hints that R provided and re-run `install_github("alexkychen/assignPOP")`.
+*Note*: When you install the package from Github, you may need to install additional packages before the assignPOP can be successfully installed. Follow the hints that R provided and then re-run `install_github("alexkychen/assignPOP")`.
 
 To import the package, enter:
 ```{r, warning=FALSE}
