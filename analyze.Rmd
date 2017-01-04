@@ -117,7 +117,7 @@ morphdf_pop <- cbind(morphdf, pop_label)
 A non-genetic data containing the population label could be used for baseline evaluation or as a baseline to predict unknown individuals. In other words, when performing an assignment test on unknown individuals using non-genetic data alone, the population column should be included in the known data set but not in the unknown data set. 
 
 ***
-## Perform population assignment 
+## Perform population assignment {#performassignment}
 
 To evaluate discriminatory power of a baseline, the package uses Monte-Carlo cross-validation (function `assign.MC()`) to estimate assignment accuracies over all populations and for each population, and uses *K*-fold cross-validation (function `assign.kfold()`) to estimate membership probabilities across all individuals. [About Monte-Carlo and *K*-fold cross-validation](http://stats.stackexchange.com/questions/51416/k-fold-vs-monte-carlo-cross-validation)  
 

@@ -119,3 +119,47 @@ digraph assignunknown {
 
 ```
 
+***
+### Resampling Cross-validation Workflow {#RCVworkflow}
+The diagram below illustrates the workflow of resampling cross-validation, in which individuals from each population are divided into training and test sets, and assignment test repeats through resampling training individuals. Multiple proportions of training individuals by multiple proportions of training loci (when analyzing genetic data) can be specified in one single analysis (in `assign.MC()` or `assign.kfold()`). For example, the diagram shows top 10% or 50% of high *F~ST~* loci or all loci are used as training loci. This helps evaluate whether using top 10%, 50% of high Fst loci and overall loci have similar assignment results. For more details, see [Perform population assignment](http://alexkychen.github.io/assignPOP/analyze.html#performassignment) in the [Data Analysis page](http://alexkychen.github.io/assignPOP/analyze.html).      
+
+```{r, echo=FALSE}
+DiagrammeR::grViz("
+Digraph MCCVflow {
+  graph [compound=TRUE]
+  
+  node [shape=box fontsize=20]
+  box1 [label='Individuals collected from populations A, B, C...']
+  box2_1 [label='Training individuals\nfrom each population']
+  box2_2 [label='Test individuals\nfrom each population'] 
+  box4 [label='Principal components\nas new features']
+  box5 [label='Predictive model\n(LDA/SVM/naive Bayes/\nDecision Tree/Random Forest)']
+  box6 [label='Assignment result']
+  
+  node [shape=box fontsize=16]
+  box3_1 [label='Use top 10% of high Fst\nloci as training loci']
+  box3_2 [label='Use top 50% of high Fst\nloci as training loci']
+  box3_3 [label='Use overall loci\nas training loci']
+  
+  node [shape=plaintext fontsize=20]
+  box7 [label='Exit until N-time sampling is done']
+
+  edge [fontsize=18]
+  box1 -> box2_1 [label='1. Randomly subset\na proportion of individuals\nas training set; rest\nused as test set']
+  box1 -> box2_2 
+  box2_1 -> box3_2 [label='2. Calculate locus Fst\nbased on training individuals\nand subset a proportion of loci\nas training loci' lhead=cluster0]
+  box3_2 -> box4 [label='3. Perform PCA for\ndimensionality reduction.\n(Optional for non-genetic data)' ltail=cluster0]
+  box4 -> box5 [label='4. Use machine learning classifiers\nto build predictive models']
+  box5 -> box2_2 [label='5. Perform assignment\non test individuals']
+  box2_2 -> box6
+  box6 -> box1 [label='6. Repeat assignment\nthrough resampling']
+  box3_3 -> box3_2 -> box3_1 [color=transparent constraint=FALSE minlen=0]
+  box6 -> box7
+  
+  subgraph {rank=same; box4; box6;}
+  subgraph {rank=same; box2_1; box2_2}
+  subgraph cluster0 {rank=same; box3_1; box3_2; box3_3;}
+}
+                  
+")
+```
