@@ -13,7 +13,7 @@ In this page, we describe how to prepare and import your data sets, whether it i
 
 ### Prepare and import genetic data of source populations
 
-Currently, assignPOP accepts genetic data in GENEPOP format (Rousset 2008^[Rousset, F. (2008). genepop’007: A Complete Re-Implementation of the Genepop Software for Windows and Linux. *Molecular Ecology Resources* 8(1): 103–106. doi:10.1111/j.1471-8286.2007.01931.x.]), a commonly used format in molecular ecology studies. GENEPOP has two forms, and both forms are accepted by assignPOP. For details about GENEPOP format, please visit <http://genepop.curtin.edu.au/help_input.html>. 
+Currently, assignPOP accepts genetic data in GENEPOP format (Rousset 2008^[Rousset, F. (2008). genepop’007: A Complete Re-Implementation of the Genepop Software for Windows and Linux. *Molecular Ecology Resources* 8(1): 103–106.]), a commonly used format in molecular ecology studies. GENEPOP has two forms, and both forms are accepted by assignPOP. For details about GENEPOP format, please visit <http://genepop.curtin.edu.au/help_input.html>. 
 
 To import a GENEPOP file, use the function `read.genpop()` and provide a return object name (e.g., `genin`) as follows. 
 
