@@ -42,27 +42,19 @@ library(assignPOP)
 
 **The assignPOP package includes the following functions.**
 
-`read.genpop()` Read genetic data in GENEPOP format
-
-`reduce.allele()` Reduce low variance loci
-
-`compile.data()` Concatenate genetic and non-genetic data
-
-`assign.MC()` Perform population assignment using Monte-Carlo cross-validation
-
-`assign.kfold()` Perform population assignment using K-fold cross-validation
-
-`assign.X()` Assign unknown individuals to source populations
-
-`accuracy.MC()` Calculate assignment accuracy from Monte-Carlo cross-validation results
-
-`accuracy.kfold()` Calculate assignment accuracy from K-fold cross-validation results
-
-`accuracy.plot()` Make assignment accuracy box plots
-
-`membership.plot()` Make membership probability stacked bar plots
-
-`check.loci()` Identify informative loci used in resampling cross-validation
+| Function | Return | Description |
+|:---------|:-------|:------------|
+| `read.genpop()` | A list object including data matrix | Read genetic data in GENEPOP format |
+| `reduce.allele()` | A list object including data matrix | Reduce low variance loci |
+| `compile.data()` | A list object including data matrix | Concatenate genetic and non-genetic data |
+| `assign.MC()` | Output results in text files | Perform population assignment using Monte-Carlo cross-validation |
+| `assign.kfold()` | Output results in text files | Perform population assignment using K-fold cross-validation |
+| `assign.X()` | Output results in text files | Assign unknown individuals to source populations |
+| `accuracy.MC()` | A data frame and text file | Calculate assignment accuracy from Monte-Carlo cross-validation results |
+| `accuracy.kfold()` | A data frame and text file | Calculate assignment accuracy from K-fold cross-validation results |
+| `accuracy.plot()` | ggplot2 graph | Make assignment accuracy box plots |
+| `membership.plot()` | ggplot2 graph | Make membership probability stacked bar plots |
+| `check.loci()` | Output results in a text file | Identify informative loci used in resampling cross-validation |
 
 **Enter `?` and function name in R console (e.g.,`?read.genpop`) to learn more about the functions and what arguments are used in the function.**
 
