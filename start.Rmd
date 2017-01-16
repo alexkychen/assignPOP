@@ -40,7 +40,7 @@ library(assignPOP)
 
 ***
 
-**The assignPOP package includes the following functions.**
+####**The assignPOP package includes the following functions.**####
 
 | Function | Return | Description |
 |:---------|:-------|:------------|
