@@ -176,6 +176,10 @@ The PCA will always perform on the genetic data, whether you are analyzing genet
 
 When analyzing non-genetic data alone, you can determine whether PCA is performed on the data. You set the argument `pca.method=TRUE` to perform PCA, or `pca.method=FALSE` to not perform PCA. 
 
+### Data standardization
+
+When analyzing non-genetic or integrated data, you have options to standardize (zero mean and unit variance) the independent variables or keep the original data. If non-genetic data has varying ranges of values and is not standardized, it may be problematic when one feature has a variance that is orders of magnititude larger than others, as it might make the classifier unable to learn from other features correctly. To center and scale the data, set the argument `scaled=TRUE` in the function `assign.MC()`, `assign.kfold()` or `assign.X()`. If you are analyzing genetic or genomic data, then standardization is not required because all the loci (alleles) have been converted to values between 0 and 1.
+
 ***
 ## Calculate assignment accuracy {#accuracy}
 
