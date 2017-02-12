@@ -1,0 +1,15 @@
+#Below script is not complete
+Digraph gaf {
+  
+  node [shape = box]
+  box1 [label = "Individuals collected from source populations (baseline)"]
+  box2 [label = "Training individuals"]
+  box3 [label = "Test Individuals"]
+  box4 [label = "All or a subset of training features"]
+  box5 [label = "Predictive model build from training set"]
+  box6 [label = "Assignment accuracy"]
+  box7 [label = "Sample more individuals or other features"]
+  box8 [label = "Predictive model built from baseline"]
+  box9 [label = "Unknown individuals"]
+  box10 [label = "Assignment results"]
+}
