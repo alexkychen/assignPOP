@@ -5,18 +5,18 @@
 
 # assignPOP <img src="https://www.r-project.org/logo/Rlogo.svg" width="48">
 
-Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine Learning Framework
+Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-learning Framework
 
 ## Description
-This R package helps perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing **large genetic, non-genetic, or integrated (genetic plus non-genetic) data** sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies. Other features are listed below.
+This R package helps perform population assignment using a machine-learning framework. It employs supervised machine-learning methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze **large genetic, non-genetic, or integrated (genetic plus non-genetic) data** sets. This framework is designed for solving the upward bias issue discussed in previous studies. Other features are listed as follows.
 
 - Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
-- Use Monte-Carlo cross-validation to evaluate the variation of assignment accuracy
+- Use Monte-Carlo cross-validation to estimate mean and variance of assignment accuracy
 - Use *K*-fold cross-validation to estimate membership probability
-- Allow to resample training individuals with various proportions or numbers
-- Allow to resample training loci with various proportions either randomly or based on locus *Fst* value within training data
-- Provide several machine learning classifiers, including LDA, SVM, naive Bayes, decision tree, and random forest to build tunable predictive models.
-- Output results in publication-quality plots while being editable using ggplot2 library
+- Allow to resample various proportions or numbers of training individuals
+- Allow to resample various proportions of training loci either randomly or based on locus *Fst* values
+- Provide several machine-learning classification algorithms, including LDA, SVM, naive Bayes, decision tree, and random forest, to build tunable predictive models.
+- Output results in publication-quality plots that can be edited using ggplot2 functions
 
 ## Install assignPOP
 You can install the package from CRAN or Github respository here. The lastest version should be on the Github, whereas the CRAN hosts the stable version. Check the version on the badges. 
@@ -32,7 +32,7 @@ You can install the package from CRAN or Github respository here. The lastest ve
 Note: When you install the package from Github, you may need to install additional packages before the assignPOP can be successfully installed. Follow the hints that R provided and then re-run `install_github("alexkychen/assignPOP")`.
 
 ## Package tutorial
-Please visit the following site for more infomration
+Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## Citation
