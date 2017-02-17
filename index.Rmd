@@ -70,7 +70,7 @@ graph [rankdir = LR, ranksep=0.1, nodesep=0.3]
   8 [label='Assignment accuracy\naccuracy.MC( ), accuracy.kfold( ),\naccuracy.plot( )']
   9 [label='Membership probability\nmembership.plot( )']
 
-  node [shape=plaintext, fontname=Arial, label='Step 1. Evaluate known individuals', fontsize=20]
+  node [shape=plaintext, fontname=Arial, label='Step 1. Evaluate baseline data', fontsize=20]
   TT
   edge [arrowhead=normal]
   A -> B B -> C
@@ -103,7 +103,7 @@ digraph assignunknown {
   6 [label='Output results and\ngenerate membership\nprobability plot']
   
   node [shape=plaintext, fontname=Arial, fontsize=20]
-  TT [label='Step 2. Assign unknown individuals']
+  TT [label='Step 2. Predict sources of unknown individuals']
   
   edge [arrowhead=normal]
   A -> B
@@ -124,7 +124,7 @@ digraph assignunknown {
 
 ***
 ### Resampling Cross-validation Workflow {#RCVworkflow}
-The diagram below illustrates the workflow of resampling cross-validation, in which individuals from each population are divided into training and test sets, and assignment test repeats through resampling training individuals. Multiple proportions of training individuals by multiple proportions of training loci (when analyzing genetic data) can be specified in one single analysis (in `assign.MC()` or `assign.kfold()`). For example, the diagram shows top 10% or 50% of high *F~ST~* loci or all loci are used as training loci. This helps evaluate whether using top 10%, 50% of high *F~ST~* loci and overall loci have similar assignment results. For more details, see [Perform population assignment](http://alexkychen.github.io/assignPOP/analyze.html#performassignment) in the [Data Analysis](http://alexkychen.github.io/assignPOP/analyze.html) page.      
+The diagram below illustrates the workflow of resampling cross-validation, in which individuals from each population are divided into training and test sets, and assignment test repeats through resampling training individuals. Multiple proportions of training individuals by multiple proportions of training loci (when analyzing genetic data) can be specified in one single analysis (in `assign.MC()` or `assign.kfold()`). For example, the diagram shows top 10% or 50% of high *F~ST~* loci or all loci are used as training loci. This helps evaluate whether using top 10%, 50% of high *F~ST~* loci or overall loci results in similar assignment accuracies. For more details, see [Perform population assignment](http://alexkychen.github.io/assignPOP/analyze.html#performassignment) in the [Data Analysis](http://alexkychen.github.io/assignPOP/analyze.html) page.      
 
 ```{r, echo=FALSE}
 DiagrammeR::grViz("
