@@ -16,19 +16,17 @@ title: "Intro to assignPOP"
 
 [![Travis-CI Build Status](https://travis-ci.org/alexkychen/assignPOP.svg?branch=master)](https://travis-ci.org/alexkychen/assignPOP)
 [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
-[![GitHub release](https://img.shields.io/github/release/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/releases)
-[![license](https://img.shields.io/github/license/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/blob/master/LICENSE.md)
 
 ***
 ### Conceptual Framework
 
-The ability to assign individuals of unknown origins to source populations relies on a robust baseline (or training data) collected from the source populations. However, noise in training data or lack of distinct features could lower the assignment ability. It is important to evaluate baseline data via cross-validation before using the baseline to predict source populations of individuals collected from unknown origins. The diagrams below illustrate the assignment workflow used in the assignPOP.
+The ability to assign individuals of unknown origins to source populations relies on a robust baseline (or training data) collected from the source populations. However, noise in training data or lack of distinct features could lower the assignment ability. It is important to evaluate baseline data via cross-validation before using the baseline to predict source populations of individuals collected from unknown origins. The diagrams below illustrate how the assignPOP fits into such assignment framework, and the workflow for evaluting baseline data as well as predicting sources of unknonw individuals.
 
 ```{r, echo=FALSE}
 DiagrammeR::grViz("
 digraph conceptframe {
 node [shape=box, fontname=Arial]
-A [label='START:\nEvaluate a baseline collected\nfrom source populations\n(known individuals)']
+A [label='START:\nEvaluate baseline data collected\nfrom source populations\n(known individuals)']
 B [label='Results:\nassignment accuracy\nor\nmembership probability']
 C [label='Collect more data (features)\nfrom known individuals']
 D [label='Collect unknown individuals\nto be predicted']
@@ -36,11 +34,11 @@ E [label='Perform assignment test\non unknown individuals']
 F [label='Results:\npredicted populations\nand\nmembership probability']
 
 edge [arrowhead=normal]
-A -> B [label='analyze data via assignPOP', fontcolor=firebrick]
+A -> B [label='analyze data via assignPOP\nsee Analytical Workflow step 1.', fontcolor=firebrick]
 B -> C [label='bad results']
 B -> D [label='good results']
 D -> E 
-E -> F [label='analyze data via assignPOP',fontcolor=firebrick]
+E -> F [label='analyze data via assignPOP\nsee Analytical Workflow step 2.',fontcolor=firebrick]
 C -> A [label='re-evaluate']
 
 subgraph { rank=same; C; D; }
