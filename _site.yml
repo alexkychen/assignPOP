@@ -7,9 +7,9 @@ navbar:
       href: index.html
     - text: "Get Started"
       href: start.html
-    - text: "Data Analysis"
+    - text: "Analyze Data"
       href: analyze.html
-    - text: "Result Visualization"
+    - text: "Visualize Results"
       href: visualize.html
     - text: "Examples"
       href: examples.html
