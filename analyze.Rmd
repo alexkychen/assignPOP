@@ -6,12 +6,12 @@ output:
     toc_float: yes
 ---
 
-Here, we demonstrate how to prepare, import, and analyze your data. We begin with baseline evaluation: (1) prepare and import data, (2) reduce low variance loci, (3) perform resampling cross-validation, (4) calcuate assignment accuracy, and (6) identify informative loci. Then we show how to use baseline data to predict source populations of inidviduals of uknown origins. The demonstration of how to visualize the results of assignment accuracy and memebrship probability can be found on [Visuallize Results](http://alexkychen.github.io/assignPOP/visualize.html) page. 
+Here, we demonstrate how to prepare, import, and analyze your data. We begin with baseline evaluation: (1) prepare and import data, (2) reduce low variance loci, (3) perform resampling cross-validation, (4) calculate assignment accuracy, and (6) identify informative loci. Then we show how to use baseline data to predict source populations of individuals of unknown origins. The demonstration of how to visualize the results of assignment accuracy and membership probability can be found on [Visualize Results](http://alexkychen.github.io/assignPOP/visualize.html) page. 
 
 ***
-## Evalute baseline data
+## Evaluate baseline data
 
-Baseline data are the individauls and features (e.g., genetic loci, non-genetic measurements) collected from your source or known populations. We will demonstration how to prepare and import three different data types: genetic, integrated, and non-genetic, but we will only show how to perform resampling cross-validation on genetic data. To perform resampling cross-validation on different data sets, you only need to change the input object name in the argument, which is futher described below.     
+Baseline data are the individuals and features (e.g., genetic loci, non-genetic measurements) collected from your source or known populations. We will demonstration how to prepare and import three different data types: genetic, integrated, and non-genetic, but we will only show how to perform resampling cross-validation on genetic data. To perform resampling cross-validation on different data sets, you only need to change the input object name in the argument, which is further described below.     
 
 ### Prepare and import genetic data of source populations
 
@@ -27,7 +27,7 @@ The example input file, [*simGenepop.txt*](https://raw.githubusercontent.com/ale
 
 The population names specified in the argument `pop.names` must follow the group order in your GENEPOP file^[The name order in the argument `pop.names` should match the group order in your GENEPOP file. For example, the first name, `pop_A`, in `pop.names=c("pop_A","pop_B","pop_C")` is the top or first group (pop) of individuals in the GENEPOP.]. The population names can be used to customize assignment accuracy plots later on. If `pop.names` is not provided, pop.*NUMBER* (e.g., pop.1, pop.2) will be used as the population name.
 
-After importing the file, you should see the following message printed in your R console. Use this stats to double check your data correctly imported.
+After importing the file, you should see the following message printed in your R console. Use the stats to double check your data correctly imported.
 
 ```{r print file message, echo=FALSE}
 cat("############### assignPOP v1.1 ###############\n
@@ -48,7 +48,7 @@ LocusNames @ YOUR_LIST_NAME[[3]]")
 
 ### Remove low variance loci (optional)
 
-When analyzing genetic data, you can remove low variance loci^[A low variance locus - which has a major allele in most individuals and a minor allele in very few individuals - is unlikely useful because if an allele only occurs in the training or test data, it will not help ascertain population membership of test individuals.] across the data set for further analyses. The default of variance threshold is 0.95, meaning that a locus will be removed from the data if its major allele occurrs in over 95% of individuals across the populations.
+When analyzing genetic data, you can remove low variance loci^[A low variance locus - which has a major allele in most individuals and a minor allele in very few individuals - is unlikely useful because if an allele only occurs in the training or test data, it will not help ascertain population membership of test individuals.] across the data set for further analyses. The default of variance threshold is 0.95, meaning that a locus will be removed from the data if its major allele occurs in over 95% of individuals across the populations.
 
 To remove low variance loci, use the following function and provide a new return object name (`genin_rd` in this case) : 
 
@@ -71,7 +71,7 @@ In our example, 307 low variance loci^[In this case, we have 614 alleles across 
 
 ### Concatenate genetic and non-genetic data
 
-Concatenating genetic and non-genetic data is one of the novel features in this pacakge. After importing your GENEPOP file, you can use the function `compile.data()` to concatenate a non-genetic data set and the genetic matrix that was returned from either `read.genpop()` or `reduce.allele()`. Your non-genetic data should be saved in a .csv file (elements separated by commas) or table-like text file (elements separated by spaces) in which the first column must be sample IDs that match the IDs in your GENEPOP file, and the rest of columns are non-genetic data, whether it is numeric or categorical. If a sample ID exists in only one of the data types, the individual will be ignored in the new integrated data. 
+Concatenating genetic and non-genetic data is one of the novel features in this package. After importing your GENEPOP file, you can use the function `compile.data()` to concatenate a non-genetic data set and the genetic matrix that was returned from either `read.genpop()` or `reduce.allele()`. Your non-genetic data should be saved in a .csv file (elements separated by commas) or table-like text file (elements separated by spaces) in which the first column must be sample IDs that match the IDs in your GENEPOP file, and the rest of columns are non-genetic data, whether it is numeric or categorical. If a sample ID exists in only one of the data types, the individual will be ignored in the new integrated data. 
 
 To concatenate data, use the following function and provide a new return object name (`comin` in this case):
 
@@ -121,13 +121,13 @@ Now the non-genetic (morphometric) data with its population label is saved in th
 
 ### Perform resampling cross-validation {#performassignment}
 
-We provide two resampling cross-validation methods, [Monte-Carlo and *K*-fold cross-validations](http://stats.stackexchange.com/questions/51416/k-fold-vs-monte-carlo-cross-validation), to evaluae baseline data. Monte-Carlo cross-validation helps estimate the mean and variance of assignment accuracy through resampling random training individuals; *K*-fold cross-validation helps determine membership probability across all individuals through using one group as test set and the remaining K-1 groups as training set (such that every group is tested once). 
+We provide two resampling cross-validation methods, [Monte-Carlo and *K*-fold cross-validations](http://stats.stackexchange.com/questions/51416/k-fold-vs-monte-carlo-cross-validation), to evaluate baseline data. Monte-Carlo cross-validation helps estimate the mean and variance of assignment accuracy through resampling random training individuals; *K*-fold cross-validation helps determine membership probability across all individuals through using one group as test set and the remaining K-1 groups as training set (such that every group is tested once). 
 
 When analyzing genetic data (genetic-only or integrated), users can specify what proportions of loci should be used as training loci, and determine whether the proportion of loci is chosen either randomly or based on locus *F~ST~* estimated within training individuals. This helps evaluate whether using a subset of loci performs as well as using all loci. Most informative loci also can be identified via the function `check.loci` (see [Identify informative loci](#informloci))
 
 #### Monte-Carlo cross-validation
 
-When performing Monte-Carlo cross-validation (`assign.MC`), users can specify multiple proportions or mulitple numbers of individuals from each population to be used as training individuals. Each combination of training individuals and features cna be resampled multiple times. For example, the following code performs Monte-Carlo cross-validation, with using random 50%, 70%, and 90% of individuals from each population (arg. `train.inds`) crossed by top 10%, 25%,and 50% of high loci as well as all loci (arg. `train.loci`, `loci.sample="fst"`) as training data. Each combination of training data is resampled 30 times (arg. `iterations`). As a result, it performs a total of 360 assignment tests (3 levels of training individuals X 4 levels of training loci times X 30 iterations). 
+When performing Monte-Carlo cross-validation (`assign.MC`), users can specify multiple proportions or multiple numbers of individuals from each population to be used as training individuals. Each combination of training individuals and features can be resampled multiple times. For example, the following code performs Monte-Carlo cross-validation, with using random 50%, 70%, and 90% of individuals from each population (arg. `train.inds`) crossed by top 10%, 25%,and 50% of high loci as well as all loci (arg. `train.loci`, `loci.sample="fst"`) as training data. Each combination of training data is resampled 30 times (arg. `iterations`). As a result, it performs a total of 360 assignment tests (3 levels of training individuals X 4 levels of training loci times X 30 iterations). 
 
 ```{r run assign.MC, eval=FALSE}
 assign.MC(genin_rd, train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1), 
@@ -140,7 +140,7 @@ If you are analyzing non-genetic data alone, the arguments, `train.loci` and `lo
 
 Results of assignment tests will be saved in text files under a folder created via the argument `dir`. The above example creates a folder named "Result-folder." And be sure to include a forward slash (`/`) at the end of the folder name. 
 
-In addition, you can use the argument `model` to select a classification method for prediction. In the above example, the [Support Vector Machine (SVM)](https://en.wikipedia.org/wiki/Support_vector_machine) classifier is used. Other SVM related arguments, `svm.kernel` and `svm.cost`, can be specified to fine tune the predictive model. See the [e1071](https://cran.r-project.org/web/packages/e1071/index.html) package for details about SVM. Other classifcation methods, including [LDA](https://en.wikipedia.org/wiki/Linear_discriminant_analysis), [naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier), [decision tree](https://en.wikipedia.org/wiki/Decision_tree), and [random forest](https://en.wikipedia.org/wiki/Random_forest), can be specified to build predictive models. Type `?assign.MC` to see more details.
+In addition, you can use the argument `model` to select a classification method for prediction. In the above example, the [Support Vector Machine (SVM)](https://en.wikipedia.org/wiki/Support_vector_machine) classifier is used. Other SVM related arguments, `svm.kernel` and `svm.cost`, can be specified to fine tune the predictive model. See the [e1071](https://cran.r-project.org/web/packages/e1071/index.html) package for details about SVM. Other classification methods, including [LDA](https://en.wikipedia.org/wiki/Linear_discriminant_analysis), [naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier), [decision tree](https://en.wikipedia.org/wiki/Decision_tree), and [random forest](https://en.wikipedia.org/wiki/Random_forest), can be specified to build predictive models. Type `?assign.MC` to see more details.
 
 #### *K*-fold cross validation
 
@@ -151,9 +151,9 @@ assign.kfold(genin_rd, k.fold=c(3, 4, 5), train.loci=c(0.1, 0.25, 0.5, 1),
              loci.sample="random", dir="Result-folder2/", model="lda" )
 ```
 
-The above example divides individuals from each population into 3, 4, or 5 groups. Within each fold, 10%, 25%, and 50% of random loci (`loci.sample = "random"`)as well as all loci were sampled as training data. As a result, the *K*-fold cross-validation performs a total of 48 assignment tests (48 = (3+4+5)*4 levels of training loci).
+The above example divides individuals from each population into 3, 4, or 5 groups. Within each fold, 10%, 25%, and 50% of random loci (`loci.sample = "random"`) as well as all loci were sampled as training data. As a result, the *K*-fold cross-validation performs a total of 48 assignment tests (48 = (3+4+5)*4 levels of training loci).
 
-Similar to `assign.MC`, *K*-fold cross-validation `assign.kfold` also allows users to specify which classification method to be used to build predictive models. Linear Discriminant Funciton (`model="lda"`) was used in the above case.
+Similar to `assign.MC`, *K*-fold cross-validation `assign.kfold` also allows users to specify which classification method to be used to build predictive models. Linear Discriminant Funtion (`model="lda"`) was used in the above case.
 
 **Parallel computing.** When performing resampling cross-validation, by default, the total number (N) minus one of available CPU cores/threads on you computer will be used for parallel analyses such that N-1 assignment tests are performed simultaneously (assuming your computer's CPU is multi-core). To change the number of cores/threads to be used, simply specify a number for the argument `processors` (e.g., `processors = 2`).
 
@@ -161,7 +161,7 @@ Depending on the size of your dataset, running `assign.MC()` may take a few minu
 
 <br>
 
-### Calcuate assignment accuracy {#accuracy}
+### Calculate assignment accuracy {#accuracy}
 
 When resampling cross-validation analyses are done, you can calculate assignment accuracies for Monte-Carlo and *K*-fold cross-validation results using the following functions. 
 
@@ -176,8 +176,8 @@ The functions read through each assignment result in the designated folder (arg.
 accuMC <- read.table("Rate_of....txt", header=T)
 ```
 
-Because Monte-Carlo cross-validation's resampling events (e.g., iterations > 30) are suitable for estimating mean and variance of assignment accuracy whereas *K*-fold cross-validation likely has fewer tests (K times), running the function `accuracy.MC` for Monte-Carlo results should be enough. And this results generated by `accuracy.MC` can be visulized in an assignment accuracy plot. The results generated by the *K*-fold cross-validation `assign.kfold` analysis can be directly used to make a membership probability plot. 
-See our [Visuallize Results](http://alexkychen.github.io/assignPOP/visualize.html) page for more details.
+Because Monte-Carlo cross-validation's resampling events (e.g., iterations > 30) are suitable for estimating mean and variance of assignment accuracy whereas *K*-fold cross-validation likely has fewer tests (K times), running the function `accuracy.MC` for Monte-Carlo results should be enough. And this results generated by `accuracy.MC` can be visualized in an assignment accuracy plot. The results generated by the *K*-fold cross-validation `assign.kfold` analysis can be directly used to make a membership probability plot. 
+See our [Visualize Results](http://alexkychen.github.io/assignPOP/visualize.html) page for more details.
 
 <br>
 
@@ -236,7 +236,7 @@ After baseline data were evaluated through resampling cross-validation and the a
 
 To predict sources of unknown individuals, users should save the data of unknown individuals in a separate file, and import it into R using the same functions as we use for baseline data.
 
-To import genetic data of unknonw individuals, the data should also be saved in GENEPOP format with only one group, meaning the data will have only one 'pop' label. To read the file, use the function `read.genpop` and ignore the argument `pop.names` as follows.
+To import genetic data of unknown individuals, the data should also be saved in GENEPOP format with only one group, meaning the data will have only one 'pop' label. To read the file, use the function `read.genpop` and ignore the argument `pop.names` as follows.
 
 ```{r, eval=FALSE}
 # Import a GENEPOP file containing unknown individuals. Make sure to use a different return object name from the one returnd from your baseline data 
@@ -293,7 +293,7 @@ When analyzing non-genetic data alone, you can determine whether PCA is performe
 
 ### Data standardization
 
-When analyzing non-genetic or integrated data, you have options to standardize (zero mean and unit variance) the independent variables or keep the original data. If non-genetic data has varying ranges of values and is not standardized, it may be problematic when one feature has a variance that is orders of magnititude larger than others, as it might make the classifier unable to learn from other features correctly. To center and scale the data, set the argument `scaled=TRUE` in the function `assign.MC()`, `assign.kfold()` or `assign.X()`. If you are analyzing genetic or genomic data, then standardization is not required because all the loci (alleles) have been converted to values between 0 and 1.
+When analyzing non-genetic or integrated data, you have options to standardize (zero mean and unit variance) the independent variables or keep the original data. If non-genetic data has varying ranges of values and is not standardized, it may be problematic when one feature has a variance that is orders of magnitude larger than others, as it might make the classifier unable to learn from other features correctly. To center and scale the data, set the argument `scaled=TRUE` in the function `assign.MC()`, `assign.kfold()` or `assign.X()`. If you are analyzing genetic or genomic data, then standardization is not required because all the loci (alleles) have been converted to values between 0 and 1.
 
 ***
 
