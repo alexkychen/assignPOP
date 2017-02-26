@@ -3,27 +3,28 @@ title: "Visualize Results"
 output: html_document
 ---
 
-In this page, we show how to make box plots and stacked bar plots for assignment accuracy and membership probability, respectively.
+In this page, we demonstrate how to visualize assignment accuracy and membership probability results using box plots and stacked bar plots.
 
 ***
 ```{r, echo=FALSE}
 library(assignPOP)
 ```
-## Assignment accuracy box plot
+## Create a box plot for assignment accuracy
 
 ```{r read accuMC file, include = FALSE}
 accuMC <- read.table("data/AAMC_fst_svm_Genetics.txt", header=T)
 ```
 
-To visualize the results of assignment accuracy, use the following function to create a boxplot. 
+After the assignment accuracy of Monte-Carlo cross-validation results is calculated (using `accuracy.MC`), we can use the following function to create a box plot to visualize the assignment accuracy.    
 
-```{r run accuracy.plot, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 1. Assignment accuracies estimated via Monte-Carlo cross-validation, with three levels of training individuals (50%, 70% and 90% of individuals from each population, on x-axis) by four levels of training loci (top 10%, 25% and 50% highest Fst loci and all loci in color-coded boxes) by 30 resampling events."}
+```{r run accuracy.plot, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 1. Assignment accuracies estimated via Monte-Carlo cross-validation, with three levels of training individuals (50%, 70% and 90% of individuals from each population, on x-axis) crossed by four levels of training loci (top 10%, 25% and 50% highest Fst loci and all loci in color-coded boxes) by 30 resampling events."}
+# accuMC is the object (a data frame) returned from the function accuracy.MC()
 accuracy.plot(accuMC, pop = "all")
 ```
 
-Note that the argument `pop` is used to specify which population to be included in the plot. You can specify multiple populations in the argument (e.g., `pop=c("pop_A","pop_B")`) to make a faceted plot (population names are those you provided in the function `read.genpop()`). If the population is not specified, assignment accuracy of overall population (arg. `pop="all"`) will be plotted as the default.
+The argument `pop` is used to specify which populations to be included in the plot. Multiple populations can be specified (e.g., `pop=c("pop_A,"pop_B","pop_C")`) to create a faceted plot. If `pop` is not specified, assignment accuracy of overall populations (`pop="all"`) will be used by default.
 
-The function `accuracy.plot()` is built based on the [ggplot2](https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf) library, so you can import the library `library(ggplot2)` and modify the plot using [ggplot2 functions/arguments](http://docs.ggplot2.org/current/). For example, set the *y*-axis (assignment accuracy) limits (`ylim()`), draw a horizontal line (`annotate()`), or add a plot title (`ggtitle()`).
+The function `accuracy.plot()` is built based on the [ggplot2](https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf) library, so the plot can be modified using [ggplot2](http://docs.ggplot2.org/current/). Below we made another plot that includes the assignment accuracy results of overall and individual populations. We also adjusted its *y*-axis limits (`ylim`), drew a horizontal line (`annotate`), added a plot title (`ggtitle`).
 
 ```{r modify AA plot, fig.align='center', fig.width=10, fig.asp=0.6, collapse=TRUE, warning=FALSE, fig.cap="Figure 2. Assignment accuracies estimated via Monte-Carlo cross-validation, with genetic data (693 SNP loci) for three hypothetical populations of 30 individuals. Red horizontal lines indicate 0.33 null assignment rate."}
 library(ggplot2)
@@ -34,7 +35,9 @@ accuracy.plot(accuMC, pop=c("all", "pop_A", "pop_B", "pop_C")) +
   theme(plot.title = element_text(size=20, face="bold")) #Edit plot title text size
 ```
 
-The above results were estimated from the genetic-only dataset. Assignment accuracies between populations A and B are relatively low, indicating that the genetic data could not distinguish between them well. However, assignment accuracies of population C are much higher, suggesting that the genetic loci can be used to differentiate population C from the other two populations. Next, we can perform the assignment test on the genetic-morphometric dataset (using object `comin` returned from `compile.data()`) to see if using integrated data improves assignment success. (We skip the codes and show the final result below)
+The above results were estimated from the genetic data (simulated 1000 SNPs). Assignment accuracies of populations A and B are relatively low whereas those of population C are high, indicating that the genetic data could be used to distinguish between population C and population A or B.
+
+Next, we created the assignment accuracy plot for the integrated data (genetics plus morphometrics, the object `comin` returned from `compile.data`). We skip the codes and show the results below. 
 
 ```{r create faceted plots for integrated data, echo=FALSE, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 3. Assignment accuracies estimated via Monte-Carlo cross-validation, using genetic and morphometric data. Each box is the results of using a proportion of training loci plus 4 morphometric variables"}
 accuMC_con <- read.table("data/AAMC_fst_svm_GeneMorph.txt", header=T)
@@ -45,9 +48,9 @@ accuracy.plot(accuMC_con, pop=c("all", "pop_A", "pop_B", "pop_C")) +
   theme(plot.title = element_text(size=20, face="bold")) #Edit plot title text size
 ```
 
-When using the genetic-morphometric dataset, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate morphometric data alone. The results are as follows.
+When using the genetic-morphometric data, the assignment accuracies of populations A and B increased and that of population C remained high, resulting in increasing overall assignment accuracy. These results demonstrate the potential of using multiple data types to improve assignment success. Additionally, we can use the same analytical methods (i.e., Monte-Carlo cross-validation with the same proportions of training individuals, iterations, and classifier) to evaluate the discriminatory power of morphometric data.
 
-```{r , echo=FALSE, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using 4 morphometric measurements."}
+```{r , echo=FALSE, fig.align='center', fig.width=10, fig.asp=0.6, fig.cap="Figure 4. Assignment accuracies estimated via Monte-Carlo cross-validation, using four morphometric measurements."}
 accuMC_morph <- read.table("data/AAMC_svm_pcat_Morphs.txt", header=T)
 accuracy.plot(accuMC_morph, pop=c("all", "pop_A", "pop_B", "pop_C")) +
   ylim(0, 1) + #Set y limit between 0 and 1
@@ -58,22 +61,27 @@ accuracy.plot(accuMC_morph, pop=c("all", "pop_A", "pop_B", "pop_C")) +
 
 The above results indicate that morphometric data helps distinguish population A from the other two. Therefore, it is expected that using integrated data would best discriminate among the three populations (Figure 3) despite that fact that using genetics or morphometrics alone was unable to distinguish population B from the other two (see population B in Figure 2 and 4).      
 
-## Membership probability stacked bar plot
+***
 
-In addition to estimating assignment accuracy, we can also use probabilities to understand how individuals are assigned to populations. To visualize membership probability, we use the results from *K*-fold cross-validation and create a stacked bar plot (also known as [**STRUCTURE plot**](http://pritchardlab.stanford.edu/structure.html)) that is commonly used in molecular biology papers. To create the plot, use the following function and specify the folder containing your *K*-fold cross-validation results.
+## Create a membership probability plot
+
+In addition to estimating assignment accuracy, we can use probabilities to understand how individuals are assigned to the populations. To visualize membership probability, we use the results from *K*-fold cross-validation and create a stacked bar plot, like the [**STRUCTURE plot**](http://pritchardlab.stanford.edu/structure.html)) that is commonly used in molecular biology papers.
 
 ```{r create membership plot, eval=FALSE }
+# The folder 'Result-folder2' contains the results generated from K-fold cross-validation
 membership.plot(dir = "Result-folder2/")
 ```
 
-After entering the code, it will prompt a few questions and allow you to choose which dataset and plot style to be used. The interactive conversation is shown as follows.
+After entering the above function, it will prompt a few questions and allow you to choose which data set (results estimated from which combination of training data) and plot style to be used. The interactive conversation is shown as follows.
+
+The first question is to choose the results from which fold.
 
 ```{r print membership.plot Q1, echo=FALSE}
 cat("K = 3  4  5  are found.\
 Please enter one of the K numbers: (You will enter your answer here)")
 ```
 
-Next, it will ask you to enter which proportion of training loci you would like to make the plot for.
+The second question is to choose the results from which level of training loci (if data include genetic loci). 
 
 ```{r print membership.plot Q2, echo=FALSE}
 cat("4 levels of training loci are found.\
@@ -81,7 +89,7 @@ Levels[train.loci]: 0.1  0.25  0.5  1\
 Please enter one of the levels: (You will enter your answer here)")
 ```
 
-Lastly, if you didn't specify the output style (e.g., `style = 1`) in `membership.plot()`, then it will print the following text and ask you to choose an output style.
+Lastly, if you didn't specify the output style (e.g., `style = 1`) in `membership.plot()`, then it will print the following message and ask you to choose an output style.
 
 ```{r print membership.plot Q3, echo=FALSE}
 cat("Finally, select one of the output styles.\
@@ -102,8 +110,8 @@ Below we use the results of 3-fold and all loci (train.loci = 1) to demonstrate 
 
 ![Figure 8. Output style = 4. Similar to Figure 7, but with individuals sorted based on probability of assignment to their original populations.](figure/Membership-genetic-only-style4.png)
 
-The above Figures 5 to 8 are the results from the genetic-only dataset. Here we also analyzed the genetic-morphometric data and created the following membership probability plot. 
+The above Figures 5 to 8 are the results from the genetic data. Here we also created the membership probability plot of results estimated from the integrated data. 
 
 ![Figure 9. Membership probability of three hypothetical populations, with results estimated based on 693 loci plus 4 morphometric measurements.](figure/Membership-genetic-morph-style1.png)
 
-Using the integrated dataset allowed many more correct assignments than using the genetic data alone (see Figure 5 or 6 vs. 9). 
+As expected, using the integrated data allowed more individuals to be correctly assigned to the populations, particularly in populations A and B (see differences between Figure 5 or 6 vs. 9). 
