@@ -1,5 +1,5 @@
 ---
-title: "Result Visualization"
+title: "Visualize Results"
 output: html_document
 ---
 
