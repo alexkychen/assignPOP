@@ -1,5 +1,8 @@
 ---
 title: "Intro to assignPOP"
+output:
+  html_document:
+    self_contained: no
 ---
 
 <img src="https://www.r-project.org/logo/Rlogo.svg" width="70" align="right"> 
