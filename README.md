@@ -5,21 +5,21 @@
 
 # assignPOP <img src="https://www.r-project.org/logo/Rlogo.svg" width="48">
 
-Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-learning Framework
+Population Assignment using Genetic, Non-Genetic or Integrated Data in a Machine-learning Framework
 
 ## Description
-This R package helps perform population assignment using a machine-learning framework. It employs supervised machine-learning methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze **large genetic, non-genetic, or integrated (genetic plus non-genetic) data** sets. This framework is designed for solving the upward bias issue discussed in previous studies. Other features are listed as follows.
+This R package helps perform population assignment and infer population structure using a machine-learning framework. It employs supervised machine-learning methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze **large genetic, non-genetic, or integrated (genetic plus non-genetic) data** sets. This framework is designed for solving the upward bias issue discussed in previous studies. Main features are listed as follows.
 
 - Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
 - Use Monte-Carlo cross-validation to estimate mean and variance of assignment accuracy
 - Use *K*-fold cross-validation to estimate membership probability
-- Allow to resample various proportions or numbers of training individuals
-- Allow to resample various proportions of training loci either randomly or based on locus *Fst* values
+- Allow to resample various sizes of training datasets (proportions or fixed numbers of individuals and proportions of loci)
+- Allow to choose from various proportions of training loci either randomly or based on locus *Fst* values
 - Provide several machine-learning classification algorithms, including LDA, SVM, naive Bayes, decision tree, and random forest, to build tunable predictive models.
 - Output results in publication-quality plots that can be edited using ggplot2 functions
 
 ## Install assignPOP
-You can install the package from CRAN or Github respository here. The lastest version should be on the Github, whereas the CRAN hosts the stable version. Check the version on the badges. 
+You can install the package from CRAN or this Github respository. The lastest version should be on the Github, whereas the CRAN hosts the stable version. See the version number on the badges. 
 
 - To install from CRAN [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
   * Simply enter `install.packages("assignPOP")` in your R console
