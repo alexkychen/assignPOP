@@ -4,7 +4,7 @@ Title: Population Assignment using Genetic, Non-Genetic or Integrated Data in a 
 Version: 1.1.2
 Author: Kuan-Yu (Alex) Chen [aut, cre], Elizabeth A. Marschall [aut], Michael G. Sovic [aut], Anthony C. Fries [aut], H. Lisle Gibbs [aut], Stuart A. Ludsin [aut]
 Maintainer: Kuan-Yu (Alex) Chen <alexkychen@gmail.com>
-Description: Perform population assignment using a machine learning framework. It employs supervised machine learning methods to evaluate the discriminatory power of your known data set, and is capable of analyzing large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets. This framework is also designed for solving the upwardly biased issue that was discussed in previous studies.
+Description: Use Monte-Carlo and K-fold cross-validation procedures to estimate assignment accuracies and membership probabilities of individuals collected from populations. Capable of using PCA to reduce high-dimensional datasets, subsetting various sizes of training data to avoid baises due to self-assignment or unbalanced population sample size, and integrating genetic and non-genetic data to build tunable predictive models.
 URL: https://github.com/alexkychen/assignPOP, http://alexkychen.github.io/assignPOP/
 Depends: R (>= 2.3.2)
 Imports:
