@@ -40,7 +40,7 @@ Please visit our tutorial website for more infomration
 - 2017.5.2 Update read.genpop function, now can read haploid data
 
 ## Citation
-Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1.2. https://CRAN.R-project.org/package=assignPOP 
+Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genetic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1.1. https://CRAN.R-project.org/package=assignPOP 
 
 ## Previous version
 Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
