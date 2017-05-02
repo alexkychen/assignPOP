@@ -4,17 +4,19 @@
 \alias{read.genpop}
 \title{Read GENEPOP format input file}
 \usage{
-read.genpop(x, pop.names = NULL, pos = 1)
+read.genpop(x, pop.names = NULL, haploid = FALSE, pos = 1)
 }
 \arguments{
-\item{x}{The GENEPOP file name or path to the file. The filename extension should be included.}
+\item{x}{The GENEPOP file name or path to the file. The filename extension (e.g., .txt) should be included.}
 
 \item{pop.names}{A character string vector for population names. The order of the name should be the same with the order (top to down) in your GENEPOP file.}
 
-\item{pos}{defaults to 1 which equals an assingment to global environment}
+\item{haploid}{A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.}
+
+\item{pos}{A parameter for program development use; users can ignore it.}
 }
 \value{
-This function returns a list that comprises three items. [[1]] A matrix of genetic data with a population name label ($popNameVector) in the last column. [[2]] A vector of sample ID. [[3]] A vector of locus name.
+This function returns a list comprising three elements. 1. YOU_NAME_IT$DataMatrix: A matrix of genetic data with a population name label ($popNameVector) in the last column. 2. YOU_NAME_IT$SampleID: A vector of sample ID. 3. YOU_NAME_IT$LocusName: A vector of locus name.
 }
 \description{
 This function allows you to import a GENEPOP format file into R. Population names can be specified in the argument. See http://genepop.curtin.edu.au/help_input.html for details about GENEPOP format.
