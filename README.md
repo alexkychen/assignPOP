@@ -35,6 +35,10 @@ Note: When you install the package from Github, you may need to install addition
 Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
+## What's new
+
+- 2017.5.2 Update read.genpop function, now can read haploid data
+
 ## Citation
 Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1.2. https://CRAN.R-project.org/package=assignPOP 
 
