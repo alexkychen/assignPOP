@@ -1,4 +1,4 @@
-#' Read GENEPOP format input file
+#' Read GENEPOP format file
 #'
 #' This function allows you to import a GENEPOP format file into R. Population names can be specified in the argument. See http://genepop.curtin.edu.au/help_input.html for details about GENEPOP format.
 #' @param x The GENEPOP file name or path to the file. The filename extension (e.g., .txt) should be included.
@@ -182,7 +182,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
   #Print some message to console
   cat(paste0("\n  ################ assignPOP v",packageVersion("assignPOP")," ################\n"))
   cat("\n  A GENEPOP format file was successfully imported!\n")
-  cat(paste0("\n  Imported DataInfo: ",noInds," obs. by ",noLocus," loci (",dataType,")"))
+  cat(paste0("\n  Imported Data Info: ",noInds," obs. by ",noLocus," loci (",dataType,")"))
   cat(paste0("\n  Number of pop: ",noPops))
   for(i in 1:noPops){
     popSize <- length(get(paste0("pop_",i,"_index")))
