@@ -28,7 +28,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
     if(!length(pop.names)==noPops){
       cat("\nError: Pop.names and number of pop in data not match...")
       break } }
-
+  
   #Extract locus name, save locus names in vector "locusNames"
   if (popIndex[1] == 2) {
     locusNames <- str_trim(df[1],side="both")
@@ -39,7 +39,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
   }
   locusNames <- str_trim(locusNames,side="both")
   noLocus <- length(locusNames)
-
+  
   #Get index for individuals and save in a nested list "pop_all"
   for (i in 1:noPops){
     if (i < noPops){
@@ -51,14 +51,14 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
     }
   }
   pop_all <- lapply(paste0("pop_", seq_along(1:noPops),"_index"), FUN = get )
-
+  
   #save individual index in one vector "ind_all_index"
   ind_all_index <- NULL
   for (i in 1:noPops){
     ind_all_index <- c(ind_all_index, pop_all[[i]])
   }
   noInds <- length(ind_all_index)
-
+  
   #extract individual data
   ind_df <- df[ind_all_index]
   #split individual ID and genotype data
@@ -74,7 +74,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
     geno <- list(geno)
     geno_list <- c(geno_list, geno)#geno_list becomes a concatenation of lists of individual genotype 
   }
-
+  
   #Get alleles of each locus across individuals
   #create an empty data frame
   genoMatrix <- data.frame(matrix(ncol=0,nrow=noInds))
@@ -99,7 +99,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
       #check if a locus is missing data across all individuals, if so, save the locus index
       if(all(is.na(oneLocus_vector))){
         missLocusIndex <- c(missLocusIndex,m)
-      #If not missing data, process data
+        #If not missing data, process data
       }else {
         #Convert one locus dataset to dummy locus variables
         oneLocusDf <- data.frame(oneLocus_vector)
@@ -109,12 +109,12 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
         rownames(dummyLocusMatrix) <- rownames(oneLocusDf)
         #Edit locus name
         names(dummyLocusMatrix) <- substring(names(dummyLocusMatrix), 16, 1000L)
-        names(dummyLocusMatrix) <- sub("\\b", paste0(locusNames[m],"."), names(dummyLocusMatrix))
+        names(dummyLocusMatrix) <- sub("\\b", paste0(locusNames[m],"_"), names(dummyLocusMatrix))
         #Append new locus variables to genoMatrix
         genoMatrix <- cbind(genoMatrix, dummyLocusMatrix)
       }
-      
-    #Process for diploid data
+      genoMatrix[is.na(genoMatrix)] <- 0
+      #Process for diploid data
     }else if(!haploid){
       dataType <- "diploid"
       for(n in 1:noInds){
@@ -178,7 +178,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
     popNames_vector <- c(popNames_vector, popNameVector)
   }
   genoMatrix <- cbind(genoMatrix, popNames_vector)
-
+  
   #Print some message to console
   cat(paste0("\n  ################ assignPOP v",packageVersion("assignPOP")," ################\n"))
   cat("\n  A GENEPOP format file was successfully imported!\n")
@@ -197,7 +197,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
   cat("\n  YOUR_LIST_NAME$SampleID")
   cat("\n  YOUR_LIST_NAME$LocusName")
   cat("\n\n")
-
+  
   #Remove variables from GlobalEnv.
   rm(list = ls(pattern="^pop_.*_index$", envir = .GlobalEnv), envir = .GlobalEnv)
   

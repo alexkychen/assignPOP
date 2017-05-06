@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.genpop.R
 \name{read.genpop}
 \alias{read.genpop}
-\title{Read GENEPOP format input file}
+\title{Read GENEPOP format file}
 \usage{
 read.genpop(x, pop.names = NULL, haploid = FALSE, pos = 1)
 }
