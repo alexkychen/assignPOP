@@ -7,7 +7,7 @@ output:
 
 <img src="https://www.r-project.org/logo/Rlogo.svg" width="70" align="right"> 
 
-**assignPOP** is an R package that helps perform population assignment using a machine-learning framework. It employs [supervised machine-learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is designed for solving the upward bias issue discussed in previous studies (Anderson 2010^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710.]; Waples 2010^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601.]). Other features are listed as follows.
+**assignPOP** is an R package that helps perform population assignment using a machine-learning framework. It employs [supervised machine-learning](https://en.wikipedia.org/wiki/Supervised_learning) methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze **large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets**. This framework is designed for solving the upward bias issue discussed in previous studies^[Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. *Molecular Ecology Resources* 10(4): 701–710.], ^[Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. *Molecular Ecology* 19(13): 2599–2601.]. Other features are listed as follows.
 
 - Use principle component analysis (PCA) for dimensionality reduction (or data transformation)
 - Use Monte-Carlo cross-validation to estimate mean and variance of assignment accuracy
@@ -25,7 +25,7 @@ output:
 ***
 ### Conceptual Framework
 
-The ability to assign individuals of unknown origins to source populations relies on a robust baseline (or training data) collected from the source populations. However, noise in training data or lack of distinct features could lower the assignment ability. It is important to evaluate baseline data via cross-validation before using the baseline to predict source populations of individuals collected from unknown origins. The diagrams below illustrate how the assignPOP fits into such assignment framework, and the workflow for evaluting baseline data as well as predicting sources of unknonw individuals.
+The ability to assign individuals of unknown origins to source populations relies on a robust baseline (or training data) collected from the source populations. However, noise in training data or lack of distinct features could lower the assignment ability. It is important to evaluate baseline data via cross-validation before using the baseline to predict source populations of unknown individuals. The diagrams below illustrate how the assignPOP fits into such assignment framework, and the workflow for evaluting baseline data as well as predicting source populations of unknonw individuals.
 
 ```{r, echo=FALSE}
 DiagrammeR::grViz("
@@ -39,11 +39,11 @@ E [label='Perform assignment test\non unknown individuals']
 F [label='Results:\npredicted populations\nand\nmembership probability']
 
 edge [arrowhead=normal]
-A -> B [label='analyze data via assignPOP\nsee Analytical Workflow step 1.', fontcolor=firebrick]
+A -> B [label='analyze data via assignPOP\nsee below\nAnalytical Workflow Step 1', fontcolor=firebrick]
 B -> C [label='bad results']
 B -> D [label='good results']
 D -> E 
-E -> F [label='analyze data via assignPOP\nsee Analytical Workflow step 2.',fontcolor=firebrick]
+E -> F [label='analyze data via assignPOP\nsee below\nAnalytical Workflow Step 2',fontcolor=firebrick]
 C -> A [label='re-evaluate']
 
 subgraph { rank=same; C; D; }
@@ -66,9 +66,9 @@ graph [rankdir = LR, ranksep=0.1, nodesep=0.3]
   C [label='Step 1-3. Visualize results']
   
   node [shape=plaintext, fontname=Arial]
-  1 [label='For genetic data, use\nread.genpop( ), reduce.allele( )']
-  2 [label='For non-genetic data, use\nread.table( ), read.csv( )\n*data imported as a data frame']
-  3 [label='For integrated data, use\nread.genpop( ), compile.data( )']
+  1 [label='For genetic data, use\nread.Genepop( ) or read.Structure( ),\n reduce.allele( )']
+  2 [label='For non-genetic data, use\nread.table( ) or read.csv( )\n*data imported as a data frame']
+  3 [label='For integrated data, use\nread.Genepop( ) or read.Structure( ),\ncompile.data( )']
   5 [label='Monte-Carlo cross-validation\nassign.MC( )']
   6 [label='K-fold cross-validation\nassign.kfold( )']
   7 [label='Optional: Identify informative loci\ncheck.loci( )']
@@ -102,7 +102,7 @@ digraph assignunknown {
   B [label='Step 2-2. Perform assignment\ntest and visualize results']
   
   node [shape=plaintext, fontname=Arial]
-  1 [label='Use read.genpop( ), compile.data( ),\nread.table( ), or read.csv( )']
+  1 [label='Use read.Genepop( ) or read.Structure( ),\n compile.data( ),\nread.table( ) or read.csv( )']
   2 [label='Known and unknown data sets\nshould be imported separately']
   5 [label='Use assign.X( )']
   6 [label='Output results and\ngenerate membership\nprobability plot']
@@ -129,7 +129,7 @@ digraph assignunknown {
 
 ***
 ### Resampling Cross-validation Workflow {#RCVworkflow}
-The diagram below illustrates the workflow of resampling cross-validation, in which individuals from each population are divided into training and test sets, and assignment test repeats through resampling training individuals. Multiple proportions of training individuals by multiple proportions of training loci (when analyzing genetic data) can be specified in one single analysis (in `assign.MC()` or `assign.kfold()`). For example, the diagram shows top 10% or 50% of high *F~ST~* loci or all loci are used as training loci. This helps evaluate whether using top 10%, 50% of high *F~ST~* loci or overall loci results in similar assignment accuracies. For more details, see [Perform population assignment](http://alexkychen.github.io/assignPOP/analyze.html#performassignment) in the [Data Analysis](http://alexkychen.github.io/assignPOP/analyze.html) page.      
+The diagram below illustrates the workflow of resampling cross-validation, in which individuals from each population are divided into training and test sets, and assignment test repeats through resampling training individuals. Multiple proportions of training individuals by multiple proportions of training loci (when analyzing genetic data) can be specified in one single analysis (`assign.MC()` or `assign.kfold()`). For example, the diagram shows top 10% or 50% of high *F~ST~* loci or all loci are used as training loci. This helps evaluate whether using top 10%, 50% of high *F~ST~* loci or overall loci results in similar assignment accuracies. For more details, see [Perform population assignment](http://alexkychen.github.io/assignPOP/analyze.html#performassignment) in the [Data Analysis](http://alexkychen.github.io/assignPOP/analyze.html) page.      
 
 ```{r, echo=FALSE}
 DiagrammeR::grViz("
@@ -174,7 +174,7 @@ Digraph MCCVflow {
 
 ***
 ### Package Citation 
-Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1. https://CRAN.R-project.org/package=assignPOP
+Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genomic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1.2. https://CRAN.R-project.org/package=assignPOP
 
 ***
 #### References

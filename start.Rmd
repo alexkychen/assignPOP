@@ -44,7 +44,8 @@ library(assignPOP)
 
 | Function | Return | Description |
 |:---------|:-------|:------------|
-| `read.genpop()` | A list object including data matrix | Read genetic data in GENEPOP format |
+| `read.Genepop()` | A list object including data matrix | Read genetic data in GENEPOP format |
+| `read.Structure()` | A list object including data matrix | Read genetic data in STRUCTURE format |
 | `reduce.allele()` | A list object including data matrix | Reduce low variance loci |
 | `compile.data()` | A list object including data matrix | Concatenate genetic and non-genetic data |
 | `assign.MC()` | Output results in text files | Perform population assignment using Monte-Carlo cross-validation |
@@ -56,5 +57,5 @@ library(assignPOP)
 | `membership.plot()` | ggplot2 graph | Make membership probability stacked bar plots |
 | `check.loci()` | Output results in a text file | Identify informative loci used in resampling cross-validation |
 
-**Enter `?` followed by a function name in R console (e.g.,`?read.genpop`) to see the help page.**
+**Enter `?` followed by a function name in R console (e.g.,`?read.Genepop`) to see the help page.**
 
