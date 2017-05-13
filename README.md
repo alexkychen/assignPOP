@@ -16,7 +16,7 @@ This R package helps perform population assignment and infer population structur
 - Allow to resample various sizes of training datasets (proportions or fixed numbers of individuals and proportions of loci)
 - Allow to choose from various proportions of training loci either randomly or based on locus *Fst* values
 - Provide several machine-learning classification algorithms, including LDA, SVM, naive Bayes, decision tree, and random forest, to build tunable predictive models.
-- Output results in publication-quality plots that can be edited using ggplot2 functions
+- Output results in publication-quality plots that can be modified using ggplot2 functions
 
 ## Install assignPOP
 You can install the package from CRAN or this Github respository. The lastest version should be on the Github, whereas the CRAN hosts the stable version. See the version number on the badges. 
@@ -37,10 +37,11 @@ Please visit our tutorial website for more infomration
 
 ## What's new
 
+- 2017.5.13 Change function name read.genpop to read.Genepop; Add function read.Structure.
 - 2017.5.2 Update read.genpop function, now can read haploid data
 
 ## Citation
-Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genetic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1.1. https://CRAN.R-project.org/package=assignPOP 
+Chen, K-Y., Marschall, E.A. Sovic M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. (2017) assignPOP: Population Assignment using Genetic, Non-Genetic or Integrated Data in a Machine-learning Framework. R package version 1.1.2. https://CRAN.R-project.org/package=assignPOP 
 
 ## Previous version
 Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
