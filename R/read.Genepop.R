@@ -6,17 +6,17 @@
 #' @param haploid A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.
 #' @param pos A parameter for program development use; users can ignore it.
 #' @return This function returns a list comprising three elements. 1. YOU_NAME_IT$DataMatrix: A matrix of genetic data with a population name label ($popNameVector) in the last column. 2. YOU_NAME_IT$SampleID: A vector of sample ID. 3. YOU_NAME_IT$LocusName: A vector of locus name.
-#' @examples # infile <- read.genpop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
+#' @examples # infile <- read.Genepop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
 #' @references Rousset, F., 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106.
 #' @import stringr
 #' @importFrom reshape2 melt
 #' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
 #' @examples 
-#' genpop <- read.genpop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
+#' genpop <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
 #' #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 #' @export
 #'
-read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
+read.Genepop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
   dataType <- NULL
   df <- readLines(x)
   df <- df[-1]#skip the first line file info

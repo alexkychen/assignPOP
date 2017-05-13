@@ -8,7 +8,7 @@
 #' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
 #' @export
 #' 
-read.structure <- function(x, haploid = FALSE){
+read.Structure <- function(x, haploid = FALSE){
   dataType <- NULL
   df <- readLines(x)
   #Check if there are sample id and pop label in first row
