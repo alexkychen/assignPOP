@@ -1,9 +1,10 @@
 #' Read Structure format file
 #' 
-#' This function allows you to import a Structure format file into R.  
+#' This function allows you to import a STRUCTURE format file into R. The first row should be locus name (either with or withour column names for sample ID and population label); the first column should be sample ID; the second column should be population label; the rest are genotype. Use "-9" for missing alleles. 
 #' @param x STRUCTURE file or path to the file. The filename extension (e.g., .txt) should be included.
 #' @param haploid A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.
 #' @return This function returns a list comprising three elements. 1. YOU_NAME_IT$DataMatrix: A matrix of genetic data with a population name label ($popNameVector) in the last column. 2. YOU_NAME_IT$SampleID: A vector of sample ID. 3. YOU_NAME_IT$LocusName: A vector of locus name.
+#' @examples # infile <- read.Structure("Your_Structure_File.txt")
 #' @import stringr
 #' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
 #' @export
