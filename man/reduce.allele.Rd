@@ -18,7 +18,7 @@ This function return the same object as the function read.genpop() except that t
 This function helps remove alleles that have low variance in the data set such that it can speed up further analyses for a large data set (e.g., > 10K SNPs).
 }
 \examples{
-genin <- read.genpop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
+genin <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
 reduce_infile <- reduce.allele(genin, p = 0.95)
 #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 }

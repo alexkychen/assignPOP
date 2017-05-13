@@ -5,7 +5,7 @@
 #' @param p A threshold of variance for the alleles to be removed. For example, if p = 0.95 (default setting), an allele occupied more than 95 percents across all the samples will be removed.
 #' @return This function return the same object as the function read.genpop() except that the number of columns in the matrix [[1]] is reduced and so is the locus name [[3]].
 #' @examples 
-#' genin <- read.genpop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
+#' genin <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
 #' reduce_infile <- reduce.allele(genin, p = 0.95)
 #' #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 #' @export

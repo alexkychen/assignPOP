@@ -5,6 +5,7 @@
 #' @param haploid A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.
 #' @return This function returns a list comprising three elements. 1. YOU_NAME_IT$DataMatrix: A matrix of genetic data with a population name label ($popNameVector) in the last column. 2. YOU_NAME_IT$SampleID: A vector of sample ID. 3. YOU_NAME_IT$LocusName: A vector of locus name.
 #' @examples # infile <- read.Structure("Your_Structure_File.txt")
+#' @references Pritchard, J.K., Stephens, M. and Donnelly, P., 2000. Inference of population structure using multilocus genotype data. Genetics, 155(2), pp.945-959.
 #' @import stringr
 #' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
 #' @export

@@ -20,4 +20,7 @@ This function allows you to import a STRUCTURE format file into R. The first row
 \examples{
 # infile <- read.Structure("Your_Structure_File.txt")
 }
+\references{
+Pritchard, J.K., Stephens, M. and Donnelly, P., 2000. Inference of population structure using multilocus genotype data. Genetics, 155(2), pp.945-959.
+}
 
