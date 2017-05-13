@@ -97,7 +97,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
         
       }#for(n in 1:noInds)
       #check if a locus is missing data across all individuals, if so, save the locus index
-      if(all(is.na(oneLocus_vector))){
+      if(all(is.na(oneLocus_vector)) | length(unique(oneLocus_vector)) == 1){
         missLocusIndex <- c(missLocusIndex,m)
         #If not missing data, process data
       }else {
@@ -129,7 +129,7 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
         oneLocus_vector <- c(oneLocus_vector, diploid)
       }#for(n in 1:noInds)
       #check if locus is missing data across individuals
-      if(all(is.na(oneLocus_vector))){
+      if(all(is.na(oneLocus_vector)) | length(unique(oneLocus_vector)) == 1){
         missLocusIndex <- c(missLocusIndex, m)
       }else {
         #Convert to data frame and create dummy variables
@@ -189,7 +189,6 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
     cat(paste0("\n  Number of inds (",pop.names[i],"): ",popSize ) )
   }
   cat(paste0("\n  DataMatrix: ",nrow(genoMatrix)," rows by ",ncol(genoMatrix), " columns, with ",noLociVar," allele variables"))
-  
   
   cat("\n")
   cat("\n  Data output in a list comprising the following three elements:")
