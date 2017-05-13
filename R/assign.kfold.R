@@ -568,7 +568,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     #
     stopCluster(cl)
     #Output a metadata file
-    cat(" Analysis Description (R - assignPOP ver.",packageVersion("assignPOP"),")\n",
+    version <- as.character(packageVersion("assignPOP"))
+    cat(" Analysis Description ( R - assignPOP ver.",version,")\n",
         "Perform assign.kfold() @", format(Sys.time()),"\n\n",
         "k.fold =",k.fold,"\n",
         "train.loci =",train.loci,"\n",
@@ -769,7 +770,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     }#for(k in k.fold)
     stopCluster(cl)
     #
-    cat(" Analysis Description (R - assignPOP ver.",packageVersion("assignPOP"),")\n",
+    version <- as.character(packageVersion("assignPOP"))
+    cat(" Analysis Description ( R - assignPOP ver.",version,")\n",
         "Perform assign.kfold() @", format(Sys.time()),"\n\n",
         "k.fold =",k.fold,"\n",
         "Total assignment tests =",sum(k.fold),"\n",

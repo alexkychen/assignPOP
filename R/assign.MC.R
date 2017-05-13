@@ -597,7 +597,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
     stopCluster(cl)
     #Output a metadata file
     version <- as.character(packageVersion("assignPOP"))
-    cat(" Analysis Description ( R - assignPOP ver.",version," )\n",
+    cat(" Analysis Description ( R - assignPOP ver.",version,")\n",
         "Perform assign.MC() @", format(Sys.time()),"\n\n",
         "train.inds =",train.inds,"\n",
         "train.loci =",train.loci,"\n",
@@ -817,7 +817,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
     stopCluster(cl)
     #Output a metadata file
     version <- as.character(packageVersion("assignPOP"))
-    cat(" Analysis Description ( R - assignPOP ver.",version," )\n",
+    cat(" Analysis Description ( R - assignPOP ver.",version,")\n",
         "Perform assign.MC() @", format(Sys.time()),"\n\n",
         "train.inds =",train.inds,"\n",
         "iterations =",iterations,"\n",

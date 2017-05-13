@@ -114,49 +114,49 @@ read.genpop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
         genoMatrix <- cbind(genoMatrix, dummyLocusMatrix)
       }
       genoMatrix[is.na(genoMatrix)] <- 0
-      #Process for diploid data
+    #Process for diploid data
     }else if(!haploid){
       dataType <- "diploid"
       for(n in 1:noInds){
         eachlocus <- geno_list[[n]][m]
         noChar <- nchar(eachlocus)
         diploid <- substring(eachlocus, c(1,(noChar/2)+1), c(noChar/2,noChar))
-        oneLocus_vector <- union(oneLocus_vector, diploid)#get all alleles of a locus
-      }
-      oneLocus_vector <- sort(oneLocus_vector)
-      #remove "00" or "000" data
-      oneLocus_vector <- oneLocus_vector[! oneLocus_vector %in% "00"]
-      oneLocus_vector <- oneLocus_vector[! oneLocus_vector %in% "000"]
-      #create multi variables for locus
-      noVarOfLocus <- length(oneLocus_vector)
-      locusDf <- data.frame(matrix(ncol=noVarOfLocus, nrow=0))
-      
-      #check if a locus is missing data across all individuals, if so, save the locus index
-      if(noVarOfLocus==0){
-        missLocusIndex <- c(missLocusIndex,m)
-      }
-      
-      #check individual genotype and convert genotype data to binary-like
-      for(p in 1:noInds){
-        eachlocus <- geno_list[[p]][m]
-        noChar <- nchar(eachlocus)#count number of character (usually either 4 or 6 digits)
-        diploid <- substring(eachlocus, c(1,(noChar/2)+1), c(noChar/2,noChar))
-        binaryVector <- oneLocus_vector %in% diploid
-        #count number of TRUE
-        noTrue <- table(binaryVector)["TRUE"]
-        noTrue[is.na(noTrue)] <- 0
-        if(noTrue==1){ #if there is only one TRUE, meaning a homozygote
-          binaryVector <- binaryVector*1
-        } else {
-          binaryVector <- binaryVector*0.5
+        for(j in c(1,2)){
+          if(diploid[j] == "00" | diploid[j] == "000"){
+            diploid[j] = NA
+          }
+        }#for(j in c(1,2))
+        oneLocus_vector <- c(oneLocus_vector, diploid)
+      }#for(n in 1:noInds)
+      #check if locus is missing data across individuals
+      if(all(is.na(oneLocus_vector))){
+        missLocusIndex <- c(missLocusIndex, m)
+      }else {
+        #Convert to data frame and create dummy variables
+        oneLocusDf <- data.frame(oneLocus_vector)
+        dummyLocusMatrix <- as.data.frame(model.matrix( ~ oneLocus_vector-1,data = oneLocusDf))
+        #Insert rows if there is missing data
+        dummyLocusMatrix <- dummyLocusMatrix[match(rownames(oneLocusDf),rownames(dummyLocusMatrix)),]
+        rownames(dummyLocusMatrix) <- rownames(oneLocusDf)
+        #Replace NA with 0
+        dummyLocusMatrix[is.na(dummyLocusMatrix)] <- 0
+        #Add n and n+1 rows (each row is haploid of diploid individual) to one row in a new data frame; 
+        newDummyLocusMatrix <- NULL
+        for(i in 1:nrow(dummyLocusMatrix)){
+          if( i %% 2 == 1){ #process 1st, 3rd, 5th...row (add to i+1th row)
+            eachIndGenotype <- dummyLocusMatrix[i,] + dummyLocusMatrix[i+1,]
+            newDummyLocusMatrix <- rbind(newDummyLocusMatrix, eachIndGenotype)
+          }
         }
-        locusDf <- rbind(locusDf,binaryVector)
+        #Reorder rownames
+        rownames(newDummyLocusMatrix) <- seq(1:noInds)
+        newDummyLocusMatrix <- newDummyLocusMatrix / 2
+        #Edit column(locus) names
+        names(newDummyLocusMatrix) <- substring(names(newDummyLocusMatrix), 16, 1000L)
+        names(newDummyLocusMatrix) <- sub("\\b", paste0(locusNames[m],"_"), names(newDummyLocusMatrix))
+        #Append to genoMatrix
+        genoMatrix <- cbind(genoMatrix, newDummyLocusMatrix)
       }
-      if(!noVarOfLocus==0){
-        names(locusDf) <- paste0(locusNames[m],"_",seq_along(1:noVarOfLocus))
-        genoMatrix <- cbind(genoMatrix,locusDf)
-      }
-      
     }#else #if(haplid) 
     
   }#for(m in 1:noLocus)
