@@ -7,7 +7,7 @@
 read.genpop(x, pop.names = NULL, haploid = FALSE, pos = 1)
 }
 \arguments{
-\item{x}{The GENEPOP file name or path to the file. The filename extension (e.g., .txt) should be included.}
+\item{x}{GENEPOP file or path to the file. The filename extension (e.g., .txt) should be included.}
 
 \item{pop.names}{A character string vector for population names. The order of the name should be the same with the order (top to down) in your GENEPOP file.}
 

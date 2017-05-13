@@ -1,6 +1,12 @@
 #' Read Structure format file
 #' 
 #' This function allows you to import a Structure format file into R.  
+#' @param x STRUCTURE file or path to the file. The filename extension (e.g., .txt) should be included.
+#' @param haploid A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.
+#' @return This function returns a list comprising three elements. 1. YOU_NAME_IT$DataMatrix: A matrix of genetic data with a population name label ($popNameVector) in the last column. 2. YOU_NAME_IT$SampleID: A vector of sample ID. 3. YOU_NAME_IT$LocusName: A vector of locus name.
+#' @import stringr
+#' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
+#' @export
 #' 
 read.structure <- function(x, haploid = FALSE){
   dataType <- NULL

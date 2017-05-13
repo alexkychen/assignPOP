@@ -1,7 +1,7 @@
 #' Read GENEPOP format file
 #'
 #' This function allows you to import a GENEPOP format file into R. Population names can be specified in the argument. See http://genepop.curtin.edu.au/help_input.html for details about GENEPOP format.
-#' @param x The GENEPOP file name or path to the file. The filename extension (e.g., .txt) should be included.
+#' @param x GENEPOP file or path to the file. The filename extension (e.g., .txt) should be included.
 #' @param pop.names A character string vector for population names. The order of the name should be the same with the order (top to down) in your GENEPOP file.
 #' @param haploid A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.
 #' @param pos A parameter for program development use; users can ignore it.
@@ -12,7 +12,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
 #' @examples 
-#' genin <- read.genpop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
+#' genpop <- read.genpop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
 #' #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 #' @export
 #'
