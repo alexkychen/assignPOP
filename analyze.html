@@ -457,17 +457,17 @@ top.13(7): Locus_245(240), Locus_181(72), Locus_147(24), Locus_115(8), Locus_560
 </div>
 <div id="predict-sources-of-unknown-individuals" class="section level2">
 <h2>Predict sources of unknown individuals</h2>
-<p>After baseline data were evaluated through resampling cross-validation and the assignment results are satisfactory, you could use the entire baseline data to build a predictive model and perform assignment tests on individuals of unknown origins to predict their source populations. Here we describe how to prepare and import files for different data types and perform the assignment test using the function <code>assign.X</code>.</p>
+<p>After baseline data were evaluated through resampling cross-validation and the assignment results are satisfactory, you could use the entire baseline data to build a predictive model and perform assignment tests on individuals of unknown origins to predict their source populations. Here we describe how to prepare and import files for different data types and perform the assignment test using the function <code>assign.X()</code>.</p>
 <div id="prepare-and-import-data-of-unknown-individuals" class="section level3">
 <h3>Prepare and import data of unknown individuals</h3>
-<p>To predict sources of unknown individuals, users should save the data of unknown individuals in a separate file, and import it into R using the same functions as we use for baseline data.</p>
+<p>To predict sources of unknown individuals, users should save the data of unknown individuals in another file, and import it into R using the same functions as we used for the baseline data.</p>
 <p>To import genetic data of unknown individuals, the data should also be saved in GENEPOP format with only one group, meaning the data will have only one ‘pop’ label. To read the file, use the function <code>read.Genepop</code> and ignore the argument <code>pop.names</code> as follows.</p>
 <pre class="r"><code># Import a GENEPOP file containing unknown individuals. Make sure to use a different return object name from the one returnd from your baseline data 
 genin_unknown &lt;- read.Genepop( &quot;simGenepopX.txt&quot; )</code></pre>
 <p>You can also concatenate genetic and non-genetic data using the function <code>compile.data</code> as follows.</p>
 <pre class="r"><code>comin_unknown &lt;- compile.data(genin_unknown, &quot;OtherFeautures.csv&quot;)</code></pre>
 <p>The non-genetic data of unknown individuals (<strong>OtherFeatures.csv</strong>) should also have the identical sample IDs as the genetic data (<strong>simGenepopX.txt</strong>), and the sample IDs should be saved in the first column in the file.</p>
-<p>If you are analyzing non-genetic data, use R basic read functions, such as <code>read.csv</code> or <code>read.table</code>, to import your file.</p>
+<p>If you are analyzing non-genetic data, use R basic functions, <code>read.csv()</code> or <code>read.table()</code>, to import your file.</p>
 <pre class="r"><code>#Import non-genetic data containing sample IDs and features
 nongen_unknown &lt;- read.csv( &quot;OtherFeatures.csv&quot;, header=TRUE )</code></pre>
 <p><br></p>

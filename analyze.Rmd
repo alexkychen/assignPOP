@@ -235,11 +235,11 @@ The above results show that the top.1-top.11 loci are the top 11 highest *F~ST~*
 
 ## Predict sources of unknown individuals
 
-After baseline data were evaluated through resampling cross-validation and the assignment results are satisfactory, you could use the entire baseline data to build a predictive model and perform assignment tests on individuals of unknown origins to predict their source populations. Here we describe how to prepare and import files for different data types and perform the assignment test using the function `assign.X`. 
+After baseline data were evaluated through resampling cross-validation and the assignment results are satisfactory, you could use the entire baseline data to build a predictive model and perform assignment tests on individuals of unknown origins to predict their source populations. Here we describe how to prepare and import files for different data types and perform the assignment test using the function `assign.X()`. 
 
 ### Prepare and import data of unknown individuals
 
-To predict sources of unknown individuals, users should save the data of unknown individuals in a separate file, and import it into R using the same functions as we use for baseline data.
+To predict sources of unknown individuals, users should save the data of unknown individuals in another file, and import it into R using the same functions as we used for the baseline data.
 
 To import genetic data of unknown individuals, the data should also be saved in GENEPOP format with only one group, meaning the data will have only one 'pop' label. To read the file, use the function `read.Genepop` and ignore the argument `pop.names` as follows.
 
@@ -256,7 +256,7 @@ comin_unknown <- compile.data(genin_unknown, "OtherFeautures.csv")
 
 The non-genetic data of unknown individuals (**OtherFeatures.csv**) should also have the identical sample IDs as the genetic data (**simGenepopX.txt**), and the sample IDs should be saved in the first column in the file.
 
-If you are analyzing non-genetic data, use R basic read functions, such as `read.csv` or `read.table`, to import your file.
+If you are analyzing non-genetic data, use R basic functions, `read.csv()` or `read.table()`, to import your file.
 
 ```{r, eval=FALSE}
 #Import non-genetic data containing sample IDs and features
