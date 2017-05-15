@@ -40,7 +40,7 @@ YOUR_LIST_NAME$SampleID\
 YOUR_LIST_NAME$LocusName")
 ```
 
-When importing a STRUCTURE file, use the function `read.Structure()`, and specify the data type using the argument `haploid`. Your Structure file should include locus names (each name separated by whitespace or tab) on the first row as the column name. The first column should be your sample ID; the second column is population label and the rest of columns are genetic data. It does not matter whether your file has column names for sample ID and/or population label. 
+When importing a STRUCTURE file, use the function `read.Structure()`, and specify the data type using the argument `haploid`. Your Structure file should include locus names (each name separated by whitespace or tab) in the first row as the column name (header). The first and second column should be your sample ID and population label, respectively. No whitespace should be used within the sample ID and population label. The rest of columns are genetic data. It does not matter whether your file has column names for sample ID and/or population label. 
 
 ```{r read a structure file, eval=FALSE}
 strin <- read.Structure( "simStructure.txt", haploid = TRUE)
@@ -239,24 +239,27 @@ After baseline data were evaluated through resampling cross-validation and the a
 
 ### Prepare and import data of unknown individuals
 
-To predict sources of unknown individuals, users should save the data of unknown individuals in another file, and import it into R using the same functions as we used for the baseline data.
+To predict sources of unknown individuals, users should save the data of unknown individuals in another GENEPOP or STRUCTURE file, and then import it into R using the same functions as we used for the baseline data.
 
-To import genetic data of unknown individuals, the data should also be saved in GENEPOP format with only one group, meaning the data will have only one 'pop' label. To read the file, use the function `read.Genepop` and ignore the argument `pop.names` as follows.
+For the GENEPOP format, data should be saved with only one group - only one 'pop' label in the file. For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).   
 
 ```{r, eval=FALSE}
-# Import a GENEPOP file containing unknown individuals. Make sure to use a different return object name from the one returnd from your baseline data 
+#Import a GENEPOP file containing unknown individuals, and ignore the argument `pop.names` 
 genin_unknown <- read.Genepop( "simGenepopX.txt" )
+
+#Import a STRUCTURE file containing unknown individuals.
+strin_unknown <- read.Structure( "simStructureX.txt" )
 ```
 
-You can also concatenate genetic and non-genetic data using the function `compile.data` as follows.
+You can also concatenate genetic and non-genetic data of unknown individuals using the function `compile.data` as follows.
 
 ```{r, eval=FALSE}
 comin_unknown <- compile.data(genin_unknown, "OtherFeautures.csv")
 ```
 
-The non-genetic data of unknown individuals (**OtherFeatures.csv**) should also have the identical sample IDs as the genetic data (**simGenepopX.txt**), and the sample IDs should be saved in the first column in the file.
+The non-genetic data of unknown individuals (**OtherFeatures.csv**) should also have the identical sample IDs as the genetic data (**simGenepopX.txt**) have. The sample IDs should also be saved in the first column, and there would be no population label in the last column of your non-genetic data.
 
-If you are analyzing non-genetic data, use R basic functions, `read.csv()` or `read.table()`, to import your file.
+If you are analyzing non-genetic data alone, use R basic functions, `read.csv()` or `read.table()`, to import your file.
 
 ```{r, eval=FALSE}
 #Import non-genetic data containing sample IDs and features
@@ -267,7 +270,7 @@ nongen_unknown <- read.csv( "OtherFeatures.csv", header=TRUE )
 
 ### Perform assignment test on unknown individuals
 
-After importing training (baseline) and test (unknown individuals) data, the assignment test can be performed using the function `assign.X`. Make sure that your training and test data have the same data type and feature names. Use the argument `X1` to specify the training data; `X2`, the test data. 
+After importing your baseline data (training) and unknown individuals (test), the assignment test can be performed using the function `assign.X`. Make sure your training and test data have the same data type and feature names. Use the argument `X1` to specify the training data; `X2`, the test data.
 
 ```{r, eval=FALSE}
 # 1.Perform assignment test using genetic data and naive Bayes
@@ -282,7 +285,7 @@ assign.X( x1=morphdf_pop, x2=nongen_unknown, dir="Result-folder5/", model="rando
 # Use `?assign.X` to see other argument settings.
 ```
 
-The assignment result will be saved in a text file named *AssignmentResult.txt* under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether a membership probability plot should be generated. You can enter **Y** to visualize the results right away.  
+The assignment result will be saved in a text file named *AssignmentResult.txt* under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether you want to make a membership probability plot. Simply enter **Y** to visualize the results right away.  
 
 ***
 

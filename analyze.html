@@ -338,7 +338,7 @@ div.tocify {
 ## YOUR_LIST_NAME$DataMatrix
 ## YOUR_LIST_NAME$SampleID
 ## YOUR_LIST_NAME$LocusName</code></pre>
-<p>When importing a STRUCTURE file, use the function <code>read.Structure()</code>, and specify the data type using the argument <code>haploid</code>. Your Structure file should include locus names (each name separated by whitespace or tab) on the first row as the column name. The first column should be your sample ID; the second column is population label and the rest of columns are genetic data. It does not matter whether your file has column names for sample ID and/or population label.</p>
+<p>When importing a STRUCTURE file, use the function <code>read.Structure()</code>, and specify the data type using the argument <code>haploid</code>. Your Structure file should include locus names (each name separated by whitespace or tab) in the first row as the column name (header). The first and second column should be your sample ID and population label, respectively. No whitespace should be used within the sample ID and population label. The rest of columns are genetic data. It does not matter whether your file has column names for sample ID and/or population label.</p>
 <pre class="r"><code>strin &lt;- read.Structure( &quot;simStructure.txt&quot;, haploid = TRUE)</code></pre>
 <p>After importing your STRUCTURE file, you will also see the printed message in the console. For the sake of simplicity, we only use the GENEPOP dataset to demonstrate the rest of analyses.</p>
 <p><strong>Missing data and homozygosity.</strong> If an locus has missing alleles or is homomzygous across all individuals in the dataset, the locus will be automatically removed.</p>
@@ -460,21 +460,24 @@ top.13(7): Locus_245(240), Locus_181(72), Locus_147(24), Locus_115(8), Locus_560
 <p>After baseline data were evaluated through resampling cross-validation and the assignment results are satisfactory, you could use the entire baseline data to build a predictive model and perform assignment tests on individuals of unknown origins to predict their source populations. Here we describe how to prepare and import files for different data types and perform the assignment test using the function <code>assign.X()</code>.</p>
 <div id="prepare-and-import-data-of-unknown-individuals" class="section level3">
 <h3>Prepare and import data of unknown individuals</h3>
-<p>To predict sources of unknown individuals, users should save the data of unknown individuals in another file, and import it into R using the same functions as we used for the baseline data.</p>
-<p>To import genetic data of unknown individuals, the data should also be saved in GENEPOP format with only one group, meaning the data will have only one ‘pop’ label. To read the file, use the function <code>read.Genepop</code> and ignore the argument <code>pop.names</code> as follows.</p>
-<pre class="r"><code># Import a GENEPOP file containing unknown individuals. Make sure to use a different return object name from the one returnd from your baseline data 
-genin_unknown &lt;- read.Genepop( &quot;simGenepopX.txt&quot; )</code></pre>
-<p>You can also concatenate genetic and non-genetic data using the function <code>compile.data</code> as follows.</p>
+<p>To predict sources of unknown individuals, users should save the data of unknown individuals in another GENEPOP or STRUCTURE file, and then import it into R using the same functions as we used for the baseline data.</p>
+<p>For the GENEPOP format, data should be saved with only one group - only one ‘pop’ label in the file. For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).</p>
+<pre class="r"><code>#Import a GENEPOP file containing unknown individuals, and ignore the argument `pop.names` 
+genin_unknown &lt;- read.Genepop( &quot;simGenepopX.txt&quot; )
+
+#Import a STRUCTURE file containing unknown individuals.
+strin_unknown &lt;- read.Structure( &quot;simStructureX.txt&quot; )</code></pre>
+<p>You can also concatenate genetic and non-genetic data of unknown individuals using the function <code>compile.data</code> as follows.</p>
 <pre class="r"><code>comin_unknown &lt;- compile.data(genin_unknown, &quot;OtherFeautures.csv&quot;)</code></pre>
-<p>The non-genetic data of unknown individuals (<strong>OtherFeatures.csv</strong>) should also have the identical sample IDs as the genetic data (<strong>simGenepopX.txt</strong>), and the sample IDs should be saved in the first column in the file.</p>
-<p>If you are analyzing non-genetic data, use R basic functions, <code>read.csv()</code> or <code>read.table()</code>, to import your file.</p>
+<p>The non-genetic data of unknown individuals (<strong>OtherFeatures.csv</strong>) should also have the identical sample IDs as the genetic data (<strong>simGenepopX.txt</strong>) have. The sample IDs should also be saved in the first column, and there would be no population label in the last column of your non-genetic data.</p>
+<p>If you are analyzing non-genetic data alone, use R basic functions, <code>read.csv()</code> or <code>read.table()</code>, to import your file.</p>
 <pre class="r"><code>#Import non-genetic data containing sample IDs and features
 nongen_unknown &lt;- read.csv( &quot;OtherFeatures.csv&quot;, header=TRUE )</code></pre>
 <p><br></p>
 </div>
 <div id="perform-assignment-test-on-unknown-individuals" class="section level3">
 <h3>Perform assignment test on unknown individuals</h3>
-<p>After importing training (baseline) and test (unknown individuals) data, the assignment test can be performed using the function <code>assign.X</code>. Make sure that your training and test data have the same data type and feature names. Use the argument <code>X1</code> to specify the training data; <code>X2</code>, the test data.</p>
+<p>After importing your baseline data (training) and unknown individuals (test), the assignment test can be performed using the function <code>assign.X</code>. Make sure your training and test data have the same data type and feature names. Use the argument <code>X1</code> to specify the training data; <code>X2</code>, the test data.</p>
 <pre class="r"><code># 1.Perform assignment test using genetic data and naive Bayes
 assign.X( x1=genin, x2=genin_unknown, dir=&quot;Result-folder3/&quot;, model=&quot;naiveBayes&quot;)
 
@@ -485,7 +488,7 @@ assign.X( x1=comin, x2=comin_unknown, dir=&quot;Result-folder4/&quot;, model=&qu
 assign.X( x1=morphdf_pop, x2=nongen_unknown, dir=&quot;Result-folder5/&quot;, model=&quot;randomForest&quot;)
 
 # Use `?assign.X` to see other argument settings.</code></pre>
-<p>The assignment result will be saved in a text file named <em>AssignmentResult.txt</em> under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether a membership probability plot should be generated. You can enter <strong>Y</strong> to visualize the results right away.</p>
+<p>The assignment result will be saved in a text file named <em>AssignmentResult.txt</em> under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether you want to make a membership probability plot. Simply enter <strong>Y</strong> to visualize the results right away.</p>
 <hr />
 </div>
 </div>
