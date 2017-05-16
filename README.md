@@ -37,6 +37,7 @@ Please visit our tutorial website for more infomration
 
 ## What's new
 
+Changes in ver. 1.1.2
 - 2017.5.13 Change function name read.genpop to read.Genepop; Add function read.Structure.
 - 2017.5.2 Update read.genpop function, now can read haploid data
 
