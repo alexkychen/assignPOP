@@ -9,6 +9,6 @@ URL: https://github.com/alexkychen/assignPOP, http://alexkychen.github.io/assign
 Depends: R (>= 2.3.2)
 Imports:
     caret, doParallel, e1071, foreach, ggplot2, MASS, parallel, randomForest, reshape2, stringr, tree,
-Suggests: gtable, iterators, klaR, stringi, knitr, rmarkdown, testthat
+Suggests: gtable, iterators, klaR, stringi, knitr, rmarkdown
 License: GPL (>=2)
 RoxygenNote: 5.0.1
