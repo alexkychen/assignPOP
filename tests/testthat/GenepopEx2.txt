@@ -1,0 +1,16 @@
+Title line: "Mosquito populations in southern France"
+MicroSat 1
+Microsat 2
+Est-3
+Pop
+RueDuQuai    ,  250230 564568 110100
+RueDuQuai    ,  252238 568558 100120
+RueDuQuai    ,  254230 564558 090100
+RueDuQuai    ,  250230 564568 110100
+RueDuQuai    ,  252240 568558 100120
+RueDuQuai    ,  254230 564558 090090
+Pop
+Benitier     ,  254230 564558 080100
+Benitier     ,  000230 564558 090080
+Benitier     ,  254230 000000 090100
+Benitier     ,  254230 564000 090120

@@ -1,0 +1,15 @@
+id pop loc_a loc_b loc_c loc_d loc_e
+George 1 -9 145 66 0 92
+George 1 -9 -9 64 0 94
+Paula 1 106 142 68 1 92
+Paula 1 106 148 64 0 94
+Matthew 2 110 145 -9 0 92
+Matthew 2 110 148 66 1 -9
+Bob 2 108 142 64 1 94
+Bob 2 -9 142 -9 0 94
+Anja 1 112 142 -9 1 -9
+Anja 1 114 142 66 1 94
+Peter 1 -9 145 66 0 -9
+Peter 1 110 145 -9 1 -9
+Carsten 2 108 145 62 0 -9
+Carsten 2 110 145 64 1 92
