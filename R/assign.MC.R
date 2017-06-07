@@ -1134,7 +1134,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
         "train.loci =",train.loci,"\n",
         "iterations =",iterations,"\n",
         "Total assignment tests =",length(train.inds)*length(train.loci)*iterations,"\n",
-        "fst locus sample method:",loci.sample,"\n",
+        "Fst locus sample method:",loci.sample,"\n",
         "Data scaled and centerd:",scaled,"\n",
         "PC retaining criteria:",pca.PCs,"\n",
         "PCA for non-genetic data:",pca.method,"\n",

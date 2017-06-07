@@ -12,6 +12,7 @@
 #' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier.
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
+#' @param mplot A logical variable to specify whether making a membership probability plot right after the assignment test is done. Set TRUE to make the plot. Otherwise, it will prompt a question.
 #' @param ... Other arguments that could be potentially used for various models 
 #' @return This function outputs assignment results and other analytical information in text files that will be saved under your designated folder. It also outputs a membership probability plot, if permitted.
 #' @import stringr
@@ -29,7 +30,7 @@
 #' @export
 #' 
 assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="kaiser-guttman", pca.loadings=F, 
-                     model="svm", svm.kernel="linear", svm.cost=1, ntree=50,...){
+                     model="svm", svm.kernel="linear", svm.cost=1, ntree=50, mplot=FALSE, ...){
   #check if x1 and x2 are the same type
   if(!class(x1)==class(x2)){
     stop("Input data sets are not the same type. Enter '?assign.X' to see description of x1 and x2 arguments")
@@ -309,7 +310,11 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     cat("\n  Assignment test is done! See results in your designated folder.")
     cat("\n  Predicted populations and probabilities are saved in [AssignmentResult.txt]")
     #Make a membership probability plot if answer is "Y"
-    ans1 <- readline("  Do you want to make a membership probability plot now? (enter Y/N): ")
+    if(mplot){
+      ans1 <- "Y"
+    }else{
+      ans1 <- readline("  Do you want to make a membership probability plot now? (enter Y/N): ")
+    }
     if(grepl(pattern ="N", toupper(ans1))){
       on.exit()
     }else if(grepl(pattern ="Y", toupper(ans1))){
@@ -539,7 +544,11 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     cat("\n  Assignment test is done! See results in your designated folder.")
     cat("\n  Predicted populations and probabilities are saved in [AssignmentResult.txt]")
     #Make a membership probability plot if answer is "Y"
-    ans1 <- readline("  Do you want to make a membership probability plot now? (enter Y/N): ")
+    if(mplot){
+      ans1 <- "Y"
+    }else{
+      ans1 <- readline("  Do you want to make a membership probability plot now? (enter Y/N): ")
+    }
     if(grepl(pattern="N", toupper(ans1))){
       on.exit()
     }else if(grepl(pattern="Y", toupper(ans1))){

@@ -6,7 +6,7 @@
 \usage{
 assign.X(x1, x2, dir = NULL, scaled = F, pca.method = "mixed",
   pca.PCs = "kaiser-guttman", pca.loadings = F, model = "svm",
-  svm.kernel = "linear", svm.cost = 1, ntree = 50, ...)
+  svm.kernel = "linear", svm.cost = 1, ntree = 50, mplot = FALSE, ...)
 }
 \arguments{
 \item{x1}{An input object containing data from known individuals for building predictive models. It could be a list object returned from the function read.genpop(), reduce.allele() or compile.data(). Or, it could be a data frame containing non-genetic data returned from read.csv() or read.table().}
@@ -30,6 +30,8 @@ assign.X(x1, x2, dir = NULL, scaled = F, pca.method = "mixed",
 \item{svm.cost}{A number to specify the cost for "svm" method.}
 
 \item{ntree}{A integer to specify how many trees to build when using "randomForest" method.}
+
+\item{mplot}{A logical variable to specify whether making a membership probability plot right after the assignment test is done. Set TRUE to make the plot. Otherwise, it will prompt a question.}
 
 \item{...}{Other arguments that could be potentially used for various models}
 }

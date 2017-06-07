@@ -1062,7 +1062,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
         "k.fold =",k.fold,"\n",
         "train.loci =",train.loci,"\n",
         "Total assignment tests =",sum(k.fold*length(train.loci)),"\n",
-        "fst locus sample method:",loci.sample,"\n",
+        "Fst locus sample method:",loci.sample,"\n",
         "Data scaled and centerd:",scaled,"\n",
         "PC retaining criteria:",pca.PCs,"\n",
         "PCA for non-genetic data:",pca.method,"\n",

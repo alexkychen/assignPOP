@@ -1,13 +1,14 @@
  Analysis Description ( R - assignPOP ver. 1.1.2 )
- Perform assign.kfold() @ 2017-06-07 16:07:06 
+ Perform assign.MC() @ 2017-06-07 16:05:05 
 
- k.fold = 3 
+ train.inds = 0.5 
  train.loci = 1 
+ iterations = 3 
  Total assignment tests = 3 
- Fst locus sample method: random 
+ Fst locus sample method: fst 
  Data scaled and centerd: FALSE 
  PC retaining criteria: kaiser-guttman 
- PCA for non-genetic data: mixed 
+ PCA for non-genetic data: NA 
  Machine learning model: svm 
 
  Input Data ( genetics )

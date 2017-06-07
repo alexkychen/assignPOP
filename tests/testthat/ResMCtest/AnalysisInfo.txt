@@ -1,11 +1,11 @@
  Analysis Description ( R - assignPOP ver. 1.1.2 )
- Perform assign.MC() @ 2017-06-06 22:34:57 
+ Perform assign.MC() @ 2017-06-07 16:05:05 
 
  train.inds = 0.5 
  train.loci = 1 
  iterations = 3 
  Total assignment tests = 3 
- fst locus sample method: random 
+ Fst locus sample method: random 
  Data scaled and centerd: FALSE 
  PC retaining criteria: kaiser-guttman 
  PCA for non-genetic data: NA 

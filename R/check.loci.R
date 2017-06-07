@@ -23,11 +23,17 @@ check.loci <- function(dir=NULL, top.loci=20){
       #fst.level[i] <- oneFileName[3]
       #iters[i] <- unlist(strsplit(oneFileName[4],split=".txt"))
     }
-    trainLevels <- unique(train_level)#check out unique train levels
-    cat(paste0("\n  ",length(trainLevels)," levels of training individuals are found."))
-    cat("\n  Which levels would you like to check? (separate levels by a whitespace if multiple)")
-    cat("\n  Options: ");cat(trainLevels, sep=", ");cat(", or all")
-    ans_0 <- readline("\n  enter here: ")
+    trainLevels <- unique(train_level)#check out unique training individual levels
+    #see if only one level of training individuals, if so, skip question
+    if(length(trainLevels)==1){
+      ans_0 <- "all"
+    }else{ # if levels of training individuals are more than one
+      cat(paste0("\n  ",length(trainLevels)," levels of training individuals are found."))
+      cat("\n  Which levels would you like to check? (separate levels by a whitespace if multiple)")
+      cat("\n  Options: ");cat(trainLevels, sep=", ");cat(", or all")
+      ans_0 <- readline("\n  enter here: ")
+    }
+    
     if(grepl(pattern="ALL",toupper(ans_0))){ #if answer is "all"
       cat(paste0("Loci occur in top ",top.loci," high Fst across all training data\n"), file=paste0(dir,"High_Fst_Locus_Freq.txt")) #Output the following result to text file
       lociMatrix <- NULL
@@ -98,5 +104,6 @@ check.loci <- function(dir=NULL, top.loci=20){
 
   }else if(grepl(pattern="random", locusSampleMethod)){
     #save for future development
+    message('Checking loci of results generated from random sampling is not useful.\nUse loci.sample = "Fst" in your analyses.')
   }
 }
