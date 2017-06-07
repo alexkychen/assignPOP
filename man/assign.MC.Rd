@@ -8,7 +8,7 @@ assign.MC(x, train.inds = c(0.5, 0.7, 0.9), train.loci = c(0.1, 0.25, 0.5,
   1), loci.sample = "fst", iterations = 20, dir = NULL, scaled = FALSE,
   pca.method = "mixed", pca.PCs = "kaiser-guttman", pca.loadings = F,
   model = "svm", svm.kernel = "linear", svm.cost = 1, ntree = 50,
-  processors = 999, ...)
+  multiprocess = TRUE, processors = 999, skipQ = FALSE, ...)
 }
 \arguments{
 \item{x}{An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data(). It could also be a data frame (with column name) returned from read.csv() or read.table() if you're analyzing non-genetic data, such as morphormetrics, chemistry data. The non-genetic data frame should have sample ID in the first column and population label in the last column.}
@@ -39,7 +39,11 @@ assign.MC(x, train.inds = c(0.5, 0.7, 0.9), train.loci = c(0.1, 0.25, 0.5,
 
 \item{ntree}{A integer to specify how many trees to build when using "randomForest" method.}
 
+\item{multiprocess}{A logical variable to determine whether using multiprocess. Default is TRUE. If set FALSE, it will only use single core to run the program.}
+
 \item{processors}{The number of processors to be used for parallel running. By default, it uses N-1 processors in your computer.}
+
+\item{skipQ}{A logical variable to determine whether prompting interactive dialogue when analyzing non-genetic data. If set TRUE, default data type and original values of non-genetic data will be used.}
 
 \item{...}{Other arguments that could be potentially used for various models}
 }

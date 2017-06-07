@@ -4,7 +4,7 @@
 \alias{compile.data}
 \title{Compile genetic and other non-genetic data}
 \usage{
-compile.data(x, add.x, method = "common")
+compile.data(x, add.x, method = "common", skipQ = F)
 }
 \arguments{
 \item{x}{A returned object (list) from the function read.genpop() or reduce.allele().}
@@ -12,6 +12,8 @@ compile.data(x, add.x, method = "common")
 \item{add.x}{A file containing non-genetic data that has sample ID in the first column. The sample ID must be the same as your GENEPOP file.}
 
 \item{method}{A method to match sample ID between genetic and non-genetic data. The "common" method only concatenate the data that has sample ID in both files. If an individual only exists in one of the files, this individual will be discarded.}
+
+\item{skipQ}{A logical variable to determine whether prompting interactive dialogue. If set TRUE, input data type will be recognized as default type and not be verified by the user.}
 }
 \value{
 This function returns a new object (list) that comprises 5 items. [[1]] data matrix including genetic and non-genetic data, [[2]] a sample ID vector, [[3]] a locus name vector, [[4]] a vector of non-genetic variable names, and [[5]] the number of non-genetic variables.

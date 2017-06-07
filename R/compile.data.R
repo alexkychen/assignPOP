@@ -4,6 +4,7 @@
 #' @param x A returned object (list) from the function read.genpop() or reduce.allele().
 #' @param add.x A file containing non-genetic data that has sample ID in the first column. The sample ID must be the same as your GENEPOP file.
 #' @param method A method to match sample ID between genetic and non-genetic data. The "common" method only concatenate the data that has sample ID in both files. If an individual only exists in one of the files, this individual will be discarded.
+#' @param skipQ A logical variable to determine whether prompting interactive dialogue. If set TRUE, input data type will be recognized as default type and not be verified by the user.
 #' @return This function returns a new object (list) that comprises 5 items. [[1]] data matrix including genetic and non-genetic data, [[2]] a sample ID vector, [[3]] a locus name vector, [[4]] a vector of non-genetic variable names, and [[5]] the number of non-genetic variables.
 #' @import stringr
 #' @importFrom reshape2 melt
@@ -14,7 +15,7 @@
 #' #Change file 'TinyVars' to 'morphData' to get the example used in the tutorial.
 #' @export
 #'
-compile.data <- function(x, add.x, method="common"){
+compile.data <- function(x, add.x, method="common", skipQ = F){
   #Read genetic and non-genetic data
   genoMatrix <- x[[1]]
   if(grepl(pattern=".csv", add.x)){
@@ -35,7 +36,12 @@ compile.data <- function(x, add.x, method="common"){
     var_type <- class(add.df[,i+1])
     cat(paste0("   ",var_name,"(",var_type,")"))
   }
-  ans_0 <- readline("  Are they correct? (enter Y/N): ")
+  if(skipQ){
+    ans_0 <- "Y"
+  }else{
+    ans_0 <- readline("  Are they correct? (enter Y/N): ")
+  }
+  
   if(grepl(pattern="N",toupper(ans_0))){
     cat("  please enter variable names for changing data type (separate names by a whitespace if multiple)\n")
     ans_1 <- readline("  enter here: ")
