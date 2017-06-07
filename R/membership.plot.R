@@ -3,12 +3,13 @@
 #' This function allows you to make a membership probability plot (stacked-bar plot) using results estimated from K-fold cross-validation.
 #' @param dir A character string to specify the folder that has your K-fold cross-validation assignment results. A slash should be entered at the end.
 #' @param style An option for output style. If style=1, it creates the plot which individuals on the x-axis are in random order. If style=2, individuals are sorted by probabilities within each population. If style=3, individuals of different folds are in seperate plots. If style=4, individuals are separated by fold and sorted by probability.
+#' @param non.genetic A logical variable to specify if data are non-genetic. Set it TRUE if you're analyzing non-genetic alone.
 #' @return his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @import ggplot2
 #' @importFrom reshape2 melt
 #' @importFrom stats reorder
 #' @export
-membership.plot <- function(dir=NULL, style=NULL){
+membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
   Ind.ID <- NULL; value <- NULL; variable <- NULL #some NULL variable to handle R CMD check
   #Read all "Out_*" file names in a specified directory
   fileName_vec <- list.files(path=dir, pattern="Out_*")
@@ -29,14 +30,20 @@ membership.plot <- function(dir=NULL, style=NULL){
   }
   k.fold <- unique(k_fold_vec)#identify unique levels of K
   train.loci <- unique(train_loci_vec)#identify unique levels of training loci
-
-  cat("\n  K = ");cat(paste0(k.fold," "));cat(" are found.") #print out detected "K" on console
-  ans_k <- readline("  Please enter one of the K numbers: ") #ask user to enter one of the K numbers
-  ans_k <- str_trim(ans_k, side="both") #clean any space
-  if(!ans_k %in% k.fold){
-    cat("\n  Entry is not correct.")
-    break
+  
+  #Check if k.fold only has one level or multiple levels
+  if(length(k.fold) == 1){
+    ans_k <- k.fold
+  }else{
+    cat("\n  K = ");cat(paste0(k.fold," "));cat(" are found.") #print out detected "K" on console
+    ans_k <- readline("  Please enter one of the K numbers: ") #ask user to enter one of the K numbers
+    ans_k <- str_trim(ans_k, side="both") #clean any space
+    if(!ans_k %in% k.fold){
+      cat("\n  Entry is not correct.")
+      break
+    }
   }
+
   #Check training loci proportions (levels) or if it is non-genetic data only
   if(length(train.loci) > 1){
     cat(paste0("\n  ", length(train.loci)," proportions of training loci are found."))
@@ -50,12 +57,16 @@ membership.plot <- function(dir=NULL, style=NULL){
     pltext <- paste0(" , training locus proportion = ",ans_t)
   #If there is only one proportion of training loci or it is non-genetic data only  
   }else if(length(train.loci)==1){
-    cat(paste0("\n  Only one proportion of training loci is found."))
-    ans_t <- readline("  Does data include genetic loci? (enter Y/N): ")
-    ans_t <- str_trim(ans_t, side="both")
-    if(!toupper(ans_t) %in% c("N","Y","NO","YES")){
-      cat("\n  Entry is not correct.")
-      break
+    if(non.genetic){
+      ans_t <- "N"
+    }else{
+      cat(paste0("\n  Only one proportion of training loci is found."))
+      ans_t <- readline("  Do data include genetic loci? (enter Y/N): ")
+      ans_t <- str_trim(ans_t, side="both")
+      if(!toupper(ans_t) %in% c("N","Y","NO","YES")){
+        cat("\n  Entry is not correct.")
+        break
+      }
     }
     if(grepl(pattern="Y",toupper(ans_t))){
       pltext <- paste0(" , training locus proportion = ",train.loci)

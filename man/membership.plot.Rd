@@ -4,12 +4,14 @@
 \alias{membership.plot}
 \title{Make a membership probability plot using results from K-fold cross-validation (ggplot2 style)}
 \usage{
-membership.plot(dir = NULL, style = NULL)
+membership.plot(dir = NULL, style = NULL, non.genetic = FALSE)
 }
 \arguments{
 \item{dir}{A character string to specify the folder that has your K-fold cross-validation assignment results. A slash should be entered at the end.}
 
 \item{style}{An option for output style. If style=1, it creates the plot which individuals on the x-axis are in random order. If style=2, individuals are sorted by probabilities within each population. If style=3, individuals of different folds are in seperate plots. If style=4, individuals are separated by fold and sorted by probability.}
+
+\item{non.genetic}{A logical variable to specify if data are non-genetic. Set it TRUE if you're analyzing non-genetic alone.}
 }
 \value{
 his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
