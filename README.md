@@ -19,12 +19,12 @@ This R package helps perform population assignment and infer population structur
 - Output results in publication-quality plots that can be modified using ggplot2 functions
 
 ## Install assignPOP
-You can install the package from CRAN or this Github respository. The lastest version should be on the Github, whereas the CRAN hosts the stable version. See the version number on the badges. 
+You can install the released version from CRAN or the up-to-date version from this Github respository.
 
-- To install from CRAN [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
+- To install from CRAN
   * Simply enter `install.packages("assignPOP")` in your R console
 
-- To install from Github [![GitHub release](https://img.shields.io/github/release/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/releases)
+- To install from Github
   * step 1. Install devtools package by entering `install.packages("devtools")`
   * step 2. Import the library, `library(devtools)`
   * step 3. Then enter `install_github("alexkychen/assignPOP")` 
