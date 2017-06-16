@@ -39,7 +39,7 @@ check.loci(dir="ResultFolder_MC/", top.loci=20)
 ***
 ### Example 2. Evaluate integrated data from known individuals
 ```{r, eval=FALSE}
-#Import a GENEPOP file
+#Import a STRUCTURE file
 strinfile <- read.Structure("YourStructureFile.txt")
 
 #Concatenate genepop and non-genetic data
