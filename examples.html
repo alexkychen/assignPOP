@@ -213,12 +213,12 @@ $(document).ready(function () {
 </div>
 
 
-<p>The following chunks of codes demonstrate how functions are used to perform assignment for different data types and tasks. Please change file and variable names accordingly. Use different argument values if desired.</p>
+<p>The following chunks of codes demonstrate how functions are used to perform assignment for different data types and tasks. Please change file and variable names accordingly, and use different argument values for your needs.</p>
 <hr />
 <div id="example-1.-evaluate-genetic-data-from-known-individuals" class="section level3">
 <h3>Example 1. Evaluate genetic data from known individuals</h3>
 <pre class="r"><code>#Import a GENEPOP file
-geninfile &lt;- read.genpop(&quot;YourGenepop.txt&quot;, pop.names=c(&quot;pop_A&quot;,&quot;pop_B&quot;,&quot;pop_C&quot;))
+geninfile &lt;- read.Genepop(&quot;YourGenepopFile.txt&quot;, pop.names=c(&quot;pop_A&quot;,&quot;pop_B&quot;,&quot;pop_C&quot;))
 
 #Reduce low variance loci (optional)
 geninfile_rd &lt;- reduce.allele(geninfile, p=0.95)
@@ -247,10 +247,10 @@ check.loci(dir=&quot;ResultFolder_MC/&quot;, top.loci=20)</code></pre>
 <div id="example-2.-evaluate-integrated-data-from-known-individuals" class="section level3">
 <h3>Example 2. Evaluate integrated data from known individuals</h3>
 <pre class="r"><code>#Import a GENEPOP file
-geninfile &lt;- read.genpop(&quot;YourGenepop.txt&quot;, pop.names=c(&quot;pop_A&quot;,&quot;pop_B&quot;,&quot;pop_C&quot;))
+strinfile &lt;- read.Structure(&quot;YourStructureFile.txt&quot;)
 
 #Concatenate genepop and non-genetic data
-conData &lt;- compile.data(geninfile, &quot;OtherFeature.csv&quot;)
+conData &lt;- compile.data(strinfile, &quot;OtherFeature.csv&quot;)
 
 #Perform Monte-Carlo cross-validation, with subsets of random loci plus additional features as training data. The whole data is scaled (scaled=TRUE) before performing PCA and cross-validation. Each PC summarizes variance of genetic and non-genetic data (pca.method=&quot;mixed&quot;).
 assign.MC(conData, train.inds=c(30, 40, 50), train.loci=c(0.1, 0.25, 0.5, 1), loci.sample=&quot;random&quot;,
@@ -286,7 +286,7 @@ accuracy.plot(accuRes_MC, pop=c(&quot;all&quot;,&quot;pop_A&quot;,&quot;pop_B&qu
 <div id="example-4.-assign-unknown-individuals-using-integrated-data" class="section level3">
 <h3>Example 4. Assign unknown individuals using integrated data</h3>
 <pre class="r"><code>#Import genetic data of known individuals
-genin_known &lt;- read.genpop(&quot;YourGenepop_Known.txt&quot;, pop.names=c(&quot;pop_A&quot;,&quot;pop_B&quot;,&quot;pop_C&quot;))
+genin_known &lt;- read.Genepop(&quot;YourGenepop_Known.txt&quot;, pop.names=c(&quot;pop_A&quot;,&quot;pop_B&quot;,&quot;pop_C&quot;))
 
 #Concatenate genetic and non-genetic data of known individuals
 conData_known &lt;- compile.data(genin_known, &quot;OtherFeatures_Known.csv&quot;)

@@ -3,13 +3,13 @@ title: "Examples"
 output: html_document
 ---
 
-The following chunks of codes demonstrate how functions are used to perform assignment for different data types and tasks. Please change file and variable names accordingly. Use different argument values if desired. 
+The following chunks of codes demonstrate how functions are used to perform assignment for different data types and tasks. Please change file and variable names accordingly, and use different argument values for your needs. 
 
 ***
 ### Example 1. Evaluate genetic data from known individuals
 ```{r, eval=FALSE}
 #Import a GENEPOP file
-geninfile <- read.genpop("YourGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"))
+geninfile <- read.Genepop("YourGenepopFile.txt", pop.names=c("pop_A","pop_B","pop_C"))
 
 #Reduce low variance loci (optional)
 geninfile_rd <- reduce.allele(geninfile, p=0.95)
@@ -40,10 +40,10 @@ check.loci(dir="ResultFolder_MC/", top.loci=20)
 ### Example 2. Evaluate integrated data from known individuals
 ```{r, eval=FALSE}
 #Import a GENEPOP file
-geninfile <- read.genpop("YourGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"))
+strinfile <- read.Structure("YourStructureFile.txt")
 
 #Concatenate genepop and non-genetic data
-conData <- compile.data(geninfile, "OtherFeature.csv")
+conData <- compile.data(strinfile, "OtherFeature.csv")
 
 #Perform Monte-Carlo cross-validation, with subsets of random loci plus additional features as training data. The whole data is scaled (scaled=TRUE) before performing PCA and cross-validation. Each PC summarizes variance of genetic and non-genetic data (pca.method="mixed").
 assign.MC(conData, train.inds=c(30, 40, 50), train.loci=c(0.1, 0.25, 0.5, 1), loci.sample="random",
@@ -81,7 +81,7 @@ accuracy.plot(accuRes_MC, pop=c("all","pop_A","pop_B","pop_C"))
 ### Example 4. Assign unknown individuals using integrated data 
 ```{r, eval=FALSE}
 #Import genetic data of known individuals
-genin_known <- read.genpop("YourGenepop_Known.txt", pop.names=c("pop_A","pop_B","pop_C"))
+genin_known <- read.Genepop("YourGenepop_Known.txt", pop.names=c("pop_A","pop_B","pop_C"))
 
 #Concatenate genetic and non-genetic data of known individuals
 conData_known <- compile.data(genin_known, "OtherFeatures_Known.csv")
