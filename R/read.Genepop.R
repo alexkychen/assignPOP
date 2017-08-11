@@ -96,8 +96,10 @@ read.Genepop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
         oneLocus_vector <- c(oneLocus_vector, eachlocus)
         
       }#for(n in 1:noInds)
-      #check if a locus is missing data across all individuals, if so, save the locus index
-      if(all(is.na(oneLocus_vector)) | length(unique(oneLocus_vector)) == 1){
+      #check if a locus is missing data or has only one allele across all individuals, if so, save the locus index
+      oneLocus_check <- NULL
+      oneLocus_check <- oneLocus_vector[!is.na(oneLocus_vector)]
+      if(length(unique(oneLocus_check)) <= 1){
         missLocusIndex <- c(missLocusIndex,m)
         #If not missing data, process data
       }else {
