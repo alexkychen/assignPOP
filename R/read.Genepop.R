@@ -128,8 +128,10 @@ read.Genepop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
         }#for(j in c(1,2))
         oneLocus_vector <- c(oneLocus_vector, diploid)
       }#for(n in 1:noInds)
-      #check if locus is missing data across individuals
-      if(all(is.na(oneLocus_vector)) | length(unique(oneLocus_vector)) == 1){
+      #check if locus is missing data or has only one allele across individuals
+      oneLocus_check <- NULL
+      oneLocus_check <- oneLocus_vector[!is.na(oneLocus_vector)]
+      if(length(unique(oneLocus_check)) <= 1){
         missLocusIndex <- c(missLocusIndex, m)
       }else {
         #Convert to data frame and create dummy variables
