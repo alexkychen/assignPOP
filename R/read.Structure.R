@@ -84,7 +84,9 @@ read.Structure <- function(x, haploid = FALSE){
         oneLocus_vector <- c(oneLocus_vector, eachLocus)
       }#for(j in 1:noInds)
       #Check if a locus is missing data across individuals
-      if(all(is.na(oneLocus_vector)) | length(unique(oneLocus_vector)) == 1){
+      oneLocus_check <- NULL
+      oneLocus_check <- oneLocus_vector[!is.na(oneLocus_vector)]
+      if(length(unique(oneLocus_check)) <= 1){
         missLocusIndex <- c(missLocusIndex, m)
       }else {
         #Convert one locus dataset to dummy locus variables
@@ -152,7 +154,9 @@ read.Structure <- function(x, haploid = FALSE){
         oneLocus_vector <- c(oneLocus_vector, eachlocus)
       }#for(n in 1:(noInds*2))
       #Check if a locus is missing data across individuals
-      if(all(is.na(oneLocus_vector)) | length(unique(oneLocus_vector)) == 1){
+      oneLocus_check <- NULL
+      oneLocus_check <- oneLocus_vector[!is.na(oneLocus_vector)]
+      if(length(unique(oneLocus_check)) <= 1){
         missLocusIndex <- c(missLocusIndex, m)
       }else{
         #Convert oneLocus_vector to data frame and create dummy variables
