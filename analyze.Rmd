@@ -17,10 +17,10 @@ Baseline data are individuals and their features (e.g., genetic loci, non-geneti
 
 assignPOP accepts genetic data in GENEPOP^[Rousset, F. (2008). genepop’007: A Complete Re-Implementation of the Genepop Software for Windows and Linux. *Molecular Ecology Resources* 8(1): 103–106.] and STRUCTURE^[Pritchard, J.K., Stephens, M. & Donnelly, P. (2000). Inference of Population Structure Using Multilocus Genotype Data. *Genetics*, 155, 945–959.] formats. Both formats can be either diploid or haploid data. 
 
-When importing a GENEPOP file, [two forms](http://genepop.curtin.edu.au/help_input.html) of GENEPOP can be read into R using the function `read.Genepop()`. Populatino names can be specified using the argument `pop.names`, and the order of population names should follow the group order in your GENEPOP file^[The name order in the argument `pop.names` should match the group order in your GENEPOP file. For example, the first name, `pop_A`, in `pop.names=c("pop_A","pop_B","pop_C")` is the first group (pop) of individuals in the GENEPOP. If `pop.names` is not provided, pop.*NUMBER* (e.g., pop.1, pop.2) will be used as the population name.]. These population names can be used to customize the assignment accuracy plot later on. Use the argument `haploid` to specify your data type (e.g., use `haploid=F` for diploid data).
+When importing a GENEPOP file, [two forms](http://genepop.curtin.edu.au/help_input.html) of GENEPOP can be read into R using the function `read.Genepop()`. Populatino names can be specified using the argument `pop.names`, and the order of population names should follow the group order in your GENEPOP file^[The name order in the argument `pop.names` should match the group order in your GENEPOP file. For example, the first name, `pop_A`, in `pop.names=c("pop_A","pop_B","pop_C")` is the first group (pop) of individuals in the GENEPOP. If `pop.names` is not provided, pop.*NUMBER* (e.g., pop.1, pop.2) will be used as the population name.]. These population names can be used to customize the assignment accuracy plot later on. Use the argument `haploid` to specify your data type (e.g., use `haploid=T` for haploid data).
 
 ```{r read a genepop file, eval=FALSE}
-genin <- read.Genepop( "simGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"), haploid = FALSE)
+YourGenepop <- read.Genepop( "simGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"), haploid = FALSE)
 ```
 
 The example input file, [*simGenepop.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepop.txt), contains **three** simulated populations (or subpopulations) and each population has 30 individuals by 1,000 SNP loci. Depending on the data size, the importing process may take a few secnods to minutes. A progress bar will be running while importing the data. After importing the file, you should see the following message printed in your R console. Use the information to double check whether your data were correctly imported.
@@ -43,7 +43,7 @@ YOUR_LIST_NAME$LocusName")
 When importing a STRUCTURE file, use the function `read.Structure()`, and specify the data type using the argument `haploid`. Your Structure file should include locus names (each name separated by whitespace or tab) in the first row as the column name (header). The first and second column should be your sample ID and population label, respectively. No whitespace should be used within the sample ID and population label. The rest of columns are genetic data. It does not matter whether your file has column names for sample ID and/or population label. 
 
 ```{r read a structure file, eval=FALSE}
-strin <- read.Structure( "simStructure.txt", haploid = TRUE)
+YourStructure <- read.Structure( "simStructure.txt", haploid = TRUE)
 ```
 
 After importing your STRUCTURE file, you will also see the printed message in the console. For the sake of simplicity, we only use the GENEPOP dataset to demonstrate the rest of analyses. 
@@ -56,10 +56,10 @@ After importing your STRUCTURE file, you will also see the printed message in th
 
 When analyzing genetic data, you can remove low variance loci^[A low variance locus - which has a major allele in most individuals and a minor allele in very few individuals - is unlikely useful because if an allele only occurs in the training or test data, it will not help ascertain population membership of test individuals.] across the dataset for further analyses. The default of variance threshold is 0.95, meaning that a locus will be removed from the dataset if its major allele occurs in over 95% of individuals across the populations.
 
-To remove low variance loci, use the following function and provide a new return object name (`genin_rd` in this case) : 
+To remove low variance loci, use the following function and provide a new return object name (`YourGenepopRd` in this case) : 
 
 ```{r reduce loci, eval=FALSE}
-genin_rd <- reduce.allele(genin, p = 0.95)
+YourGenepopRd <- reduce.allele(YourGenepop, p = 0.95)
 ```
 
 After entering the code, R console should print the following message. 
@@ -79,10 +79,10 @@ In our example, 307 low variance loci^[In this case, we have 614 alleles across 
 
 Concatenating genetic and non-genetic data is one of the novel features in this package. After importing your GENEPOP file, you can use the function `compile.data()` to concatenate a non-genetic dataset and the genetic matrix returned from either `read.Genepop()`, `read.Structure()`, or `reduce.allele()`. Your non-genetic data should be saved in a .csv file (elements separated by commas) or table-like text file (elements separated by spaces) in which the first column must be sample IDs that match the IDs in your GENEPOP or STRUCTURE file, and the rest of columns are non-genetic data, whether it is numeric or categorical. If a sample ID exists in only one of the data types, the individual will be ignored in the new integrated data. 
 
-To concatenate datasets, use the following function and provide a new return object name (`comin` in this case):
+To concatenate datasets, use the following function and provide a new return object name (`YourIntegrateData` in this case):
 
 ```{r run compile.data, eval=FALSE}
-comin <- compile.data(genin_rd, "morphData.csv")
+YourIntegrateData <- compile.data( YourGenepopRd, "morphData.csv")
 ```
 
 The above [*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv) file has the same individuals as the [*simGenepop.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepop.txt) and it contains 4 numeric variables (morphometric measurements) for each individual. After executing the function, it will prompt the following message and wait for your answer to verify the data type (numeric or categorical). 
@@ -136,8 +136,7 @@ When analyzing genetic data (genetic-only or integrated), users can specify what
 When performing Monte-Carlo cross-validation (`assign.MC()`), users can specify multiple proportions or multiple numbers of individuals from each population to be used as training individuals. Each combination of training individuals and features (e.g., loci or non-genetic measurements) can be resampled multiple times. For example, the code below performs Monte-Carlo cross-validation, with using 50%, 70%, and 90% of random individuals from each population (arg. `train.inds`) crossed by top 10%, 25%, 50% of high *F~ST~* loci, and all loci (arg. `train.loci`, `loci.sample="fst"`) as training data. Each combination of training data is resampled 30 times (arg. `iterations`). As a result, it performs a total of 360 assignment tests (3 levels of training individuals by 4 levels of training loci by 30 iterations). 
 
 ```{r run assign.MC, eval=FALSE}
-assign.MC(genin_rd, train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1), 
-          loci.sample="fst", iterations=30, dir="Result-folder/", model="svm" )
+assign.MC( YourGenepopRd, dir="Result-folder/", train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1), loci.sample="fst", iterations=30, model="svm" )
 ```
 
 To use certain numbers, rather than proportions, of individuals from each population as training data, enter positive integers in the argument `train.inds`(e.g., `train.inds = c(10, 20, 30)`). The reason of using equal number of traininig individuals from each population is that it can avoid biases due to unbalanced population sample size^[Puechmaille, S.J. (2016). The program structure does not reliably recover the correct population structure when sampling is uneven: subsampling and new estimators alleviate the problem. *Molecular Ecology Resources*, 16, 608–627], ^[Wang, J. (2016). The computer program Structure for assigning individuals to populations: easy to use but easier to misuse. *Molecular Ecology Resources*.].
@@ -153,7 +152,7 @@ In addition, you can use the argument `model` to select a classification method 
 Because Monte-Carlo cross-validation that repeats assignment tests through resampling random individuals does not guarantee every individual was tested, estimating membership probability of all individuals in this way could be problematic. To estimate membership probability, we introduce *K*-fold cross-validation (`assign.kfold()`) in which individuals from each population are divided into K groups. One of the K groups is tested by the predictive model built based on the remaining K-1 groups. Such an assignment test repeats until every group was tested. Multiple K values can be specified (arg. `k.fold`) in one analysis as follows.
 
 ```{r run assign.kfold, eval=FALSE}
-assign.kfold(genin_rd, k.fold=c(3, 4, 5), train.loci=c(0.1, 0.25, 0.5, 1), 
+assign.kfold( YourGenepopRd, k.fold=c(3, 4, 5), train.loci=c(0.1, 0.25, 0.5, 1), 
              loci.sample="random", dir="Result-folder2/", model="lda" )
 ```
 
