@@ -348,7 +348,7 @@ div.tocify {
 <h3>Remove low variance loci (optional)</h3>
 <p>When analyzing genetic data, you can remove low variance loci<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> across the dataset for further analyses. The default of variance threshold is 0.95, meaning that a locus will be removed from the dataset if its major allele occurs in over 95% of individuals across the populations.</p>
 <p>To remove low variance loci, use the following function and provide a new return object name (<code>YourGenepopRd</code> in this case) :</p>
-<pre class="r"><code>YourGenepopRd &lt;- reduce.allele(YourGenepop, p = 0.95)</code></pre>
+<pre class="r"><code>YourGenepopRd &lt;- reduce.allele( YourGenepop, p = 0.95)</code></pre>
 <p>After entering the code, R console should print the following message.</p>
 <pre><code>## New data matrix has created! :)
 ## New DataMatrix size: 90 rows by 1387 columns
@@ -460,31 +460,31 @@ top.13(7): Locus_245(240), Locus_181(72), Locus_147(24), Locus_115(8), Locus_560
 <div id="prepare-and-import-data-of-unknown-individuals" class="section level3">
 <h3>Prepare and import data of unknown individuals</h3>
 <p>To predict sources of unknown individuals, users should save the data of unknown individuals in another GENEPOP or STRUCTURE file, and then import it into R using the same functions as we used for the baseline data.</p>
-<p>For the GENEPOP format, data should be saved with only one group - only one ‘pop’ label in the file. For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).</p>
+<p>For the GENEPOP format, data should be saved with only one group - only one ‘pop’ label in the file (e.g., <a href="https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt"><em>simGenepopX.txt</em></a>). For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).</p>
 <pre class="r"><code>#Import a GENEPOP file containing unknown individuals, and ignore the argument `pop.names` 
-genin_unknown &lt;- read.Genepop( &quot;simGenepopX.txt&quot; )
+YourGenepopUnknown &lt;- read.Genepop( &quot;simGenepopX.txt&quot; )
 
 #Import a STRUCTURE file containing unknown individuals.
-strin_unknown &lt;- read.Structure( &quot;simStructureX.txt&quot; )</code></pre>
+YourStructureUnknown &lt;- read.Structure( &quot;simStructureX.txt&quot; )</code></pre>
 <p>You can also concatenate genetic and non-genetic data of unknown individuals using the function <code>compile.data</code> as follows.</p>
-<pre class="r"><code>comin_unknown &lt;- compile.data(genin_unknown, &quot;OtherFeautures.csv&quot;)</code></pre>
-<p>The non-genetic data of unknown individuals (<strong>OtherFeatures.csv</strong>) should also have the identical sample IDs as the genetic data (<strong>simGenepopX.txt</strong>) have. The sample IDs should also be saved in the first column, and there would be no population label in the last column of your non-genetic data.</p>
+<pre class="r"><code>YourIntegrateUnknown &lt;- compile.data(Genepop_unknown, &quot;OtherFeautures.csv&quot;)</code></pre>
+<p>The non-genetic (<strong>OtherFeatures.csv</strong>) and genetic (<a href="https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt"><em>simGenepopX.txt</em></a>) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.</p>
 <p>If you are analyzing non-genetic data alone, use R basic functions, <code>read.csv()</code> or <code>read.table()</code>, to import your file.</p>
 <pre class="r"><code>#Import non-genetic data containing sample IDs and features
-nongen_unknown &lt;- read.csv( &quot;OtherFeatures.csv&quot;, header=TRUE )</code></pre>
+OtherUnknown &lt;- read.csv( &quot;OtherFeatures.csv&quot;, header=TRUE )</code></pre>
 <p><br></p>
 </div>
 <div id="perform-assignment-test-on-unknown-individuals" class="section level3">
 <h3>Perform assignment test on unknown individuals</h3>
 <p>After importing your baseline data (training) and unknown individuals (test), the assignment test can be performed using the function <code>assign.X</code>. Make sure your training and test data have the same data type and feature names. Use the argument <code>X1</code> to specify the training data; <code>X2</code>, the test data.</p>
 <pre class="r"><code># 1.Perform assignment test using genetic data and naive Bayes
-assign.X( x1=genin, x2=genin_unknown, dir=&quot;Result-folder3/&quot;, model=&quot;naiveBayes&quot;)
+assign.X( x1=YourGenepopRd, x2=YourGenepopUnknown, dir=&quot;Result-folder3/&quot;, model=&quot;naiveBayes&quot;)
 
 # 2.Perform assignment test using integrated data and decision tree
-assign.X( x1=comin, x2=comin_unknown, dir=&quot;Result-folder4/&quot;, model=&quot;tree&quot;)
+assign.X( x1=YourIntegrateData, x2=YourIntegrateUnknown, dir=&quot;Result-folder4/&quot;, model=&quot;tree&quot;)
 
 # 3.Perform assignment test uisng non-genetic data and random forest
-assign.X( x1=morphdf_pop, x2=nongen_unknown, dir=&quot;Result-folder5/&quot;, model=&quot;randomForest&quot;)
+assign.X( x1=morphdf_pop, x2=OtherUnknown, dir=&quot;Result-folder5/&quot;, model=&quot;randomForest&quot;)
 
 # Use `?assign.X` to see other argument settings.</code></pre>
 <p>The assignment result will be saved in a text file named <em>AssignmentResult.txt</em> under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether you want to make a membership probability plot. Simply enter <strong>Y</strong> to visualize the results right away.</p>

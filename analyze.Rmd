@@ -59,7 +59,7 @@ When analyzing genetic data, you can remove low variance loci^[A low variance lo
 To remove low variance loci, use the following function and provide a new return object name (`YourGenepopRd` in this case) : 
 
 ```{r reduce loci, eval=FALSE}
-YourGenepopRd <- reduce.allele(YourGenepop, p = 0.95)
+YourGenepopRd <- reduce.allele( YourGenepop, p = 0.95)
 ```
 
 After entering the code, R console should print the following message. 
@@ -240,29 +240,29 @@ After baseline data were evaluated through resampling cross-validation and the a
 
 To predict sources of unknown individuals, users should save the data of unknown individuals in another GENEPOP or STRUCTURE file, and then import it into R using the same functions as we used for the baseline data.
 
-For the GENEPOP format, data should be saved with only one group - only one 'pop' label in the file. For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).   
+For the GENEPOP format, data should be saved with only one group - only one 'pop' label in the file (e.g.,  [*simGenepopX.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt)). For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).   
 
 ```{r, eval=FALSE}
 #Import a GENEPOP file containing unknown individuals, and ignore the argument `pop.names` 
-genin_unknown <- read.Genepop( "simGenepopX.txt" )
+YourGenepopUnknown <- read.Genepop( "simGenepopX.txt" )
 
 #Import a STRUCTURE file containing unknown individuals.
-strin_unknown <- read.Structure( "simStructureX.txt" )
+YourStructureUnknown <- read.Structure( "simStructureX.txt" )
 ```
 
 You can also concatenate genetic and non-genetic data of unknown individuals using the function `compile.data` as follows.
 
 ```{r, eval=FALSE}
-comin_unknown <- compile.data(genin_unknown, "OtherFeautures.csv")
+YourIntegrateUnknown <- compile.data(Genepop_unknown, "OtherFeautures.csv")
 ```
 
-The non-genetic data of unknown individuals (**OtherFeatures.csv**) should also have the identical sample IDs as the genetic data (**simGenepopX.txt**) have. The sample IDs should also be saved in the first column, and there would be no population label in the last column of your non-genetic data.
+The non-genetic (**OtherFeatures.csv**) and genetic ([*simGenepopX.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt)) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.
 
 If you are analyzing non-genetic data alone, use R basic functions, `read.csv()` or `read.table()`, to import your file.
 
 ```{r, eval=FALSE}
 #Import non-genetic data containing sample IDs and features
-nongen_unknown <- read.csv( "OtherFeatures.csv", header=TRUE )
+OtherUnknown <- read.csv( "OtherFeatures.csv", header=TRUE )
 ```
 
 <br>
@@ -273,13 +273,13 @@ After importing your baseline data (training) and unknown individuals (test), th
 
 ```{r, eval=FALSE}
 # 1.Perform assignment test using genetic data and naive Bayes
-assign.X( x1=genin, x2=genin_unknown, dir="Result-folder3/", model="naiveBayes")
+assign.X( x1=YourGenepopRd, x2=YourGenepopUnknown, dir="Result-folder3/", model="naiveBayes")
 
 # 2.Perform assignment test using integrated data and decision tree
-assign.X( x1=comin, x2=comin_unknown, dir="Result-folder4/", model="tree")
+assign.X( x1=YourIntegrateData, x2=YourIntegrateUnknown, dir="Result-folder4/", model="tree")
 
 # 3.Perform assignment test uisng non-genetic data and random forest
-assign.X( x1=morphdf_pop, x2=nongen_unknown, dir="Result-folder5/", model="randomForest")
+assign.X( x1=morphdf_pop, x2=OtherUnknown, dir="Result-folder5/", model="randomForest")
 
 # Use `?assign.X` to see other argument settings.
 ```
