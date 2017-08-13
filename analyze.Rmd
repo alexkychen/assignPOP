@@ -270,7 +270,7 @@ NonGeneticUnknown <- read.csv( "morphDataX.csv", header=TRUE )
 
 ### Perform assignment test on unknown individuals
 
-After importing your baseline data (training) and unknown individuals (test), the assignment test can be performed using the function `assign.X`. Make sure your training and test data have the same data type and feature names. Use the argument `X1` to specify the training data; `X2`, the test data.
+After importing your baseline data and unknown individuals (test data), the assignment test can be performed using the function `assign.X`. Make sure your training and test data have the same data type and feature names. Use the arguments `x1` and `x2` to specify the baseline and test data,respectively.
 
 ```{r, eval=FALSE}
 # 1.Perform assignment test using genetic data and naive Bayes
@@ -285,7 +285,9 @@ assign.X( x1=morphdf_pop, x2=OtherUnknown, dir="Result-folder5/", model="randomF
 # Use `?assign.X` to see other argument settings.
 ```
 
-The assignment result will be saved in a text file named *AssignmentResult.txt* under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether you want to make a membership probability plot. Simply enter **Y** to visualize the results right away.  
+The assignment result will be saved in a text file named *AssignmentResult.txt* under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether you want to make a membership probability plot. Simply enter **Y** to visualize the results right away.
+
+**Handling unmatched alleles between baseline and test data.** In some cases, alleles found in test data may not exist in baseline data, or vice versa. The function `assign.X` will check if alleles of a locus are identical between your baseline and test data. If they are different, it will ask you if you want to use the loci in common to continue the analysis. If answer 'yes', the assignment test will ignore the loci that have different alleles between baseline and test data.   
 
 ***
 
