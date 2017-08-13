@@ -136,7 +136,8 @@ When analyzing genetic data (genetic-only or integrated), users can specify what
 When performing Monte-Carlo cross-validation (`assign.MC()`), users can specify multiple proportions or multiple numbers of individuals from each population to be used as training individuals. Each combination of training individuals and features (e.g., loci or non-genetic measurements) can be resampled multiple times. For example, the code below performs Monte-Carlo cross-validation, with using 50%, 70%, and 90% of random individuals from each population (arg. `train.inds`) crossed by top 10%, 25%, 50% of high *F~ST~* loci, and all loci (arg. `train.loci`, `loci.sample="fst"`) as training data. Each combination of training data is resampled 30 times (arg. `iterations`). As a result, it performs a total of 360 assignment tests (3 levels of training individuals by 4 levels of training loci by 30 iterations). 
 
 ```{r run assign.MC, eval=FALSE}
-assign.MC( YourGenepopRd, dir="Result-folder/", train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1), loci.sample="fst", iterations=30, model="svm" )
+assign.MC( YourGenepopRd, train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1),
+           loci.sample="fst", iterations=30, model="svm", dir="Result-folder/")
 ```
 
 To use certain numbers, rather than proportions, of individuals from each population as training data, enter positive integers in the argument `train.inds`(e.g., `train.inds = c(10, 20, 30)`). The reason of using equal number of traininig individuals from each population is that it can avoid biases due to unbalanced population sample size^[Puechmaille, S.J. (2016). The program structure does not reliably recover the correct population structure when sampling is uneven: subsampling and new estimators alleviate the problem. *Molecular Ecology Resources*, 16, 608–627], ^[Wang, J. (2016). The computer program Structure for assigning individuals to populations: easy to use but easier to misuse. *Molecular Ecology Resources*.].
@@ -153,7 +154,7 @@ Because Monte-Carlo cross-validation that repeats assignment tests through resam
 
 ```{r run assign.kfold, eval=FALSE}
 assign.kfold( YourGenepopRd, k.fold=c(3, 4, 5), train.loci=c(0.1, 0.25, 0.5, 1), 
-             loci.sample="random", dir="Result-folder2/", model="lda" )
+             loci.sample="random", model="lda", dir="Result-folder2/")
 ```
 
 The above example divides individuals from each population into 3, 4, or 5 groups (or folds). In each fold, 10%, 25%, and 50% of random loci (`loci.sample = "random"`) as well as all loci were sampled as training data. As a result, the *K*-fold cross-validation performs a total of 48 assignment tests (48 = (3+4+5) folds * 4 levels of training loci).
