@@ -253,16 +253,16 @@ YourStructureUnknown <- read.Structure( "simStructureX.txt" )
 You can also concatenate genetic and non-genetic data of unknown individuals using the function `compile.data` as follows.
 
 ```{r, eval=FALSE}
-YourIntegrateUnknown <- compile.data(Genepop_unknown, "OtherFeautures.csv")
+YourIntegrateUnknown <- compile.data(YourGenepopUnknown, "morphDataX.csv")
 ```
 
-The non-genetic (**OtherFeatures.csv**) and genetic ([*simGenepopX.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt)) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.
+The non-genetic ([*morphDataX.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphDataX.csv)) and genetic ([*simGenepopX.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt)) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.
 
 If you are analyzing non-genetic data alone, use R basic functions, `read.csv()` or `read.table()`, to import your file.
 
 ```{r, eval=FALSE}
 #Import non-genetic data containing sample IDs and features
-OtherUnknown <- read.csv( "OtherFeatures.csv", header=TRUE )
+NonGeneticUnknown <- read.csv( "morphDataX.csv", header=TRUE )
 ```
 
 <br>

@@ -467,11 +467,11 @@ YourGenepopUnknown &lt;- read.Genepop( &quot;simGenepopX.txt&quot; )
 #Import a STRUCTURE file containing unknown individuals.
 YourStructureUnknown &lt;- read.Structure( &quot;simStructureX.txt&quot; )</code></pre>
 <p>You can also concatenate genetic and non-genetic data of unknown individuals using the function <code>compile.data</code> as follows.</p>
-<pre class="r"><code>YourIntegrateUnknown &lt;- compile.data(Genepop_unknown, &quot;OtherFeautures.csv&quot;)</code></pre>
-<p>The non-genetic (<strong>OtherFeatures.csv</strong>) and genetic (<a href="https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt"><em>simGenepopX.txt</em></a>) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.</p>
+<pre class="r"><code>YourIntegrateUnknown &lt;- compile.data(YourGenepopUnknown, &quot;morphDataX.csv&quot;)</code></pre>
+<p>The non-genetic (<a href="https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphDataX.csv"><em>morphDataX.csv</em></a>) and genetic (<a href="https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt"><em>simGenepopX.txt</em></a>) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.</p>
 <p>If you are analyzing non-genetic data alone, use R basic functions, <code>read.csv()</code> or <code>read.table()</code>, to import your file.</p>
 <pre class="r"><code>#Import non-genetic data containing sample IDs and features
-OtherUnknown &lt;- read.csv( &quot;OtherFeatures.csv&quot;, header=TRUE )</code></pre>
+NonGeneticUnknown &lt;- read.csv( &quot;morphDataX.csv&quot;, header=TRUE )</code></pre>
 <p><br></p>
 </div>
 <div id="perform-assignment-test-on-unknown-individuals" class="section level3">
