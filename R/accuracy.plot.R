@@ -93,7 +93,7 @@ accuracy.plot <- function(df, pop="all"){
           geom_boxplot()+
           facet_grid(. ~ variable)+
           xlab(x_label) + ylab("Assignment accuracy") +
-          scale_fill_discrete(name="Prop. of\ntrain loci", guide=guide_legend(reverse=TRUE))
+          scale_fill_discrete(name="Prop. of\ntrain loci",guide=guide_legend(reverse=TRUE))+
           theme_bw()+
           theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
                 #strip.text.x = element_text(size=16, face="bold"),
@@ -137,7 +137,7 @@ accuracy.plot <- function(df, pop="all"){
           geom_boxplot()+
           #geom_point(size=5, position=dodge)+
           xlab("K") + ylab("Assignment accuracy")+
-          scale_fill_discrete(name="Prop. of\ntrain loci", guide=guide_legend(reverse=TRUE))+
+          scale_fill_discrete(name="Prop. of\ntrain loci",guide=guide_legend(reverse=TRUE))+
           theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
                 #strip.text.y = element_text(size=16, face="bold"),
                 #legend.title = element_text(size=17),
@@ -184,7 +184,7 @@ accuracy.plot <- function(df, pop="all"){
           geom_boxplot()+
           facet_grid(. ~ variable)+
           xlab("K") + ylab("Assignment accuracy") +
-          scale_fill_discrete(name="Prop. of\ntrain loci", guide=guide_legend(reverse=TRUE))+ #Reverse box order in legend
+          scale_fill_discrete(name="Prop. of\ntrain loci",guide=guide_legend(reverse=TRUE))+ #Reverse box order in legend
           theme_bw()+
           theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
                 #strip.text.x = element_text(size=16, face="bold"),
