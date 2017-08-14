@@ -46,16 +46,15 @@ accuracy.plot <- function(df, pop="all"){
         boxplot <- ggplot(df, aes_string(y=col, x="train.inds", fill="train.loci"))+
           geom_boxplot()+
           xlab(x_label) + ylab("Assignment accuracy")+
-          scale_fill_discrete(guide = guide_legend(reverse=TRUE), #Reverse box order in legend
-                              name="Prop. of\ntrain loci")+
+          scale_fill_discrete(name="Prop. of\ntrain loci",guide=guide_legend(reverse=TRUE))+
           theme_bw()+
-          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
+          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
                 #strip.text.y = element_text(size=16, face="bold"),
-                legend.title = element_text(size=17),
-                legend.text = element_text(size=16),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+                #legend.title = element_text(size=17),
+                #legend.text = element_text(size=16),
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
       #see if only one level of train loci used (e.g.,used all loci)
       }else if(length(unique(df$train.loci))==1){
@@ -64,10 +63,10 @@ accuracy.plot <- function(df, pop="all"){
           xlab(x_label) + ylab("Assignment accuracy")+
           theme_bw()+
           theme(legend.position="none",
-                panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+                panel.grid.major = element_blank(), panel.grid.minor=element_blank())
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
       }#else if(length(unique...))
     #If more than one pop names are specified, make faceted plots  
@@ -94,16 +93,15 @@ accuracy.plot <- function(df, pop="all"){
           geom_boxplot()+
           facet_grid(. ~ variable)+
           xlab(x_label) + ylab("Assignment accuracy") +
-          scale_fill_discrete(guide_legend(reverse=TRUE), #Reverse box order in legend
-                              name="Prop. of\ntrain loci")+
+          scale_fill_discrete(name="Prop. of\ntrain loci", guide=guide_legend(reverse=TRUE))
           theme_bw()+
-          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
-                strip.text.x = element_text(size=16, face="bold"),
-                legend.title = element_text(size=18),
-                legend.text = element_text(size=16),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
+                #strip.text.x = element_text(size=16, face="bold"),
+                #legend.title = element_text(size=18),
+                #legend.text = element_text(size=16),
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
         
       #check if train.loci is one level
@@ -114,11 +112,11 @@ accuracy.plot <- function(df, pop="all"){
           xlab(x_label) + ylab("Assignment accuracy") +
           theme_bw()+
           theme(legend.position="none",
-                panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
-                strip.text.x = element_text(size=16, face="bold"),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+                panel.grid.major = element_blank(), panel.grid.minor=element_blank())
+                #strip.text.x = element_text(size=16, face="bold"),
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
         
       }#else if(length(unique(dfre$train.loci))==1)
@@ -139,16 +137,14 @@ accuracy.plot <- function(df, pop="all"){
           geom_boxplot()+
           #geom_point(size=5, position=dodge)+
           xlab("K") + ylab("Assignment accuracy")+
-          scale_fill_discrete(guide = guide_legend(reverse=TRUE), #Reverse box order in legend
-                              name="Prop. of\ntrain loci")+
-          theme_bw()+
-          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
+          scale_fill_discrete(name="Prop. of\ntrain loci", guide=guide_legend(reverse=TRUE))+
+          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
                 #strip.text.y = element_text(size=16, face="bold"),
-                legend.title = element_text(size=17),
-                legend.text = element_text(size=16),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+                #legend.title = element_text(size=17),
+                #legend.text = element_text(size=16),
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
         
       }else if(length(unique(df$train.loci))==1){ #see if only one level of train loci used (e.g.,used all loci)
@@ -157,10 +153,10 @@ accuracy.plot <- function(df, pop="all"){
           xlab("K") + ylab("Assignment accuracy")+
           theme_bw()+
           theme(legend.position="none",
-                panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+                panel.grid.major = element_blank(), panel.grid.minor=element_blank())
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
       } #else if(length(...
       
@@ -188,16 +184,15 @@ accuracy.plot <- function(df, pop="all"){
           geom_boxplot()+
           facet_grid(. ~ variable)+
           xlab("K") + ylab("Assignment accuracy") +
-          scale_fill_discrete(guide_legend(reverse=TRUE), #Reverse box order in legend
-                              name="Prop. of\ntrain loci")+
+          scale_fill_discrete(name="Prop. of\ntrain loci", guide=guide_legend(reverse=TRUE))+ #Reverse box order in legend
           theme_bw()+
-          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
-                strip.text.x = element_text(size=16, face="bold"),
-                legend.title = element_text(size=18),
-                legend.text = element_text(size=16),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+          theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
+                #strip.text.x = element_text(size=16, face="bold"),
+                #legend.title = element_text(size=18),
+                #legend.text = element_text(size=16),
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
       #check if train.loci is one level  
       }else if(length(unique(dfre$train.loci))==1 ){
@@ -207,11 +202,11 @@ accuracy.plot <- function(df, pop="all"){
           xlab("K") + ylab("Assignment accuracy") +
           theme_bw()+
           theme(legend.position="none",
-                panel.grid.major = element_blank(), panel.grid.minor=element_blank(),
-                strip.text.x = element_text(size=16, face="bold"),
-                axis.text=element_text(size=16, colour="black"),
-                axis.title.y=element_text(size=20, vjust=1.5),
-                axis.title.x=element_text(size=20, vjust=0.1))
+                panel.grid.major = element_blank(), panel.grid.minor=element_blank())
+                #strip.text.x = element_text(size=16, face="bold"),
+                #axis.text=element_text(size=16, colour="black"),
+                #axis.title.y=element_text(size=20, vjust=1.5),
+                #axis.title.x=element_text(size=20, vjust=0.1))
         return(boxplot)
       }
     }#else if(length(pop)>1)
