@@ -14,7 +14,7 @@ membership.plot(dir = NULL, style = NULL, non.genetic = FALSE)
 \item{non.genetic}{A logical variable to specify if data are non-genetic. Set it TRUE if you're analyzing non-genetic alone.}
 }
 \value{
-his function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
+This function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 }
 \description{
 This function allows you to make a membership probability plot (stacked-bar plot) using results estimated from K-fold cross-validation.
