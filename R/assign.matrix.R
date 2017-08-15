@@ -23,61 +23,80 @@ assign.matrix <- function(dir=NULL, train.loci="all", train.inds="all", k.fold="
   
   #check whether results are from MC or kfold
   if(grepl("K", fileName_vec[1])){ #check if it is from kfold results
+    cvmethod <- "K fold"
     #Grap selected train.loci & kfold files
-    if((train.loci != "all")&(k.fold != "all")){
-      for(i in 1:noFiles){
-        oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
-        if(oneFileName[2] %in% train.loci){
-          if(gsub("K","",oneFileName[3]) %in% k.fold ){
+    if(!train.loci=="all"){
+      if(!k.fold=="all"){
+        #when train.loci!="all" & k.fold!="all"
+        for(i in 1:noFiles){
+          oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
+          if(oneFileName[2] %in% train.loci){
+            if(gsub("K","",oneFileName[3]) %in% k.fold ){
+              fileName_select <- c(fileName_select, fileName_vec[i])
+            }
+          }
+        }
+      }else{ #when k.fold="all"
+        #when train.loci!="all" & k.fold=="all"
+        for(i in 1:noFiles){
+          oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
+          if(oneFileName[2] %in% train.loci){
             fileName_select <- c(fileName_select, fileName_vec[i])
           }
         }
       }
-    }else if((train.loci == "all")&(k.fold != "all")){
-      for(i in 1:noFiles){
-        oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
-        if(gsub("K","",oneFileName[3]) %in% k.fold){
-          fileName_select <- c(fileName_select, fileName_vec[i])
+    }else{ #when train.loci="all"
+      if(!k.fold=="all"){
+        #when train.loci=="all" & k.fold!="all"
+        for(i in 1:noFiles){
+          oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
+          if(gsub("K","",oneFileName[3]) %in% k.fold){
+            fileName_select <- c(fileName_select, fileName_vec[i])
+          }
         }
+      }else{
+        #when train.loci & k.fold=="all"
+        fileName_select <- fileName_vec
       }
-    }else if((train.loci != "all")&(k.fold == "all")){
-      for(i in 1:noFiles){
-        oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
-        if(oneFileName[2] %in% train.loci){
-          fileName_select <- c(fileName_select, fileName_vec[i])
-        }
-      }
-    }else{
-      fileName_select <- fileName_vec
     }
     
+    
   }else{ #else it is from MC results
+    cvmethod <- "Monte-Carlo"
     #Grap selected train.loci & train.inds files
-    if((train.loci != "all") & (train.inds != "all")){
-      for(i in 1:noFiles){
-        oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
-        if(oneFileName[2] %in% train.inds){
+    if(!train.inds=="all"){
+      if(!train.loci=="all"){
+        #when train.inds & train.loci != "all"
+        for(i in 1:noFiles){
+          oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
+          if(oneFileName[2] %in% train.inds){
+            if(oneFileName[3] %in% train.loci){
+              fileName_select <- c(fileName_select, fileName_vec[i])
+            }
+          }
+        }
+      }else{
+        #when train.inds!="all" & train.loci=="all"
+        for(i in 1:noFiles){
+          oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
+          if(oneFileName[2] %in% train.inds){
+            fileName_select <- c(fileName_select, fileName_vec[i])
+          }
+        }
+      }
+    }else{ #train.inds == "all"
+      if(!train.loci=="all"){
+        #when train.inds=="all"&train.loci!="all"
+        for(i in 1:noFiles){
+          oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
           if(oneFileName[3] %in% train.loci){
             fileName_select <- c(fileName_select, fileName_vec[i])
           }
         }
+      }else{
+        #when train.inds & train.loci =="all"
+        fileName_select <- fileName_vec
       }
-    }else if((train.loci == "all")&(train.inds != "all")){
-      for(i in 1:noFiles){
-        oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
-        if(oneFileName[2] %in% train.inds){
-          fileName_select <- c(fileName_select, fileName_vec[i])
-        }
-      }
-    }else if((train.loci != "all")&(train.inds == "all")){
-      for(i in 1:noFiles){
-        oneFileName <- unlist(strsplit(fileName_vec[i], split="_"))
-        if(oneFileName[3] %in% train.loci){
-          fileName_select <- c(fileName_select, fileName_vec[i])
-        }
-      }
-    }else{
-      fileName_select <- fileName_vec
     }
   }
   #check number of selected files
@@ -104,12 +123,15 @@ assign.matrix <- function(dir=NULL, train.loci="all", train.inds="all", k.fold="
   #create dataframe of assignment mean
   assign_df <- cbind(assign_df,assign_mean, assign_sd)
   
-  #print contingency table (assignment mean)
-  cat("Mean of assignment rates across ");cat(noFiles_select);cat(" tests.\n")
-  xtabs(assign_mean ~ origin + assignment, data=assign_df)
-  #print contingency table (assignment sd)
-  cat("\nStandard deviation of assignment rates across ");cat(noFiles_select);cat(" tests.")
-  xtabs(assign_sd ~ origin + assignment, data=assign_df)
-  
+  #print information
+  cat(paste0("Assignment across ",noFiles_select," tests from ",cvmethod," cross-validation.\n"))
+  #print assignment mean with contingency table
+  cat(" Mean \n")
+  assignment_mean <- xtabs(assign_mean ~ origin + assignment, data=assign_df)
+  print(assignment_mean)
+  #print assignment sd with contingency table
+  cat("\n Standard Deviation \n")
+  assignment_SD <- xtabs(assign_sd ~ origin + assignment, data=assign_df)
+  print(assignment_SD)
   
 }#end

@@ -4,10 +4,17 @@
 \alias{assign.matrix}
 \title{Make an assignment maxtrix from cross-validation results}
 \usage{
-assign.matrix(dir = NULL)
+assign.matrix(dir = NULL, train.loci = "all", train.inds = "all",
+  k.fold = "all")
 }
 \arguments{
 \item{dir}{A character string to specify the folder that has your cross-validation assignment results.}
+
+\item{train.loci}{Choose your proportions of training loci used in Monte-Carlo or K-fold cross-validation. Default is "all".}
+
+\item{train.inds}{Choose your numbers or proportions of training individuals used in Monte-Carlo cross-validation. Default is "all".}
+
+\item{k.fold}{Choose the k fold values used in K-fold cross-validation. Default is "all".}
 }
 \value{
 The function returns a matrix in R console as well as a file named "assignment_matrix.txt" in the folder.
