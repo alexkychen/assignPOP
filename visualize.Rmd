@@ -115,3 +115,42 @@ The above Figures 5 to 8 are the results from the genetic data. Here we also cre
 ![Figure 9. Membership probability of three hypothetical populations, with results estimated based on 693 loci plus 4 morphometric measurements.](figure/Membership-genetic-morph-style1.png)
 
 As expected, using the integrated data allowed more individuals to be correctly assigned to the populations, particularly in populations A and B (see differences between Figure 5 or 6 vs. 9). 
+
+***
+
+## Print mean and standard deviation across assignment tests
+
+To check how test individuals from each population assigned to its own and other populations, users can use the following function to print mean and standard deviation of assignment results across Monte-Carlo or *K*-fold cross-validation tests in R console.
+
+```{r get assignment matrix, eval=FALSE }
+#Default setting reads through all the files in the specified result folder
+assign.matrix( dir="Result-folder/")
+
+#Users also can specify certain results for printing the assignment matrix
+assign.matrix( dir="Result-folder/", train.inds=c(0.7, 0.9), train.loci=c(0.5, 1))
+```
+
+Once the function was executed, it will print two tables in your R console. One is the means of assignment results across the tests; the other is the corresponding standard deviations. An example of `assign.matrix(dir="Result-folder/")` is shown below.
+
+```{r print assignment tables, echo=FALSE }
+cat("Assignment across 360 tests from Monte-Carlo cross-validation\
+ Mean\
+         assignment\
+origin   pop_A pop_B pop_C\
+  pop_A   0.57  0.43  0.01\
+  pop_B   0.42  0.48  0.10\
+  pop_C   0.02  0.06  0.92\
+\
+ Standard Deviation\
+         assignment\
+origin   pop_A pop_B pop_C\
+  pop_A   0.24  0.24  0.02\
+  pop_B   0.25  0.25  0.12\
+  pop_C   0.06  0.11  0.13\
+")
+
+```
+
+
+
+
