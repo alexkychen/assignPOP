@@ -55,6 +55,7 @@ library(assignPOP)
 | `accuracy.kfold()` | A data frame and text file | Calculate assignment accuracy from K-fold cross-validation results |
 | `accuracy.plot()` | ggplot2 graph | Make assignment accuracy box plots |
 | `membership.plot()` | ggplot2 graph | Make membership probability stacked bar plots |
+| `assign.matrix()` | Return contingency tables | Print mean and standard deviation across assignment tests |
 | `check.loci()` | Output results in a text file | Identify informative loci used in resampling cross-validation |
 
 **Enter `?` followed by a function name in R console (e.g.,`?read.Genepop`) to see the help page.**
