@@ -74,6 +74,7 @@ graph [rankdir = LR, ranksep=0.1, nodesep=0.3]
   7 [label='Optional: Identify informative loci\ncheck.loci( )']
   8 [label='Assignment accuracy\naccuracy.MC( ), accuracy.kfold( ),\naccuracy.plot( )']
   9 [label='Membership probability\nmembership.plot( )']
+  10 [label='Assignment matrix (mean±SD)\nassign.matrix()']  
 
   node [shape=plaintext, fontname=Arial, label='Step 1. Evaluate baseline data', fontsize=20]
   TT
@@ -83,12 +84,12 @@ graph [rankdir = LR, ranksep=0.1, nodesep=0.3]
   A -> 1  B -> 5  C -> 8
   edge [color=transparent]
   TT -> A
-  1 -> 2 -> 3  5 -> 6 -> 7  8 -> 9
+  1 -> 2 -> 3  5 -> 6 -> 7  8 -> 9 -> 10
   edge [arrowhead=normal, color=gray]
   5 -> 7 6 -> 7
   subgraph { rank=same; TT; A; 1; 2; 3;}
   subgraph { rank=same; B; 5; 6; 7;}
-  subgraph { rank=same; C; 8; 9;}
+  subgraph { rank=same; C; 8; 9; 10;}
 }
 ", height=280)
 ```
