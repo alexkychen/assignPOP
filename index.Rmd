@@ -176,7 +176,7 @@ Digraph MCCVflow {
 ***
 ### Package Citation 
 
-Chen K-Y, Marschall EA, Sovic MG,Fries AC, Gibbs HL, Ludsin SA. assignPOP: An R package forpopulation assignment using genetic, non- genetic, or integrateddata in a machine- learning framework. *Methods in Ecology and Evolution*. 2017;00:1-8 https://doi.org/10.1111/2041-210X.12897
+Chen, K-Y, Marschall, E.A., Sovic, M.G., Fries, A.C., Gibbs, H.L., Ludsin, S.A. assignPOP: An R package forpopulation assignment using genetic, non-genetic, or integrated data in a machine-learning framework. *Methods in Ecology and Evolution*. 2017;00:1-8 https://doi.org/10.1111/2041-210X.12897
 
 ***
 #### References
