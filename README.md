@@ -44,7 +44,7 @@ Changes in ver. 1.1.2
 - 2017.5.2 Update read.genpop function, now can read haploid data
 
 ## Citation
-Chen K-Y, Marschall EA, Sovic MG,Fries AC, Gibbs HL, Ludsin SA. assignPOP: An R package forpopulation assignment using genetic, non- genetic, or integrateddata in a machine- learning framework. *Methods in Ecology and Evolution*. 2017;00:1-8 https://doi.org/10.1111/2041-210X.12897
+Chen K-Y, Marschall EA, Sovic MG,Fries AC, Gibbs HL, Ludsin SA. assignPOP: An R package forpopulation assignment using genetic, non-genetic, or integrated data in a machine-learning framework. *Methods in Ecology and Evolution*. 2017;00:1-8 https://doi.org/10.1111/2041-210X.12897
 
 ## Previous version
 Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
