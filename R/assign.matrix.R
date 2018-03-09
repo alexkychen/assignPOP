@@ -6,6 +6,7 @@
 #' @param train.inds Choose your numbers or proportions of training individuals used in Monte-Carlo cross-validation. Default is "all".
 #' @param k.fold Choose the k fold values used in K-fold cross-validation. Default is "all".
 #' @return The function returns a matrix in R console as well as a file named "assignment_matrix.txt" in the folder.
+#' @importFrom stats sd xtabs
 #' @export
 #' 
 assign.matrix <- function(dir=NULL, train.loci="all", train.inds="all", k.fold="all"){
