@@ -26,8 +26,8 @@ read.Genepop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
     pop.names <- paste0("pop.",seq_along(1:noPops))
   } else if(length(pop.names)>0){ #check if pop.names and number of pop match
     if(!length(pop.names)==noPops){
-      cat("\nError: Pop.names and number of pop in data not match...")
-      break } }
+      stop("Hey, your 'pop.names' and number of pop in data not match...")
+      } }
   
   #Extract locus name, save locus names in vector "locusNames"
   if (popIndex[1] == 2) {

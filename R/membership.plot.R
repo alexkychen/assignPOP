@@ -39,8 +39,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
     ans_k <- readline("  Please enter one of the K numbers: ") #ask user to enter one of the K numbers
     ans_k <- str_trim(ans_k, side="both") #clean any space
     if(!ans_k %in% k.fold){
-      cat("\n  Entry is not correct.")
-      break
+      stop("Your entry is not correct.")
     }
   }
 
@@ -51,8 +50,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
     ans_t <- readline("  Please enter one of the proportions: ")
     ans_t <- str_trim(ans_t, side="both")
     if(!ans_t %in% train.loci){
-      cat("\n  Entry is not correct.")
-      break
+      stop("Your entry is not correct.")
     }
     pltext <- paste0(" , training locus proportion = ",ans_t)
   #If there is only one proportion of training loci or it is non-genetic data only  
@@ -64,8 +62,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       ans_t <- readline("  Do data include genetic loci? (enter Y/N): ")
       ans_t <- str_trim(ans_t, side="both")
       if(!toupper(ans_t) %in% c("N","Y","NO","YES")){
-        cat("\n  Entry is not correct.")
-        break
+        stop("Your entry is not correct.")
       }
     }
     if(grepl(pattern="Y",toupper(ans_t))){
@@ -98,8 +95,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
     style <- readline("  Please enter 1, 2, 3, or 4: ")
     style <- str_trim(style, side="both")
     if(!style %in% c(1,2,3,4)){
-      cat("\n  Entry is not correct.")
-      break
+      stop("Your entry is not correct.")
     }
   }
 
