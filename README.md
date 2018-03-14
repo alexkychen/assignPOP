@@ -36,6 +36,9 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
+Changes in ver. 1.1.4
+- 2018.3.8 Fix missing assign.matrix function
+
 Changes in ver. 1.1.3
 - 2017.6.15 Add unit tests (using package testthat)
 
@@ -43,8 +46,8 @@ Changes in ver. 1.1.2
 - 2017.5.13 Change function name read.genpop to read.Genepop; Add function read.Structure.
 - 2017.5.2 Update read.genpop function, now can read haploid data
 
-## Citation
-Chen K-Y, Marschall EA, Sovic MG,Fries AC, Gibbs HL, Ludsin SA. assignPOP: An R package forpopulation assignment using genetic, non-genetic, or integrated data in a machine-learning framework. *Methods in Ecology and Evolution*. 2017;00:1-8 https://doi.org/10.1111/2041-210X.12897
+## Cite this package
+Chen K-Y, Marschall EA, Sovic MG, Fries AC, Gibbs HL, Ludsin SA. assignPOP: An R package for population assignment using genetic, non-genetic, or integrated data in a machine-learning framework. *Methods in Ecology and Evolution*. 2018;9:439–446. https://doi.org/10.1111/2041-210X.12897
 
 ## Previous version
 Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
