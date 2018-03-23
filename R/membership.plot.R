@@ -117,15 +117,17 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       ylab("Probability")+
       labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
-      guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
+      guides(fill=guide_legend(title=NULL))+ #Hiding title of legend
       theme_bw()+
       theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),#hiding grid of the panel
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
-            plot.title = element_text(size=16, vjust=0.8),
-            legend.text = element_text(size=14),
-            strip.text.x = element_text(size=16),
-            axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+            plot.title = element_text(hjust=0.5),
+            axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
+            #plot.title = element_text(size=16, vjust=0.8),
+            #legend.text = element_text(size=14),
+            #strip.text.x = element_text(size=16),
+            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
 
   }else if(style==3){ #Individuals are separated by each fold
@@ -137,15 +139,17 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       ylab("Probability")+
       labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
-      guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
+      guides(fill=guide_legend(title=NULL))+ #Hiding title of legend
       theme_bw()+
       theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),#hiding grid of the panel
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
-            plot.title = element_text(size=16, vjust=0.8),
-            legend.text = element_text(size=14),
-            strip.text.x = element_text(size=16),
-            axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+            plot.title = element_text(hjust=0.5),
+            axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
+            #plot.title = element_text(size=16, vjust=0.8),
+            #legend.text = element_text(size=14),
+            #strip.text.x = element_text(size=16),
+            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
 
   }else if(style==4){ #Individuals are separated by fold and sorted by probability
@@ -165,15 +169,17 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       ylab("Probability")+
       labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
-      guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
+      guides(fill=guide_legend(title=NULL))+ #Hiding title of legend
       theme_bw()+
       theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),#hiding grid of the panel
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
-            plot.title = element_text(size=16, vjust=0.8),
-            legend.text = element_text(size=14),
-            strip.text.x = element_text(size=16),
-            axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+            plot.title = element_text(hjust=0.5),
+            axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
+            #plot.title = element_text(size=16, vjust=0.8),
+            #legend.text = element_text(size=14),
+            #strip.text.x = element_text(size=16),
+            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
 
   }else {
@@ -185,15 +191,16 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       ylab("Probability")+
       labs(title=paste0("K = ",ans_k," ",pltext))+
       coord_cartesian(ylim=c(0, 1.005))+ #add 0.005 on y to give tiny space between panel and facet strip
-      guides(fill=guide_legend(title=NULL, reverse=T))+ #Hiding title of legend
+      guides(fill=guide_legend(title=NULL))+ #Hiding title of legend
       theme_bw()+
       theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank(),#hiding grid of the panel
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
-            plot.title = element_text(size=16, vjust=0.8),
-            legend.text = element_text(size=14),
-            strip.text.x = element_text(size=16),
-            axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+            plot.title = element_text(hjust=0.5),
+            axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
+            #legend.text = element_text(size=14),
+            #strip.text.x = element_text(size=16),
+            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
   }
 

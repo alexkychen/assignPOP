@@ -36,9 +36,13 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
-Changes in ver. 1.1.5  (2018.3.22)
+Changes in ver. 1.1.5  (2018.3.23)
+- Slightly modify levels method in accuracy.kfold
 - Update assign.MC & assign.kfold to detect pop size and train.inds/k.fold setting
-- Update accuracy.MC & assign.matrix to handle test individuals not from every pop.
+- Update accuracy.MC & assign.matrix to handle test individuals not from every pop
+- Slightly modify levels method in accuracy.kfold
+- fix bugs in accuracy.plot for K-fold results
+- fix membership.plot title positioning and set text size to default
 
 <details>
 <summary>History</summary>
