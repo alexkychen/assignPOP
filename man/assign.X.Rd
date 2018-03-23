@@ -41,4 +41,3 @@ This function outputs assignment results and other analytical information in tex
 \description{
 This function assigns unknown individuals to possible source populations based on known individuals and genetic or non-genetic or integrated data.
 }
-

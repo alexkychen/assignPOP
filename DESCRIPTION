@@ -11,4 +11,4 @@ Imports:
     caret, doParallel, e1071, foreach, ggplot2, MASS, parallel, randomForest, reshape2, stringr, tree,
 Suggests: gtable, iterators, klaR, stringi, knitr, rmarkdown, testthat
 License: GPL (>=2)
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
