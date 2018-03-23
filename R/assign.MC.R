@@ -57,6 +57,38 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
     locusNames <- x[[3]]#Get locus name
     noLocus <- length(locusNames)
     alleleName <- colnames(genoMatrix) #This includes last column (popNames_vector), and possible non-genetic data
+    #Check each pop size and train.inds setting (allow for assigning test inds)
+    maxTrainInds <- max(train.inds)
+    #for proportion
+    if(maxTrainInds < 1){
+      for(i in 1:noPops){
+        if(popSizes[i] == round(popSizes[i] * maxTrainInds)){
+          cat(paste0("  Population ",names(popSizes[i])," will not have samples assigned to certain test sets."))
+          ans00 <- readline("  Do you still want to continue? (enter Y/N):")
+          ans00 <- str_trim(ans00, side="both")
+          if(!toupper(ans00) %in% c("Y","YES")){
+            stop("Program stops execution. Please adjust your train.inds setting to allow for assigning test individuals.")
+          }
+        }
+      }#for(i in 1:noPops)
+    #for fixed number  
+    }else if(maxTrainInds > 1){
+      #stop program if maxTrainInds is greater than min. pop size
+      if(maxTrainInds > min(popSizes)){
+        stop("train.inds has value greater than pop size. Please adjust your train.inds setting.")
+      }
+      for(i in 1:noPops){
+        if(popSizes[i] == maxTrainInds){
+          cat(paste0("  Population ",names(popSizes[i])," will not have samples assigned to certain test sets."))
+          ans00 <- readline("  Do you still want to continue? (enter Y/N):")
+          ans00 <- str_trim(ans00, side="both")
+          if(!toupper(ans00) %in% c("Y","YES")){
+            stop("Program stops execution. Please adjust your train.inds setting to allow for assigning test individuals.")
+          }
+        }
+      }#for(i in 1:noPops)
+    }#if proportion else fixed number
+    
     #Create a folder to save outfiles
     dir.create(file.path(dir))
     # Detect CPU core numbers and use n-1 cores to run the program below
@@ -65,14 +97,17 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
       if (processors <= maxCores & processors > 0){
         cl <- makeCluster(processors)
         registerDoParallel(cl,cores=processors)
-        cat("  ",processors,"cores/threads of CPU will be used for analysis...\n")
+        #cat("  ",processors,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",processors,"cores/threads of CPU...\n")
       }else {
         cl <- makeCluster(maxCores)
         registerDoParallel(cl,cores=maxCores)
-        cat("  ",maxCores,"cores/threads of CPU will be used for analysis...\n")
+        #cat("  ",maxCores,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",maxCores,"cores/threads of CPU...\n")
       }
     }else {
-      cat("  Multiprocess is off. Only single core will be used for analysis.\n")
+      #cat("  Multiprocess is off. Only single core will be used for analysis.\n")
+      cat("\n  Parallele computing is off. Analyzing data using 1 CPU core...\n")
     }
     
     #Determine if object x includes non-genetic data. If so, length of x (list) will be 5. If not (only genetic data), the length will be 3.
@@ -1181,6 +1216,38 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
     noVars <- ncol(x)-2
     varNames <- names(dataMatrix[1:ncol(dataMatrix)-1])#get variable name
     noFactorVar <- 0
+    #Check pop sizes and train.inds setting (allow for assigning test inds)
+    maxTrainInds <- max(train.inds)
+    #for proportion
+    if(maxTrainInds < 1){
+      for(i in 1:noPops){
+        if(popSizes[i] == round(popSizes[i] * maxTrainInds)){
+          cat(paste0("  Population ",names(popSizes[i])," will not have samples assigned to certain test sets."))
+          ans00 <- readline("  Do you still want to continue? (enter Y/N):")
+          ans00 <- str_trim(ans00, side="both")
+          if(!toupper(ans00) %in% c("Y","YES")){
+            stop("Program stops execution. Please adjust your train.inds setting to allow for assigning test individuals.")
+          }
+        }
+      }#for(i in 1:noPops)
+      #for fixed number  
+    }else if(maxTrainInds > 1){
+      #stop program if maxTrainInds is greater than min. pop size
+      if(maxTrainInds > min(popSizes)){
+        stop("train.inds has value greater than pop size. Please adjust your train.inds setting.")
+      }
+      for(i in 1:noPops){
+        if(popSizes[i] == maxTrainInds){
+          cat(paste0("  Population ",names(popSizes[i])," will not have samples assigned to certain test sets."))
+          ans00 <- readline("  Do you still want to continue? (enter Y/N):")
+          ans00 <- str_trim(ans00, side="both")
+          if(!toupper(ans00) %in% c("Y","YES")){
+            stop("Program stops execution. Please adjust your train.inds setting to allow for assigning test individuals.")
+          }
+        }
+      }#for(i in 1:noPops)
+    }#if proportion else fixed number
+    
     #Create a folder to save outfiles
     dir.create(file.path(dir))
     # Detect CPU core numbers and use n-1 cores to run the program below
@@ -1189,14 +1256,14 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
       if (processors <= maxCores & processors > 0){
         cl <- makeCluster(processors)
         registerDoParallel(cl,cores=processors)
-        cat("  ",processors,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",processors,"cores/threads of CPU...\n")
       }else {
         cl <- makeCluster(maxCores)
         registerDoParallel(cl,cores=maxCores)
-        cat("  ",maxCores,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",maxCores,"cores/threads of CPU...\n")
       }
     }else {
-      cat("  Multiprocess is off. Only single core will be used for analysis.\n")
+      cat("\n  Parallele computing is off. Analyzing data using 1 CPU core...\n")
     }
     #Check data type (numeric or categorical)
     for(n in 1:noVars){

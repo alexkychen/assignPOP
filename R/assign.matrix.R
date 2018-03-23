@@ -107,7 +107,10 @@ assign.matrix <- function(dir=NULL, train.loci="all", train.inds="all", k.fold="
   #Read each file and process data
   for(j in 1:noFiles_select){
     df <- read.table(paste0(dir,fileName_select[j]),header=T)
-    df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop))#ensure $pred.pop column has the same levels with $origin.pop
+    #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop)) -- used in ver1.1.4
+    #set levels of df$origin.pop and df$pred.pop to pops
+    levels(df$pred.pop) <- pops
+    levels(df$origin.pop) <- pops
     ctable <- table(df$origin.pop,df$pred.pop)
     #calcuate assignment rate;convert number to rate
     for(k in 1:noPops){
@@ -117,8 +120,8 @@ assign.matrix <- function(dir=NULL, train.loci="all", train.inds="all", k.fold="
     freq_df <- cbind(freq_df, ftable$Freq)
   }
   #estimate mean and sd of assignment rate
-  assign_mean <- round(apply(freq_df,1,mean),digits=2)
-  assign_sd <- round(apply(freq_df,1,sd),digits=2)
+  assign_mean <- round(apply(freq_df,1,mean,na.rm=T),digits=2)
+  assign_sd <- round(apply(freq_df,1,sd,na.rm=T),digits=2)
   #create dataframe for saving mean and sd
   assign_df <- ftable[c(1,2)];colnames(assign_df) <- c("origin","assignment")
   #create dataframe of assignment mean

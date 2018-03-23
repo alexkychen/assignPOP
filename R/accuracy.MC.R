@@ -28,7 +28,10 @@ accuracy.MC <- function(dir=NULL){
     iters[i] <- unlist(strsplit(oneFileName[4],split=".txt"))
     df <- read.table(paste0(dir,fileName_vec[i]),header=T)
     #Calculate overall correct assignment rate
-    df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop))#ensure $pred.pop column has the same levels with $origin.pop
+    #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop)) -- use in ver.1.1.4 and earlier; see issue about accurac.MC error 
+    #set levels of df$pred.pop and df$origin.pop to pops; handle cases when test individuals are not from every pop. 
+    levels(df$origin.pop) <- pops
+    levels(df$pred.pop) <- pops
     ctable <- table(df$origin.pop,df$pred.pop)#make contingency table
     ftable <- as.data.frame(ctable)#convert table to data frame with frequency column
     totalSample <- sum(ftable$Freq)
@@ -38,8 +41,13 @@ accuracy.MC <- function(dir=NULL){
     popCorrectRate_vec <- NULL
     for(p in pops){
       pop_size <- sum(subset(ftable,Var1==p)$Freq)
-      popCorrectNo <- subset(subset(ftable,Var1==Var2), Var1==p)$Freq
-      popCorrectRate <- popCorrectNo / pop_size
+      if(pop_size==0){ 
+        #if no individual from a pop was assigned to test set, set correct rate to 0
+        popCorrectRate = 0
+      }else{
+        popCorrectNo <- subset(subset(ftable,Var1==Var2), Var1==p)$Freq
+        popCorrectRate <- popCorrectNo / pop_size
+      }
       popCorrectRate_vec <- c(popCorrectRate_vec, popCorrectRate)
     }
     #append correct assign rate of each pop as one row to data frame
