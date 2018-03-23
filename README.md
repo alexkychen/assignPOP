@@ -42,7 +42,7 @@ Changes in ver. 1.1.4.1  (2018.3.22)
 
 <details>
 <summary>History</summary>
-<br>
+
 Changes in ver. 1.1.4  (2018.3.8)
 - Fix missing assign.matrix function
 
