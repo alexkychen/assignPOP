@@ -57,6 +57,10 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     locusNames <- x[[3]]#Get locus name
     noLocus <- length(locusNames)
     alleleName <- colnames(genoMatrix) #This includes last column (popNames_vector), and possible non-genetic data
+    #Check if pop size and k fold value can work
+    if(max(k.fold) > min(popSizes)){
+      stop("Max. K value is greater than a small pop. Please adjust your k.fold setting or increase sample size.")
+    }
     #Create a folder to save outfiles
     dir.create(file.path(dir))
     #Detect CPU core/thread numbers and use n-1 threads for parallel ananlysis
@@ -65,14 +69,14 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
       if (processors <= maxCores & processors > 0){
         cl <- makeCluster(processors)
         registerDoParallel(cl,cores=processors)
-        cat("  ",processors,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",processors,"cores/threads of CPU...\n")
       }else {
         cl <- makeCluster(maxCores)
         registerDoParallel(cl,cores=maxCores)
-        cat("  ",maxCores,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",maxCores,"cores/threads of CPU...\n")
       }
     }else {
-      cat("  Multiprocess is off. Only single core will be used for analysis.\n")
+      cat("\n  Parallele computing is off. Analyzing data using 1 CPU core...\n")
     }
     #Determine if object x includes non-genetic data. If so, length of x (list) will be 5. If not (only genetic data), the length will be 3.
     if(length(x)==3){#Process genetics-only data
@@ -1105,6 +1109,10 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     noVars <- ncol(x)-2
     varNames <- names(dataMatrix[1:ncol(dataMatrix)-1])#get variable name
     noFactorVar <- 0
+    ##Check if pop size and k fold value can work
+    if(max(k.fold) > min(popSizes)){
+      stop("Max. K value is greater than a small pop. Please adjust your k.fold setting or increase sample size.")
+    }
     #Check data type (numeric or categorical)
     for(n in 1:noVars){
       var_name <- varNames[n]
@@ -1169,14 +1177,14 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
       if (processors <= maxCores & processors > 0){
         cl <- makeCluster(processors)
         registerDoParallel(cl,cores=processors)
-        cat("  ",processors,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",processors,"cores/threads of CPU...\n")
       }else {
         cl <- makeCluster(maxCores)
         registerDoParallel(cl,cores=maxCores)
-        cat("  ",maxCores,"cores/threads of CPU will be used for analysis...\n")
+        cat("\n  Parallel computing is on. Analyzing data using",maxCores,"cores/threads of CPU...\n")
       }
     }else {
-      cat("  Multiprocess is off. Only single core will be used for analysis.\n")
+      cat("\n  Parallele computing is off. Analyzing data using 1 CPU core...\n")
     }
     #Scale and center the entire features if set scaled=T
     if(scaled){
