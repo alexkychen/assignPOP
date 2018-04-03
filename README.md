@@ -61,4 +61,4 @@ Changes in ver. 1.1.2  (2017.5.13)
 Chen K-Y, Marschall EA, Sovic MG, Fries AC, Gibbs HL, Ludsin SA. assignPOP: An R package for population assignment using genetic, non-genetic, or integrated data in a machine-learning framework. *Methods in Ecology and Evolution*. 2018;9:439–446. https://doi.org/10.1111/2041-210X.12897
 
 ## Previous version
-Previous packages can be found and downloaded at [archive branch](https://github.com/alexkychen/assignPOP/tree/archive)
+Previous packages can be found and downloaded at the [releases page](https://github.com/alexkychen/assignPOP/releases)
