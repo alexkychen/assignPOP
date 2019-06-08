@@ -28,7 +28,9 @@ accuracy.kfold <- function(dir=NULL){
     fold[i] <- unlist(strsplit(oneFileName[4],split=".txt"))
     df <- read.table(paste0(dir,fileName_vec[i]),header=T)
     #Calculate overall correct assignment rate
-    df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop))#ensure $pred.pop column has the same levels with $origin.pop
+    #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop))#ensure $pred.pop column has the same levels with $origin.pop
+    levels(df$pred.pop) <- pops
+    levels(df$origin.pop) <- pops
     ctable <- table(df$origin.pop,df$pred.pop)#make contingency table
     ftable <- as.data.frame(ctable)#convert table to data frame with frequency column
     totalSample <- sum(ftable$Freq)

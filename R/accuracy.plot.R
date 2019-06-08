@@ -138,6 +138,7 @@ accuracy.plot <- function(df, pop="all"){
           #geom_point(size=5, position=dodge)+
           xlab("K") + ylab("Assignment accuracy")+
           scale_fill_discrete(name="Prop. of\ntrain loci",guide=guide_legend(reverse=TRUE))+
+          theme_bw()+
           theme(panel.grid.major = element_blank(), panel.grid.minor=element_blank())
                 #strip.text.y = element_text(size=16, face="bold"),
                 #legend.title = element_text(size=17),
