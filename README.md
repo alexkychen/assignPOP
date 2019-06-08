@@ -36,6 +36,9 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
+Changes in ver. 1.1.6  (2019.6.8)
+- fix multiprocess issue in assign.kfold function
+
 Changes in ver. 1.1.5  (2018.3.22)
 - Update assign.MC & assign.kfold to detect pop size and train.inds/k.fold setting
 - Update accuracy.MC & assign.matrix to handle test individuals not from every pop.

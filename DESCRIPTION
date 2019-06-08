@@ -1,7 +1,7 @@
 Package: assignPOP
 Type: Package
 Title: Population Assignment using Genetic, Non-Genetic or Integrated Data in a Machine Learning Framework
-Version: 1.1.5
+Version: 1.1.6
 Author: Kuan-Yu (Alex) Chen [aut, cre], Elizabeth A. Marschall [aut], Michael G. Sovic [aut], Anthony C. Fries [aut], H. Lisle Gibbs [aut], Stuart A. Ludsin [aut]
 Maintainer: Kuan-Yu (Alex) Chen <alexkychen@gmail.com>
 Description: Use Monte-Carlo and K-fold cross-validation coupled with machine-learning classification algorithms to perform population assignment, with functionalities of evaluating discriminatory power of independent training samples, identifying informative loci, reducing data dimensionality for genomic data, integrating genetic and non-genetic data, and visualizing results.  
