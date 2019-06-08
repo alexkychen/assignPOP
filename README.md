@@ -36,7 +36,6 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
-<<<<<<< HEAD
 Changes in ver. 1.1.6  (2019.6.8)
 - fix multiprocess issue in assign.kfold function
 
