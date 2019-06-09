@@ -15,3 +15,4 @@ This function outputs the results in a text file (a table). It can return a data
 \description{
 This function allows you to estimate assignment accuracies of Monte-Carlo cross-validation results. The output results can be used to make assignment accuracy plots (use function accuracy.plot).
 }
+

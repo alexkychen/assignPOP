@@ -21,3 +21,4 @@ This functions allows you to make a boxplot of assignment accuracies estimated f
 Your_df <- read.table(system.file("extdata/Rate.txt", package="assignPOP"), header=TRUE)
 accuracy.plot(Your_df, pop="all")
 }
+

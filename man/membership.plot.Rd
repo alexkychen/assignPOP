@@ -19,3 +19,4 @@ This function returns a stacked-bar plot using the ggplot2 library. Users can mo
 \description{
 This function allows you to make a membership probability plot (stacked-bar plot) using results estimated from K-fold cross-validation.
 }
+

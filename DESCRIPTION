@@ -1,14 +1,39 @@
 Package: assignPOP
 Type: Package
-Title: Population Assignment using Genetic, Non-Genetic or Integrated Data in a Machine Learning Framework
+Title: Population Assignment using Genetic, Non-Genetic or Integrated Data in a
+    Machine Learning Framework
 Version: 1.1.6
-Author: Kuan-Yu (Alex) Chen [aut, cre], Elizabeth A. Marschall [aut], Michael G. Sovic [aut], Anthony C. Fries [aut], H. Lisle Gibbs [aut], Stuart A. Ludsin [aut]
+Author: Kuan-Yu (Alex) Chen [aut, cre], Elizabeth A. Marschall [aut], Michael
+    G. Sovic [aut], Anthony C. Fries [aut], H. Lisle Gibbs [aut], Stuart A. Ludsin
+    [aut]
 Maintainer: Kuan-Yu (Alex) Chen <alexkychen@gmail.com>
-Description: Use Monte-Carlo and K-fold cross-validation coupled with machine-learning classification algorithms to perform population assignment, with functionalities of evaluating discriminatory power of independent training samples, identifying informative loci, reducing data dimensionality for genomic data, integrating genetic and non-genetic data, and visualizing results.  
-URL: https://github.com/alexkychen/assignPOP, http://alexkychen.github.io/assignPOP/
-Depends: R (>= 2.3.2)
+Description: Use Monte-Carlo and K-fold cross-validation coupled with machine-
+    learning classification algorithms to perform population assignment, with
+    functionalities of evaluating discriminatory power of independent training
+    samples, identifying informative loci, reducing data dimensionality for genomic
+    data, integrating genetic and non-genetic data, and visualizing results.
+URL: https://github.com/alexkychen/assignPOP
+Depends:
+    R (>= 2.3.2)
 Imports:
-    caret, doParallel, e1071, foreach, ggplot2, MASS, parallel, randomForest, reshape2, stringr, tree,
-Suggests: gtable, iterators, klaR, stringi, knitr, rmarkdown, testthat
+    caret,
+    doParallel,
+    e1071,
+    foreach,
+    ggplot2,
+    MASS,
+    parallel,
+    randomForest,
+    reshape2,
+    stringr,
+    tree,
+Suggests:
+    gtable,
+    iterators,
+    klaR,
+    stringi,
+    knitr,
+    rmarkdown,
+    testthat
 License: GPL (>=2)
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
