@@ -4,11 +4,12 @@
 \alias{assign.MC}
 \title{Population assignment test using Monte-Carlo cross-validation}
 \usage{
-assign.MC(x, train.inds = c(0.5, 0.7, 0.9), train.loci = c(0.1, 0.25, 0.5,
-  1), loci.sample = "fst", iterations = 20, dir = NULL, scaled = FALSE,
-  pca.method = "mixed", pca.PCs = "kaiser-guttman", pca.loadings = F,
-  model = "svm", svm.kernel = "linear", svm.cost = 1, ntree = 50,
-  multiprocess = TRUE, processors = 999, skipQ = FALSE, ...)
+assign.MC(x, train.inds = c(0.5, 0.7, 0.9), train.loci = c(0.1, 0.25,
+  0.5, 1), loci.sample = "fst", iterations = 20, dir = NULL,
+  scaled = FALSE, pca.method = "mixed", pca.PCs = "kaiser-guttman",
+  pca.loadings = F, model = "svm", svm.kernel = "linear",
+  svm.cost = 1, ntree = 50, multiprocess = TRUE, processors = 999,
+  skipQ = FALSE, ...)
 }
 \arguments{
 \item{x}{An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data(). It could also be a data frame (with column name) returned from read.csv() or read.table() if you're analyzing non-genetic data, such as morphormetrics, chemistry data. The non-genetic data frame should have sample ID in the first column and population label in the last column.}
@@ -53,4 +54,3 @@ You don't need to specify a name for the returned object when using this functio
 \description{
 This function employs Monte-Carlo cross-validation for assignment tests. The results help evaluate if known data set has sufficient discriminatory power. It accepts genetic-only [object returned from read.genpop() or reducel.allele()], integrated [object returned from compile.data()], or non-genetic [R data frame with header] data as input, and outputs results to text files. Several built-in options are provided. See below for more details.
 }
-

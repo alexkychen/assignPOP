@@ -22,4 +22,3 @@ The function returns a matrix in R console as well as a file named "assignment_m
 \description{
 This function generates a pairwise assignment matrix with mean and variation of assignment accuracies estimated across all assignment tests.
 }
-

@@ -6,7 +6,8 @@
 \usage{
 assign.X(x1, x2, dir = NULL, scaled = F, pca.method = "mixed",
   pca.PCs = "kaiser-guttman", pca.loadings = F, model = "svm",
-  svm.kernel = "linear", svm.cost = 1, ntree = 50, mplot = FALSE, ...)
+  svm.kernel = "linear", svm.cost = 1, ntree = 50, mplot = FALSE,
+  ...)
 }
 \arguments{
 \item{x1}{An input object containing data from known individuals for building predictive models. It could be a list object returned from the function read.genpop(), reduce.allele() or compile.data(). Or, it could be a data frame containing non-genetic data returned from read.csv() or read.table().}
@@ -41,4 +42,3 @@ This function outputs assignment results and other analytical information in tex
 \description{
 This function assigns unknown individuals to possible source populations based on known individuals and genetic or non-genetic or integrated data.
 }
-

@@ -17,4 +17,3 @@ This function output the results in a text file. It includes the top N informati
 \description{
 This function reads through training locus file for each assignment test and counts the frequency of those loci and outputs the results in a text file.
 }
-
