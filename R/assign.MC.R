@@ -9,7 +9,7 @@
 #' @param dir A character string to specify the folder name for saving output files. A slash at the end must be included (e.g., dir="YourFolderName/"). Otherwise, the files will be saved under your working directory.
 #' @param scaled A logical variable (TRUE or FALSE) to specify whether to center (make mean of each feature to 0) and scale (make standard deviation of each feature to 1) the entire dataset before performing PCA and cross-validation. Default is FALSE. As genetic data has converted to numeric data between 0 and 1, to scale or not to scale the genetic data should not be critical. However, it is recommended to set scaled=TRUE when integrated data contains various scales of features.  
 #' @param pca.method Either a character string ("mixed", "independent", or "original") or logical variable (TRUE or FALSE) to specify how to perform PCA on non-genetic data (PCA is always performed on genetic data). The character strings are used when analyzing integrated (genetic plus non-genetic) data. If using "mixed" (default), PCA is perfromed across the genetic and non-genetic data, resulting in each PC summarizing mixed variations of genetic and non-genetic data. If using "independent", PCA is independently performed on non-genetic data. Genetic PCs and non-genetic PCs are then used as new features. If using "original", original non-genetic data and genetic PCs are used as features. The logical variable is used when analyzing non-genetic data.If TRUE, it performs PCA on the training data and applys the loadings to the test data. Scores of training and test data will be used as new features. 
-#' @param pca.PCs A criterion to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
+#' @param pca.PCs A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
 #' @param pca.loadings A logical variable (TRUE or FALSE) to determine whether to output the loadings of training data to text files. Default is FALSE. Just a heads-up, the output files could take some storage space, if set TRUE.
 #' @param model A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest". Default is "svm"(support vector machine).
 #' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier.
@@ -115,7 +115,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
       datatype <- "genetics";noVars <- 0; pca.method <- "NA"
       if(multiprocess){
       # Run program in parallel using multi-core if it will
-        foreach(i=1:iterations, .export=c("Fsts","perform.PCA"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
+        foreach(i=1:iterations, .export=c("Fsts","perform.PCA","Bstick"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
         for(j in 1:length(train.inds)){
           trainSet_index <- NULL
           if(all(train.inds < 1)){ #sample training individuals per pop by proportion
@@ -571,7 +571,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
       #
       if(multiprocess){
         #Run program in parallel using multi-core
-        foreach(i=1:iterations, .export=c("Fsts","perform.PCA"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
+        foreach(i=1:iterations, .export=c("Fsts","perform.PCA","Bstick"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
         for(j in 1:length(train.inds)){
           trainSet_index <- NULL
           if(all(train.inds < 1)){ #sample training individuals per pop by proportion
@@ -1329,7 +1329,7 @@ assign.MC <- function(x, train.inds=c(0.5,0.7,0.9), train.loci=c(0.1,0.25,0.5, 1
     }
     #Start resampling cross-validation using multi cores/threads if desired
     if(multiprocess){
-      foreach(i=1:iterations, .export="perform.PCA", .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
+      foreach(i=1:iterations, .export=c("perform.PCA","Bstick"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
         for( j in 1:length(train.inds)){
           trainSet_index <- NULL
           if(all(train.inds < 1)){
@@ -1614,7 +1614,17 @@ perform.PCA <- function(matrix, method){
     return(list(var_mx, obs_mx))
 
   }else if(method=="broken-stick"){ #Select PC which eigenvalue greater than broken-stick value
-    #future development
+    #check the number of PCs
+    noPCs <- length(PCA_results$sdev) 
+    #generate broken stick values
+    bs_value <- Bstick(noPCs)
+    #check the number of PCs which eigenvalue is greater than corresponding broken stick value
+    noPC_bs <- length(PCA_results$sdev[PCA_results$sdev^2 > bs_value])
+    #Extract first few PCs
+    var_mx <- PCA_results$rotation[,1:noPC_bs]
+    #Estimate scores for observation based on the PCs
+    obs_mx <- as.matrix(matrix) %*% var_mx
+    
   }else if(is.numeric(method)){
     noPCs <- method
     #Extract first number of PCs ($rotation, aka loadings)
@@ -1625,3 +1635,22 @@ perform.PCA <- function(matrix, method){
   return(list(var_mx, obs_mx, warnMessage))
 }
 
+#### Function to generate broken-stick values ####
+Bstick <- function(n){
+  #vector to store broken stick values
+  vec <- NULL
+  #1/n constant
+  const <- 1/n
+  #changing variable
+  m <- n
+  while( m >= 1){
+    svec <- NULL
+    for(i in n:m){
+      inv <- 1/i
+      svec <- c(svec, inv)
+    }
+    vec <- c( const * sum(svec), vec)
+    m <- m - 1
+  }
+  return(vec)
+}

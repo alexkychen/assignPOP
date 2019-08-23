@@ -8,7 +8,7 @@ assign.kfold(x, k.fold = c(3, 4, 5), train.loci = c(0.1, 0.25, 0.5, 1),
   loci.sample = "fst", dir = NULL, scaled = FALSE,
   pca.method = "mixed", pca.PCs = "kaiser-guttman", pca.loadings = F,
   model = "svm", svm.kernel = "linear", svm.cost = 1, ntree = 50,
-  processors = 999, multiprocess = FALSE, skipQ = FALSE, ...)
+  processors = 999, multiprocess = TRUE, skipQ = FALSE, ...)
 }
 \arguments{
 \item{x}{An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data(). It could also be a data frame (with column name) returned from read.csv() or read.table() if you're analyzing non-genetic data, such as morphormetrics, chemistry data. The non-genetic data frame should have sample ID in the first column and population label in the last column.}
@@ -25,7 +25,7 @@ assign.kfold(x, k.fold = c(3, 4, 5), train.loci = c(0.1, 0.25, 0.5, 1),
 
 \item{pca.method}{Either a character string ("mixed", "independent", or "original") or logical variable (TRUE or FALSE) to specify how to perform PCA on non-genetic data (PCA is always performed on genetic data). The character strings are used when analyzing integrated (genetic plus non-genetic) data. If using "mixed" (default), PCA is perfromed across the genetic and non-genetic data, resulting in each PC summarizing mixed variations of genetic and non-genetic data. If using "independent", PCA is independently performed on non-genetic data. Genetic PCs and non-genetic PCs are then used as new features. If using "original", original non-genetic data and genetic PCs are used as features. The logical variable is used when analyzing non-genetic data alone. If TRUE, it performs PCA on the training data and applys the loadings to the test data. Scores of training and test data will be used as new features.}
 
-\item{pca.PCs}{A criterion to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.}
+\item{pca.PCs}{A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.}
 
 \item{pca.loadings}{A logical variable (False or True) to determine whether it prints the loadings of training data to output text files. Default is False, if set True, the overall output files could be large.}
 

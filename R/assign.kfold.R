@@ -8,7 +8,7 @@
 #' @param dir A character string to specify the folder name for saving output files. A slash at the end must be included (e.g., dir="YourFolderName/"). Otherwise, the files will be saved under your working directory.
 #' @param scaled A logical variable (TRUE or FALSE) to specify whether to center (make mean of each feature to 0) and scale (make standard deviation of each feature to 1) the entire dataset before performing PCA and cross-validation. Default is FALSE. As genetic data has converted to numeric data between 0 and 1, to scale or not to scale the genetic data should not be critical. However, it is recommended to set scaled=TRUE when integrated data contains various scales of features.
 #' @param pca.method Either a character string ("mixed", "independent", or "original") or logical variable (TRUE or FALSE) to specify how to perform PCA on non-genetic data (PCA is always performed on genetic data). The character strings are used when analyzing integrated (genetic plus non-genetic) data. If using "mixed" (default), PCA is perfromed across the genetic and non-genetic data, resulting in each PC summarizing mixed variations of genetic and non-genetic data. If using "independent", PCA is independently performed on non-genetic data. Genetic PCs and non-genetic PCs are then used as new features. If using "original", original non-genetic data and genetic PCs are used as features. The logical variable is used when analyzing non-genetic data alone. If TRUE, it performs PCA on the training data and applys the loadings to the test data. Scores of training and test data will be used as new features.
-#' @param pca.PCs A criterion to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
+#' @param pca.PCs A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
 #' @param pca.loadings A logical variable (False or True) to determine whether it prints the loadings of training data to output text files. Default is False, if set True, the overall output files could be large.
 #' @param model A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest".
 #' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier.
@@ -35,7 +35,7 @@
 #'
 assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), loci.sample="fst", dir=NULL, scaled=FALSE,
                          pca.method="mixed", pca.PCs="kaiser-guttman", pca.loadings=F,
-                         model="svm", svm.kernel="linear", svm.cost=1, ntree=50, processors=999, multiprocess=FALSE, skipQ=FALSE, ...){
+                         model="svm", svm.kernel="linear", svm.cost=1, ntree=50, processors=999, multiprocess=TRUE, skipQ=FALSE, ...){
   #check if dir is correctly entered
   if(is.null(dir)){
     stop("Please provide a folder name ending with '/' in argument 'dir' ")
@@ -94,7 +94,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             cl <- makeCluster(maxCores)
             registerDoParallel(cl,cores=maxCores)
           }
-          foreach(i=1:k, .export=c("Fsts","perform.PCA"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
+          foreach(i=1:k, .export=c("Fsts","perform.PCA","Bstick"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
             trainSetMatrix <- genoMatrix[-fold_index[[i]],]
             testIndID <- x[[2]][fold_index[[i]]]
             #check if fst prior for sampling loci
@@ -525,7 +525,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             cl <- makeCluster(maxCores)
             registerDoParallel(cl,cores=maxCores)
           }
-          foreach(i=1:k, .export=c("Fsts","perform.PCA"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
+          foreach(i=1:k, .export=c("Fsts","perform.PCA","Bstick"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
             trainSetMatrix <- genoMatrix[-fold_index[[i]],]
             testIndID <- x[[2]][fold_index[[i]]]
             trainSetMatrix_genetic <- trainSetMatrix[,-(firstOtherVars_pos:lastOtherVars_pos)] #test inds. with only genetic variables and popNames
@@ -1219,7 +1219,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           cl <- makeCluster(maxCores)
           registerDoParallel(cl,cores=maxCores)
         }
-        foreach(i=1:k, .export="perform.PCA", .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
+        foreach(i=1:k, .export=c("perform.PCA","Bstick"), .packages=c("e1071","klaR","MASS","tree","randomForest")) %dopar% {
           trainSetData <- dataMatrix[-fold_index[[i]],]
           testIndID <- IndID[fold_index[[i]]]; testIndID <- droplevels(testIndID)
           #Create test dataset
