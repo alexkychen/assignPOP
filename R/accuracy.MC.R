@@ -28,10 +28,12 @@ accuracy.MC <- function(dir=NULL){
     iters[i] <- unlist(strsplit(oneFileName[4],split=".txt"))
     df <- read.table(paste0(dir,fileName_vec[i]),header=T)
     #Calculate overall correct assignment rate
-    #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop)) -- use in ver.1.1.4 and earlier; see issue about accurac.MC error 
     #set levels of df$pred.pop and df$origin.pop to pops; handle cases when test individuals are not from every pop. 
-    levels(df$origin.pop) <- pops
-    levels(df$pred.pop) <- pops
+    #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop)) -- use in ver.1.1.4 and earlier; see issue about accurac.MC error 
+    #levels(df$origin.pop) <- pops -- use in ver1.1.5/6 this causes issues that level of pred pop is ordered by pops and mismatch pop when test individuals not assigned to every pop
+    #levels(df$pred.pop) <- pops
+    df$origin.pop <- factor(df$origin.pop, levels=levels(factor(pops)))
+    df$pred.pop <- factor(df$pred.pop, levels=levels(factor(pops)))
     ctable <- table(df$origin.pop,df$pred.pop)#make contingency table
     ftable <- as.data.frame(ctable)#convert table to data frame with frequency column
     totalSample <- sum(ftable$Freq)

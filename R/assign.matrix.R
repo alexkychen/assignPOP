@@ -109,8 +109,10 @@ assign.matrix <- function(dir=NULL, train.loci="all", train.inds="all", k.fold="
     df <- read.table(paste0(dir,fileName_select[j]),header=T)
     #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop)) -- used in ver1.1.4
     #set levels of df$origin.pop and df$pred.pop to pops
-    levels(df$pred.pop) <- pops
-    levels(df$origin.pop) <- pops
+    #levels(df$pred.pop) <- pops
+    #levels(df$origin.pop) <- pops
+    df$origin.pop <- factor(df$origin.pop, levels=levels(factor(pops)))
+    df$pred.pop <- factor(df$pred.pop, levels=levels(factor(pops)))
     ctable <- table(df$origin.pop,df$pred.pop)
     #calcuate assignment rate;convert number to rate
     for(k in 1:noPops){
