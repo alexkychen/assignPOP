@@ -37,7 +37,7 @@ Please visit our tutorial website for more infomration
 
 ## What's new
 Changes in ver. 1.1.7  (2019.8.22)
-- add broken-stick method for principal component selection in assign.MC, .kfold, and .X functions
+- add broken-stick method for principal component selection in assign.MC, assign.kfold, and assign.X functions
 - update accuracy.MC, accuracy.kfold, assign.matrix to handle missing levels of predicted population in test results
 
 <details>
