@@ -10,7 +10,7 @@ accuracy.kfold <- function(dir=NULL){
   fileName_vec <- sort(fileName_vec)
   noFiles <- length(fileName_vec)#count number of files
   #Read one of files and get pop names
-  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T)
+  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T, check.names = F)
   pops <- names(result01)[4:length(names(result01))] #read column name and get the pop names between 4th to last column
   noPops <- length(pops)#Number of pops
   #create vectors for saving data
