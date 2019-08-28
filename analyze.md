@@ -1,0 +1,342 @@
+---
+title: "Analyze Data"
+output: 
+  html_document:
+    df_print: default
+    keep_md: yes
+    toc: yes
+    toc_float: yes
+---
+
+Here, we demonstrate how to prepare, import, and analyze data. To evaluate baseline data, we use simulated genetic and non-genetic datasets to demonstrate how integrated data could outperform each data type used independently. The graphical results are shown on [Visualize Results](http://alexkychen.github.io/assignPOP/visualize.html) page. In this page, we focus on how and which functions are used to import data, reduce low variacne loci, integrate data, perform resampling cross-validations, calculate assignment accuracy, and identify informative loci. We also demonstrate how to perform a one-time assignment test on individuals of unknown origins using baseline data.  
+
+***
+## Evaluate baseline data
+
+Baseline data are individuals and their features (e.g., genetic loci, non-genetic measurements) collected from known or source populations. We will demonstrate how to prepare and import three different data types: genetic, integrated, and non-genetic, but will only use the genetic data to show the scripts of performing resampling cross-validation.    
+
+### Prepare and import genetic data
+
+assignPOP accepts genetic data in GENEPOP^[Rousset, F. (2008). genepop’007: A Complete Re-Implementation of the Genepop Software for Windows and Linux. *Molecular Ecology Resources* 8(1): 103–106.] and STRUCTURE^[Pritchard, J.K., Stephens, M. & Donnelly, P. (2000). Inference of Population Structure Using Multilocus Genotype Data. *Genetics*, 155, 945–959.] formats. Both formats can be either diploid or haploid data. 
+
+When importing a GENEPOP file, [two forms](http://genepop.curtin.edu.au/help_input.html) of GENEPOP can be read into R using the function `read.Genepop()`. Populatino names can be specified using the argument `pop.names`, and the order of population names should follow the group order in your GENEPOP file^[The name order in the argument `pop.names` should match the group order in your GENEPOP file. For example, the first name, `pop_A`, in `pop.names=c("pop_A","pop_B","pop_C")` is the first group (pop) of individuals in the GENEPOP. If `pop.names` is not provided, pop.*NUMBER* (e.g., pop.1, pop.2) will be used as the population name.]. These population names can be used to customize the assignment accuracy plot later on. Use the argument `haploid` to specify your data type (e.g., use `haploid=T` for haploid data).
+
+
+```r
+YourGenepop <- read.Genepop( "simGenepop.txt", pop.names=c("pop_A","pop_B","pop_C"), haploid = FALSE)
+```
+
+The example input file, [*simGenepop.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepop.txt), contains **three** simulated populations (or subpopulations) and each population has 30 individuals by 1,000 SNP loci. Depending on the data size, the importing process may take a few secnods to minutes. A progress bar will be running while importing the data. After importing the file, you should see the following message printed in your R console. Use the information to double check whether your data were correctly imported.
+
+
+```
+## ############### assignPOP v1.x.x ###############
+## 
+## A GENEPOP format file was successfully imported!
+## 
+## Imported Data Info: 90 obs. by 1000 loci (diploid)
+## Number of pop:3
+## Number of inds (pop_A): 30
+## Number of inds (pop_B): 30
+## Number of inds (pop_C): 30
+## 
+## DataMatrix: 90 rows by 2001 columns, with 2000 allele variables
+## 
+## Data output in a list comprising the following three elements:
+## YOUR_LIST_NAME$DataMatrix
+## YOUR_LIST_NAME$SampleID
+## YOUR_LIST_NAME$LocusName
+```
+
+When importing a STRUCTURE file, use the function `read.Structure()`, and specify the data type using the argument `haploid`. Your Structure file should include locus names (each name separated by whitespace or tab) in the first row as the column name (header). The first and second column should be your sample ID and population label, respectively. No whitespace should be used within the sample ID and population label. The rest of columns are genetic data. It does not matter whether your file has column names for sample ID and/or population label. 
+
+
+```r
+YourStructure <- read.Structure( "simStructure.txt", haploid = TRUE)
+```
+
+After importing your STRUCTURE file, you will also see the printed message in the console. For the sake of simplicity, we only use the GENEPOP dataset to demonstrate the rest of analyses. 
+
+**Missing data and homozygosity.** If an locus has missing alleles or is homomzygous across all individuals in the dataset, the locus will be automatically removed.  
+
+<br>
+
+### Remove low variance loci (optional)
+
+When analyzing genetic data, you can remove low variance loci^[A low variance locus - which has a major allele in most individuals and a minor allele in very few individuals - is unlikely useful because if an allele only occurs in the training or test data, it will not help ascertain population membership of test individuals.] across the dataset for further analyses. The default of variance threshold is 0.95, meaning that a locus will be removed from the dataset if its major allele occurs in over 95% of individuals across the populations.
+
+To remove low variance loci, use the following function and provide a new return object name (`YourGenepopRd` in this case) : 
+
+
+```r
+YourGenepopRd <- reduce.allele( YourGenepop, p = 0.95)
+```
+
+After entering the code, R console should print the following message. 
+
+
+```
+## New data matrix has created! :)
+## New DataMatrix size: 90 rows by 1387 columns
+## 614 columns (alleles) have been removed
+## 693 loci remain
+```
+
+In our example, 307 low variance loci^[In this case, we have 614 alleles across 307 loci, meaning that every locus is biallelic (307 loci x 2 alleles = 614 alleles)] were removed, leaving 693 loci in the new data set, which will be used in further analyses.
+
+<br>
+
+### Concatenate genetic and non-genetic data
+
+Concatenating genetic and non-genetic data is one of the novel features in this package. After importing your GENEPOP file, you can use the function `compile.data()` to concatenate a non-genetic dataset and the genetic matrix returned from either `read.Genepop()`, `read.Structure()`, or `reduce.allele()`. Your non-genetic data should be saved in a .csv file (elements separated by commas) or table-like text file (elements separated by spaces) in which the first column must be sample IDs that match the IDs in your GENEPOP or STRUCTURE file, and the rest of columns are non-genetic data, whether it is numeric or categorical. If a sample ID exists in only one of the data types, the individual will be ignored in the new integrated data. 
+
+To concatenate datasets, use the following function and provide a new return object name (`YourIntegrateData` in this case):
+
+
+```r
+YourIntegrateData <- compile.data( YourGenepopRd, "morphData.csv")
+```
+
+The above [*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv) file has the same individuals as the [*simGenepop.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepop.txt) and it contains 4 numeric variables (morphometric measurements) for each individual. After executing the function, it will prompt the following message and wait for your answer to verify the data type (numeric or categorical). 
+
+
+```
+## Import a .CSV file.
+## 4 additional variables detected.
+## Checking variable data type...
+##  D1.2(integer)  D2.3(integer)  D3.4(integer)  D1.4(integer)
+##  Are they correct? (enter Y/N):
+```
+
+If a variable is categorical data, it will automatically convert it to new [dummy variables](https://en.wikipedia.org/wiki/Dummy_variable_(statistics)) using [model.matrix()](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/model.matrix.html) so that the categorical data can be quantified for further analyses. If your data type was incorrectly identified, simply enter **N** and then follow the prompted dialogue to change your data type. If your data type is correctly identified (entry is **Y** in this example), then it will print the following message.
+
+
+```
+## New data set created!!
+## It has 90 observations by 1391 variables
+## including 693 loci(1386 alleles) plus 4 additional variables(4 columns)
+```
+
+Now the integrated data (693 SNP loci plus 4 morphometric measurements) matrix is saved in the return object named `comin`. 
+
+<br>
+
+### Prepare and import non-genetic data
+
+In addition to analyzing genetic-only or integrated data, you can perform the same analysis on non-genetic data so that you could compare the assignment results between data types. A non-genetic data set (collected from source populations) should include 1) sample IDs in the first column, 2) population label^[A column includes population names for each individual. Also be sure to include a column name in table header.] in the **last** column, and 3) non-genetic data in columns between the sample ID and population label columns. The file should be saved in a .csv (comma delimited) or table-like text file that can be read into R using R basic functions `read.csv()` or `read.table()`. For example, if you are going to perform assignment test using the sample morphometric data ([*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv)) provided in the pakcage, you would need to add a population column after the existing last column. It can be edited manually (e.g., using Excel) or by R scripts (see below). If your sample IDs and population names are numeric, make sure to convert them to factor data type using as.factor() function.
+
+
+```r
+#Import morphometric data containing sample IDs and features
+morphdf <- read.csv( "morphData.csv", header=TRUE )
+#Create a string vector for population label (repeat each name for 30 individuals)
+pop_label <- c( rep("pop_A", 30), rep("pop_B", 30), rep("pop_C", 30) ) 
+#Add the pop_label to the last column; 'morphdf_pop' is a data frame with population label in the last column
+morphdf_pop <- cbind(morphdf, pop_label)
+
+#Handling numeric population name
+#A set of population names: 1, 2, and 3
+pop_label <- c( rep(1, 30), rep(2, 30), rep(3, 30))
+#Add the pop_label
+morphdf_pop <- cbind(morphdf, pop_label)
+#Convert population name to factor data type 
+morphdf_pop$pop_label <- as.factor(morphdf_pop$pop_label)
+```
+
+Now the non-genetic (morphometric) data with its population label is saved in the object `morphdf_pop`.
+
+<br>
+
+### Perform resampling cross-validation {#performassignment}
+
+We provide two resampling cross-validation methods, [Monte-Carlo and *K*-fold cross-validations](http://stats.stackexchange.com/questions/51416/k-fold-vs-monte-carlo-cross-validation), to evaluate baseline data. Monte-Carlo cross-validation helps estimate the mean and variance of assignment accuracy through resampling random training individuals; *K*-fold cross-validation helps determine membership probability across all individuals through using one group as test individuals and the remaining K-1 groups as training individuals (hence every individual is tested once). 
+
+When analyzing genetic data (genetic-only or integrated), users can specify what proportions of loci should be used as training loci, and determine whether the proportion of loci is chosen either randomly or based on locus *F~ST~* estimated within training individuals. This helps evaluate whether using a subset of loci performs as well as using all loci. Most informative loci also can be identified via the function `check.loci` (see [Identify informative loci](#informloci))
+
+#### Monte-Carlo cross-validation
+
+When performing Monte-Carlo cross-validation (`assign.MC()`), users can specify multiple proportions or multiple numbers of individuals from each population to be used as training individuals. Each combination of training individuals and features (e.g., loci or non-genetic measurements) can be resampled multiple times. For example, the code below performs Monte-Carlo cross-validation, with using 50%, 70%, and 90% of random individuals from each population (arg. `train.inds`) crossed by top 10%, 25%, 50% of high *F~ST~* loci, and all loci (arg. `train.loci`, `loci.sample="fst"`) as training data. Each combination of training data is resampled 30 times (arg. `iterations`). As a result, it performs a total of 360 assignment tests (3 levels of training individuals by 4 levels of training loci by 30 iterations). 
+
+
+```r
+assign.MC( YourGenepopRd, train.inds=c(0.5, 0.7, 0.9), train.loci=c(0.1, 0.25, 0.5, 1),
+           loci.sample="fst", iterations=30, model="svm", dir="Result-folder/")
+```
+
+To use certain numbers, rather than proportions, of individuals from each population as training data, enter positive integers in the argument `train.inds`(e.g., `train.inds = c(10, 20, 30)`). The reason of using equal number of traininig individuals from each population is that it can avoid biases due to unbalanced population sample size^[Puechmaille, S.J. (2016). The program structure does not reliably recover the correct population structure when sampling is uneven: subsampling and new estimators alleviate the problem. *Molecular Ecology Resources*, 16, 608–627], ^[Wang, J. (2016). The computer program Structure for assigning individuals to populations: easy to use but easier to misuse. *Molecular Ecology Resources*.].
+
+If you are analyzing non-genetic data alone, the arguments, `train.loci` and `loci.sample`, will be automatically ignored. 
+
+Results of assignment tests will be saved in text files under a folder created via the argument `dir`. The above example creates a folder named "Result-folder." And be sure to include a forward slash (`/`) at the end of the folder name. 
+
+In addition, you can use the argument `model` to select a classification method for prediction. In the above example, the [Support Vector Machine (SVM)](https://en.wikipedia.org/wiki/Support_vector_machine) algorithm is used. Other SVM related arguments, `svm.kernel` and `svm.cost`, can be specified to fine tune the predictive model. See [e1071](https://cran.r-project.org/web/packages/e1071/index.html) package for details about SVM. Other classification methods, including [LDA](https://en.wikipedia.org/wiki/Linear_discriminant_analysis), [naive Bayes](https://en.wikipedia.org/wiki/Naive_Bayes_classifier), [decision tree](https://en.wikipedia.org/wiki/Decision_tree), and [random forest](https://en.wikipedia.org/wiki/Random_forest), can be specified to build predictive models. Type `?assign.MC` to see more details.
+
+#### *K*-fold cross validation
+
+Because Monte-Carlo cross-validation that repeats assignment tests through resampling random individuals does not guarantee every individual was tested, estimating membership probability of all individuals in this way could be problematic. To estimate membership probability, we introduce *K*-fold cross-validation (`assign.kfold()`) in which individuals from each population are divided into K groups. One of the K groups is tested by the predictive model built based on the remaining K-1 groups. Such an assignment test repeats until every group was tested. Multiple K values can be specified (arg. `k.fold`) in one analysis as follows.
+
+
+```r
+assign.kfold( YourGenepopRd, k.fold=c(3, 4, 5), train.loci=c(0.1, 0.25, 0.5, 1), 
+             loci.sample="random", model="lda", dir="Result-folder2/")
+```
+
+The above example divides individuals from each population into 3, 4, or 5 groups (or folds). In each fold, 10%, 25%, and 50% of random loci (`loci.sample = "random"`) as well as all loci were sampled as training data. As a result, the *K*-fold cross-validation performs a total of 48 assignment tests (48 = (3+4+5) folds * 4 levels of training loci).
+
+Similarly, one of the classification methods can be specified to build the predictive models. Linear Discriminant Funtion (`model="lda"`) was used in the above example.
+
+**Parallel computing.** When performing resampling cross-validation, by default, it uses your available CPU cores/threads (N) minus one for parallel analyses such that N-1 assignment tests are performed simultaneously (assuming your computer's CPU is multi-core). To change the number of cores/threads to be used, simply specify a number for the argument `processors` (e.g., `processors = 2` for using two cores/threads).
+
+Depending on the size of your dataset, running `assign.MC()` may take a few minutes to hours, whereas `assign.kfold()` should spend less time because it usually performs fewer tests. You can monitor the analysis status by counting the output files in the result folder.
+
+<br>
+
+### Calculate assignment accuracy {#accuracy}
+
+When resampling cross-validations are done, you can calculate assignment accuracies using the following functions. 
+
+
+```r
+accuMC <- accuracy.MC(dir = "Result-folder/") #Use this function for Monte-Carlo cross-validation results
+accuKF <- accuracy.kfold(dir = "Result-folder2/") #Use this function for K-fold cross-validation results
+```
+
+The functions read through each assignment result in the designated folder (arg. `dir`) and calculate the assignment accuracies for overall and individual populations. The results will be saved in a text file named **Rate_of...txt**, and a return object (`accuMC` and `accuKF` in the above examples). The output text file also can be read into R using the basic function `read.table()` as follows.
+
+
+```r
+accuMC <- read.table("Rate_of....txt", header=T)
+```
+
+Compared with *K*-fold cross-validation, the results of Monte-Carlo cross-validation, with reasonable iterations (e.g., resample > 30 times), are more suitable for estimating mean and variance of assignment accuracy. As such, using the function `accuracy.MC()` for Monte-Carlo results is more useful than using `accuracy.kfold()`. The results generated by `accuracy.MC()` (or `accuracy.kfold()`) can be visualized in an assignment accuracy plot; the results generated by the *K*-fold cross-validation (`assign.kfold()`) can be directly used to make a membership probability plot. See [Visualize Results](http://alexkychen.github.io/assignPOP/visualize.html) page for more details.
+
+<br>
+
+### Identify informative loci {#informloci}
+
+In some cases, using a subset of high *F~ST~* loci may produce similar assignment accuracy with using all available loci. Identification of these loci not only could help reduce time and cost in preparing samples in the future but also could help identify loci that might be associated with functional genes.
+
+The function `check.loci()` reads through each training locus file associated with the assignment test, counts the frequency of occurrence of each locus, and writes the results to a text file. 
+
+
+```r
+check.loci(dir = "Result-folder/", top.loci = 20)
+```
+
+This function should only be used for the cross-validation results based on resampling high *F~ST~* training loci (`loci.sample = "fst"`) in the `assign.MC()` analysis.
+
+By default, this function outputs top 20 loci - most frequently used high *F~ST~* training loci across your assignment tests, but an arbitrary number can be specified in the argument `top.loci`. 
+
+When the function is executed, as shown below, you will be prompted to choose which assignment results you would like to check. The options are the groups of different proportions or numbers of training individuals that you specified in the argument `train.inds` of the function `assign.MC()`.
+
+
+```
+## 3 levels of training individuals are found.
+## Which levels would you like to check? (separate levels by a whitespace if multiple)
+## Options: 0.5, 0.7, 0.9, or all
+## enter here: (You will enter your answer here)
+```
+
+Because a locus *F~ST~* value estimated based on a training set likely varies among subsets of training individuals, we recommend running the function `check.loci()` across all levels of proportions or numbers of training individuals to evaluate if the loci consistently are those high *F~ST~* loci. If so, then they could be recognized as truly informative loci (high *F~ST~* is not due to sampling artifacts).
+
+The output file (*High_Fst_Locus_Freq.txt*) includes a list of locus names ordered by *F~ST~* value (highest *F~ST~* in the top row). The number in parentheses right after each locus name indicates the number of tests that locus appeared in that rank. A snapshot of output content is shown below.
+
+```
+Loci occur in top 20 high Fst across all training data
+top.1(1): Locus_171(360), 
+top.2(1): Locus_442(360), 
+top.3(1): Locus_475(360), 
+top.4(1): Locus_481(360), 
+top.5(1): Locus_696(360), 
+top.6(1): Locus_697(360), 
+top.7(1): Locus_729(360), 
+top.8(1): Locus_745(360), 
+top.9(1): Locus_812(360), 
+top.10(1): Locus_941(360), 
+top.11(1): Locus_992(360), 
+top.12(5): Locus_113(248), Locus_114(76), Locus_115(24), Locus_320(8), Locus_139(4), 
+top.13(7): Locus_245(240), Locus_181(72), Locus_147(24), Locus_115(8), Locus_560(8), Locus_137(4), Locus_160(4), 
+```
+The above results show that the top.1-top.11 loci are the top 11 highest *F~ST~* loci are across all 360 tests. Five loci (`top.12(5): Locus_113, Locus_114, Locus_115, Locus_320, and Locus_139`) appear to be the 12th highest *F~ST~* locus across the tests, and `Locus_113` occurs most frequently (248 out of 360 tests) in this rank.
+
+***
+
+## Predict sources of unknown individuals
+
+After baseline data were evaluated through resampling cross-validation and the assignment results are satisfactory, you could use the entire baseline data to build a predictive model and perform assignment tests on individuals of unknown origins to predict their source populations. Here we describe how to prepare and import files for different data types and perform the assignment test using the function `assign.X()`. 
+
+### Prepare and import data of unknown individuals
+
+To predict sources of unknown individuals, users should save the data of unknown individuals in another GENEPOP or STRUCTURE file, and then import it into R using the same functions as we used for the baseline data.
+
+For the GENEPOP format, data should be saved with only one group - only one 'pop' label in the file (e.g.,  [*simGenepopX.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt)). For the STRUCTURE format, the column of population label should also be included, but the label can be anything (this column will be ignored when performing the assignment test).   
+
+
+```r
+#Import a GENEPOP file containing unknown individuals, and ignore the argument `pop.names` 
+YourGenepopUnknown <- read.Genepop( "simGenepopX.txt" )
+
+#Import a STRUCTURE file containing unknown individuals.
+YourStructureUnknown <- read.Structure( "simStructureX.txt" )
+```
+
+You can also concatenate genetic and non-genetic data of unknown individuals using the function `compile.data` as follows.
+
+
+```r
+YourIntegrateUnknown <- compile.data(YourGenepopUnknown, "morphDataX.csv")
+```
+
+The non-genetic ([*morphDataX.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphDataX.csv)) and genetic ([*simGenepopX.txt*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/simGenepopX.txt)) data should have identical sample IDs. In your non-genetic data, sample IDs should be saved in the first column, and there would be no population label in the last column.
+
+If you are analyzing non-genetic data alone, use R basic functions, `read.csv()` or `read.table()`, to import your file.
+
+
+```r
+#Import non-genetic data containing sample IDs and features
+NonGeneticUnknown <- read.csv( "morphDataX.csv", header=TRUE )
+```
+
+<br>
+
+### Perform assignment test on unknown individuals
+
+After importing your baseline data and unknown individuals (test data), the assignment test can be performed using the function `assign.X`. Make sure your training and test data have the same data type and feature names. Use the arguments `x1` and `x2` to specify the baseline and test data,respectively.
+
+
+```r
+# 1.Perform assignment test using genetic data and naive Bayes
+assign.X( x1=YourGenepopRd, x2=YourGenepopUnknown, dir="Result-folder3/", model="naiveBayes")
+
+# 2.Perform assignment test using integrated data and decision tree
+assign.X( x1=YourIntegrateData, x2=YourIntegrateUnknown, dir="Result-folder4/", model="tree")
+
+# 3.Perform assignment test uisng non-genetic data and random forest
+assign.X( x1=morphdf_pop, x2=OtherUnknown, dir="Result-folder5/", model="randomForest")
+
+# Use `?assign.X` to see other argument settings.
+```
+
+The assignment result will be saved in a text file named *AssignmentResult.txt* under the designated folder. This file includes sample IDs of your unknown individuals, predicted populations and the probabilities. When the assignment is done, it will prompt a message asking you whether you want to make a membership probability plot. Simply enter **Y** to visualize the results right away.
+
+**Handling unmatched alleles between baseline and test data.** In some cases, alleles found in test data may not exist in baseline data, or vice versa. The function `assign.X` will check if alleles of a locus are identical between your baseline and test data. If they are different, it will ask you if you want to use the loci in common to continue the analysis. If answer '**Y**', the assignment test will ignore the loci that have different alleles between baseline and test data.   
+
+***
+
+## Data process
+
+### PCA for data transformation
+
+The assignment functions, `assign.MC()`, `assign.kfold()` and `assign.X()`, use PCA for dimensionality reduction. It converts your independent variables to Principle Components and retain the PCs that have eigenvalues greater than 1 (the Kaiser-Guttman criterion) as new features (arg. `pca.PCs="kaiser-guttman"`). Or, you can specify an integer in the argument `pca.PCs` (e.g., `pca.PCs = 10`) to choose a specific number of PCs to be retained. 
+
+The PCA will always perform on the genetic data, whether you are analyzing genetic-only or integrated data. When analyzing integrated data, you have three options to perform PCA on the data. First, you can perform PCA across all features (set arg. `pca.method="mixed"`) - each PC includes information of genetic and non-genetic data. This is default setting. Second, you can perform PCA on genetic and non-genetic data independently (set arg. `pca.method="independent"`) - transformed data includes genetic PCs and non-genetic PCs. Third, you can choose to use original non-genetic data as features without performing PCA on them (set. arg. `pca.method="original"`). This option uses genetic PCs and original non-genetic data to build predictive models. 
+
+When analyzing non-genetic data alone, you can determine whether PCA is performed on the data or not. You set the argument `pca.method=TRUE` to perform PCA, or `pca.method=FALSE` to not perform PCA. 
+
+### Data standardization
+
+When analyzing non-genetic or integrated data, you have options to standardize (zero mean and unit variance) the independent variables or to keep the original data. If non-genetic data has varying ranges of values and is not standardized, it may be problematic when one feature has a variance that is orders of magnitude larger than others, as it might make the classifier unable to learn from other features correctly. To center and scale the data, set the argument `scaled=TRUE` in the function `assign.MC()`, `assign.kfold()` or `assign.X()`. If you are analyzing genetic data, then standardization is not required because all the loci (alleles) have been converted to a binary-like value 0, 0.5, or 1.
+
+***
+
+#### Reference and footnotes

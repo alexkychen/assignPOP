@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -13,20 +13,20 @@
 
 <title>Intro to assignPOP</title>
 
-<script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="index_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
-<script src="index_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="index_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="index_files/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="index_files/navigation-1.1/tabsets.js"></script>
-<link href="index_files/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="index_files/highlightjs-1.1/highlight.js"></script>
-<script src="index_files/htmlwidgets-0.8/htmlwidgets.js"></script>
-<script src="index_files/viz-0.3/viz.js"></script>
-<link href="index_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
-<script src="index_files/grViz-binding-0.8.4/grViz.js"></script>
-<link href="index_files/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="site_libs/viz-0.3/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-1.0.1/grViz.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -35,10 +35,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -218,7 +220,7 @@ $(document).ready(function () {
 
 
 <p><img src="https://www.r-project.org/logo/Rlogo.svg" width="70" align="right"></p>
-<p><strong>assignPOP</strong> is an R package that helps perform population assignment using a machine-learning framework. It employs <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised machine-learning</a> methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze <strong>large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets</strong>. This framework is designed for solving the upward bias issue discussed in previous studies<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. Other features are listed as follows.</p>
+<p><strong>assignPOP</strong> is an R package that helps perform population assignment using a machine-learning framework. It employs <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised machine-learning</a> methods to evaluate the discriminatory power of your data collected from source populations, and is able to analyze <strong>large genetic, non-genetic, or integrated (genetic plus non-genetic) data sets</strong>. This framework is designed for solving the upward bias issue discussed in previous studies<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Other features are listed as follows.</p>
 <ul>
 <li>Use principle component analysis (PCA) for dimensionality reduction (or data transformation)</li>
 <li>Use Monte-Carlo cross-validation to estimate mean and variance of assignment accuracy</li>
@@ -233,23 +235,23 @@ $(document).ready(function () {
 <div id="conceptual-framework" class="section level3">
 <h3>Conceptual Framework</h3>
 <p>The ability to assign individuals of unknown origins to source populations relies on a robust baseline (or training data) collected from the source populations. However, noise in training data or lack of distinct features could lower the assignment ability. It is important to evaluate baseline data via cross-validation before using the baseline to predict source populations of unknown individuals. The diagrams below illustrate how the assignPOP fits into such assignment framework, and the workflow for evaluting baseline data as well as predicting source populations of unknonw individuals.</p>
-<div id="htmlwidget-57ac914cb558cadd0100" style="width:672px;height:350px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-57ac914cb558cadd0100">{"x":{"diagram":"\ndigraph conceptframe {\nnode [shape=box, fontname=Arial]\nA [label=\"START:\nEvaluate baseline data collected\nfrom source populations\n(known individuals)\"]\nB [label=\"Results:\nassignment accuracy\nor\nmembership probability\"]\nC [label=\"Collect more data (features)\nfrom known individuals\"]\nD [label=\"Collect unknown individuals\nto be predicted\"]\nE [label=\"Perform assignment test\non unknown individuals\"]\nF [label=\"Results:\npredicted populations\nand\nmembership probability\"]\n\nedge [arrowhead=normal]\nA -> B [label=\"analyze data via assignPOP\nsee below\nAnalytical Workflow Step 1\", fontcolor=firebrick]\nB -> C [label=\"bad results\"]\nB -> D [label=\"good results\"]\nD -> E \nE -> F [label=\"analyze data via assignPOP\nsee below\nAnalytical Workflow Step 2\",fontcolor=firebrick]\nC -> A [label=\"re-evaluate\"]\n\nsubgraph { rank=same; C; D; }\nsubgraph { rank=same; A; E; }\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-69a89b1be1a3208e1e27" style="width:672px;height:350px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-69a89b1be1a3208e1e27">{"x":{"diagram":"\ndigraph conceptframe {\nnode [shape=box, fontname=Arial]\nA [label=\"START:\nEvaluate baseline data collected\nfrom source populations\n(known individuals)\"]\nB [label=\"Results:\nassignment accuracy\nor\nmembership probability\"]\nC [label=\"Collect more data (features)\nfrom known individuals\"]\nD [label=\"Collect unknown individuals\nto be predicted\"]\nE [label=\"Perform assignment test\non unknown individuals\"]\nF [label=\"Results:\npredicted populations\nand\nmembership probability\"]\n\nedge [arrowhead=normal]\nA -> B [label=\"analyze data via assignPOP\nsee below\nAnalytical Workflow Step 1\", fontcolor=firebrick]\nB -> C [label=\"bad results\"]\nB -> D [label=\"good results\"]\nD -> E \nE -> F [label=\"analyze data via assignPOP\nsee below\nAnalytical Workflow Step 2\",fontcolor=firebrick]\nC -> A [label=\"re-evaluate\"]\n\nsubgraph { rank=same; C; D; }\nsubgraph { rank=same; A; E; }\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <hr />
 </div>
 <div id="analyticalworkflow" class="section level3">
 <h3>Analytical Workflow</h3>
-<div id="htmlwidget-b7926c02d90191f749ca" style="width:672px;height:280px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b7926c02d90191f749ca">{"x":{"diagram":"\ndigraph evaluatebaseline {\ngraph [rankdir = LR, ranksep=0.1, nodesep=0.3]\n  \n  node [shape=box, fontname=Arial]\n  A [label=\"Step 1-1. Import data\"]\n  B [label=\"Step 1-2.\nPerform resampling\ncross-validation\"]\n  C [label=\"Step 1-3. Visualize results\"]\n  \n  node [shape=plaintext, fontname=Arial]\n  1 [label=\"For genetic data, use\nread.Genepop( ) or read.Structure( ),\n reduce.allele( )\"]\n  2 [label=\"For non-genetic data, use\nread.table( ) or read.csv( )\n*data imported as a data frame\"]\n  3 [label=\"For integrated data, use\nread.Genepop( ) or read.Structure( ),\ncompile.data( )\"]\n  5 [label=\"Monte-Carlo cross-validation\nassign.MC( )\"]\n  6 [label=\"K-fold cross-validation\nassign.kfold( )\"]\n  7 [label=\"Optional: Identify informative loci\ncheck.loci( )\"]\n  8 [label=\"Assignment accuracy\naccuracy.MC( ), accuracy.kfold( ),\naccuracy.plot( )\"]\n  9 [label=\"Membership probability\nmembership.plot( )\"]\n  10 [label=\"Assignment matrix (meanÂ±SD)\nassign.matrix()\"]  \n\n  node [shape=plaintext, fontname=Arial, label=\"Step 1. Evaluate baseline data\", fontsize=20]\n  TT\n  edge [arrowhead=normal]\n  A -> B B -> C\n  edge [arrowhead=tee]\n  A -> 1  B -> 5  C -> 8\n  edge [color=transparent]\n  TT -> A\n  1 -> 2 -> 3  5 -> 6 -> 7  8 -> 9 -> 10\n  edge [arrowhead=normal, color=gray]\n  5 -> 7 6 -> 7\n  subgraph { rank=same; TT; A; 1; 2; 3;}\n  subgraph { rank=same; B; 5; 6; 7;}\n  subgraph { rank=same; C; 8; 9; 10;}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<div id="htmlwidget-0a4df8c8ccf0aaf3daee" style="width:672px;height:200px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0a4df8c8ccf0aaf3daee">{"x":{"diagram":"\ndigraph assignunknown {\n  graph [rankdir = LR, ranksep=0.2, nodesep=0.25]\n  node [shape=box, fontname=Arial]\n  A [label=\"Step 2-1. Import data\"]\n  B [label=\"Step 2-2. Perform assignment\ntest and visualize results\"]\n  \n  node [shape=plaintext, fontname=Arial]\n  1 [label=\"Use read.Genepop( ) or read.Structure( ),\n compile.data( ),\nread.table( ) or read.csv( )\"]\n  2 [label=\"Known and unknown data sets\nshould be imported separately\"]\n  5 [label=\"Use assign.X( )\"]\n  6 [label=\"Output results and\ngenerate membership\nprobability plot\"]\n  \n  node [shape=plaintext, fontname=Arial, fontsize=20]\n  TT [label=\"Step 2. Predict sources of unknown individuals\"]\n  \n  edge [arrowhead=normal]\n  A -> B\n  5 -> 6\n  edge [arrowhead=tee]\n  A -> 1 \n  B -> 5\n  edge [arrowhead=none, color=transparent]\n  TT -> A\n  1 -> 2\n  B -> 5\n  subgraph {rank=same; TT; A; 1; 2;}\n  subgraph {rank=same; B; 5; 6}\n}          \n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-952252778086ec0a6088" style="width:672px;height:280px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-952252778086ec0a6088">{"x":{"diagram":"\ndigraph evaluatebaseline {\ngraph [rankdir = LR, ranksep=0.1, nodesep=0.3]\n  \n  node [shape=box, fontname=Arial]\n  A [label=\"Step 1-1. Import data\"]\n  B [label=\"Step 1-2.\nPerform resampling\ncross-validation\"]\n  C [label=\"Step 1-3. Visualize results\"]\n  \n  node [shape=plaintext, fontname=Arial]\n  1 [label=\"For genetic data, use\nread.Genepop( ) or read.Structure( ),\n reduce.allele( )\"]\n  2 [label=\"For non-genetic data, use\nread.table( ) or read.csv( )\n*data imported as a data frame\"]\n  3 [label=\"For integrated data, use\nread.Genepop( ) or read.Structure( ),\ncompile.data( )\"]\n  5 [label=\"Monte-Carlo cross-validation\nassign.MC( )\"]\n  6 [label=\"K-fold cross-validation\nassign.kfold( )\"]\n  7 [label=\"Optional: Identify informative loci\ncheck.loci( )\"]\n  8 [label=\"Assignment accuracy\naccuracy.MC( ), accuracy.kfold( ),\naccuracy.plot( )\"]\n  9 [label=\"Membership probability\nmembership.plot( )\"]\n  10 [label=\"Assignment matrix (mean±SD)\nassign.matrix()\"]  \n\n  node [shape=plaintext, fontname=Arial, label=\"Step 1. Evaluate baseline data\", fontsize=20]\n  TT\n  edge [arrowhead=normal]\n  A -> B B -> C\n  edge [arrowhead=tee]\n  A -> 1  B -> 5  C -> 8\n  edge [color=transparent]\n  TT -> A\n  1 -> 2 -> 3  5 -> 6 -> 7  8 -> 9 -> 10\n  edge [arrowhead=normal, color=gray]\n  5 -> 7 6 -> 7\n  subgraph { rank=same; TT; A; 1; 2; 3;}\n  subgraph { rank=same; B; 5; 6; 7;}\n  subgraph { rank=same; C; 8; 9; 10;}\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-414fc26323a7bdff96ee" style="width:672px;height:200px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-414fc26323a7bdff96ee">{"x":{"diagram":"\ndigraph assignunknown {\n  graph [rankdir = LR, ranksep=0.2, nodesep=0.25]\n  node [shape=box, fontname=Arial]\n  A [label=\"Step 2-1. Import data\"]\n  B [label=\"Step 2-2. Perform assignment\ntest and visualize results\"]\n  \n  node [shape=plaintext, fontname=Arial]\n  1 [label=\"Use read.Genepop( ) or read.Structure( ),\n compile.data( ),\nread.table( ) or read.csv( )\"]\n  2 [label=\"Known and unknown data sets\nshould be imported separately\"]\n  5 [label=\"Use assign.X( )\"]\n  6 [label=\"Output results and\ngenerate membership\nprobability plot\"]\n  \n  node [shape=plaintext, fontname=Arial, fontsize=20]\n  TT [label=\"Step 2. Predict sources of unknown individuals\"]\n  \n  edge [arrowhead=normal]\n  A -> B\n  5 -> 6\n  edge [arrowhead=tee]\n  A -> 1 \n  B -> 5\n  edge [arrowhead=none, color=transparent]\n  TT -> A\n  1 -> 2\n  B -> 5\n  subgraph {rank=same; TT; A; 1; 2;}\n  subgraph {rank=same; B; 5; 6}\n}          \n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <hr />
 </div>
 <div id="RCVworkflow" class="section level3">
 <h3>Resampling Cross-validation Workflow</h3>
 <p>The diagram below illustrates the workflow of resampling cross-validation, in which individuals from each population are divided into training and test sets, and assignment test repeats through resampling training individuals. Multiple proportions of training individuals by multiple proportions of training loci (when analyzing genetic data) can be specified in one single analysis (<code>assign.MC()</code> or <code>assign.kfold()</code>). For example, the diagram shows top 10% or 50% of high <em>F<sub>ST</sub></em> loci or all loci are used as training loci. This helps evaluate whether using top 10%, 50% of high <em>F<sub>ST</sub></em> loci or overall loci results in similar assignment accuracies. For more details, see <a href="http://alexkychen.github.io/assignPOP/analyze.html#performassignment">Perform population assignment</a> in the <a href="http://alexkychen.github.io/assignPOP/analyze.html">Data Analysis</a> page.</p>
-<div id="htmlwidget-3882f459ae8e93ba56f2" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3882f459ae8e93ba56f2">{"x":{"diagram":"\nDigraph MCCVflow {\n  graph [compound=TRUE]\n  \n  node [shape=box fontsize=20]\n  box1 [label=\"Individuals collected from populations A, B, C...\"]\n  box2_1 [label=\"Training individuals\nfrom each population\"]\n  box2_2 [label=\"Test individuals\nfrom each population\"] \n  box4 [label=\"Principal components\nas new features\"]\n  box5 [label=\"Predictive model\n(LDA/SVM/naive Bayes/\nDecision Tree/Random Forest)\"]\n  box6 [label=\"Assignment result\"]\n  \n  node [shape=box fontsize=16]\n  box3_1 [label=\"Use top 10% of high Fst\nloci as training loci\"]\n  box3_2 [label=\"Use top 50% of high Fst\nloci as training loci\"]\n  box3_3 [label=\"Use overall loci\nas training loci\"]\n  \n  node [shape=plaintext fontsize=20]\n  box7 [label=\"Exit until N-time sampling is done\"]\n\n  edge [fontsize=18]\n  box1 -> box2_1 [label=\"1. Randomly subset\na proportion of individuals\nas training set; rest\nused as test set\"]\n  box1 -> box2_2 \n  box2_1 -> box3_2 [label=\"2. Calculate locus Fst\nbased on training individuals\nand subset a proportion of loci\nas training loci\" lhead=cluster0]\n  box3_2 -> box4 [label=\"3. Perform PCA for\ndimensionality reduction.\n(Optional for non-genetic data)\" ltail=cluster0]\n  box4 -> box5 [label=\"4. Use machine learning classifiers\nto build predictive models\"]\n  box5 -> box2_2 [label=\"5. Perform assignment\non test individuals\"]\n  box2_2 -> box6\n  box6 -> box1 [label=\"6. Repeat assignment\nthrough resampling\"]\n  box3_3 -> box3_2 -> box3_1 [color=transparent constraint=FALSE minlen=0]\n  box6 -> box7\n  \n  subgraph {rank=same; box4; box6;}\n  subgraph {rank=same; box2_1; box2_2}\n  subgraph cluster0 {rank=same; box3_1; box3_2; box3_3;}\n}\n                  \n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-40747678e7a2741f543f" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-40747678e7a2741f543f">{"x":{"diagram":"\nDigraph MCCVflow {\n  graph [compound=TRUE]\n  \n  node [shape=box fontsize=20]\n  box1 [label=\"Individuals collected from populations A, B, C...\"]\n  box2_1 [label=\"Training individuals\nfrom each population\"]\n  box2_2 [label=\"Test individuals\nfrom each population\"] \n  box4 [label=\"Principal components\nas new features\"]\n  box5 [label=\"Predictive model\n(LDA/SVM/naive Bayes/\nDecision Tree/Random Forest)\"]\n  box6 [label=\"Assignment result\"]\n  \n  node [shape=box fontsize=16]\n  box3_1 [label=\"Use top 10% of high Fst\nloci as training loci\"]\n  box3_2 [label=\"Use top 50% of high Fst\nloci as training loci\"]\n  box3_3 [label=\"Use overall loci\nas training loci\"]\n  \n  node [shape=plaintext fontsize=20]\n  box7 [label=\"Exit until N-time sampling is done\"]\n\n  edge [fontsize=18]\n  box1 -> box2_1 [label=\"1. Randomly subset\na proportion of individuals\nas training set; rest\nused as test set\"]\n  box1 -> box2_2 \n  box2_1 -> box3_2 [label=\"2. Calculate locus Fst\nbased on training individuals\nand subset a proportion of loci\nas training loci\" lhead=cluster0]\n  box3_2 -> box4 [label=\"3. Perform PCA for\ndimensionality reduction.\n(Optional for non-genetic data)\" ltail=cluster0]\n  box4 -> box5 [label=\"4. Use machine learning classifiers\nto build predictive models\"]\n  box5 -> box2_2 [label=\"5. Perform assignment\non test individuals\"]\n  box2_2 -> box6\n  box6 -> box1 [label=\"6. Repeat assignment\nthrough resampling\"]\n  box3_3 -> box3_2 -> box3_1 [color=transparent constraint=FALSE minlen=0]\n  box6 -> box7\n  \n  subgraph {rank=same; box4; box6;}\n  subgraph {rank=same; box2_1; box2_2}\n  subgraph cluster0 {rank=same; box3_1; box3_2; box3_3;}\n}\n                  \n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <hr />
 </div>
 <div id="package-citation" class="section level3">
@@ -263,8 +265,8 @@ $(document).ready(function () {
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. <em>Molecular Ecology Resources</em> 10(4): 701–710.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. <em>Molecular Ecology</em> 19(13): 2599–2601.<a href="#fnref2">↩</a></p></li>
+<li id="fn1"><p>Anderson, E. C. (2010). Assessing the Power of Informative Subsets of Loci for Population Assignment: Standard Methods Are Upwardly Biased. <em>Molecular Ecology Resources</em> 10(4): 701–710.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Waples, R. S. (2010). High-Grading Bias: Subtle Problems with Assessing Power of Selected Subsets of Loci for Population Assignment. <em>Molecular Ecology</em> 19(13): 2599–2601.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 
@@ -291,7 +293,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
