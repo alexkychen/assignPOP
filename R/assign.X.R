@@ -339,6 +339,16 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
   }else if(is.data.frame(x1)){
     #Analyze non-genetic data
     datatype <- "non-genetic"
+    #Convert sample ID to factor data type if needed
+    if(!is.factor(x[,1])){
+      cat("\n  Convert sample ID to factor. \n")
+      x[,1] <- as.factor(x[,1])
+    }
+    #Convert population label to factor if needed
+    if(!is.factor(x[,ncol(x)])){
+      cat("\n  Convert population label to factor. \n")
+      x[,ncol(x)] <- as.factor(x[,ncol(x)])
+    }
     #checking pca.method
     if(is.character(pca.method)){
       anspca <- readline("  Perform PCA on dataset for dimensionality reduction? (enter Y/N): ")

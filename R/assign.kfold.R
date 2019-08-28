@@ -1098,6 +1098,16 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     
   }else if(is.data.frame(x)){
     #Analyze non-genetic data
+    #Convert sample ID to factor data type if needed
+    if(!is.factor(x[,1])){
+      cat("\n  Convert sample ID to factor. \n")
+      x[,1] <- as.factor(x[,1])
+    }
+    #Convert population label to factor if needed
+    if(!is.factor(x[,ncol(x)])){
+      cat("\n  Convert population label to factor. \n")
+      x[,ncol(x)] <- as.factor(x[,ncol(x)])
+    }
     #checking pca.method
     if(is.character(pca.method)){
       if(skipQ){
