@@ -69,3 +69,4 @@ Chen, K. Y., Marschall, E. A., Sovic, M. G., Fries, A. C., Gibbs, H. L., & Ludsi
 
 ## Previous version
 Previous packages can be found and downloaded at the [releases page](https://github.com/alexkychen/assignPOP/releases)
+
