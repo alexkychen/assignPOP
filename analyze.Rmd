@@ -2,6 +2,8 @@
 title: "Analyze Data"
 output: 
   html_document:
+    df_print: default
+    keep_md: yes
     toc: yes
     toc_float: yes
 ---
@@ -110,7 +112,7 @@ Now the integrated data (693 SNP loci plus 4 morphometric measurements) matrix i
 
 ### Prepare and import non-genetic data
 
-In addition to analyzing genetic-only or integrated data, you can perform the same analysis on non-genetic data so that you could compare the assignment results between data types. A non-genetic data set (collected from source populations) should include 1) sample IDs in the first column, 2) population label^[A column includes population names for each individual. We recommend using characters to name your populations. Otherwise, make sure to convert any numeric population name to factor data type (using as.factor()) when importing data. Also be sure to include a column name in table header.] in the **last** column, and 3) non-genetic data in columns between the sample ID and population label columns. The file should be saved in a .csv (comma delimited) or table-like text file that can be read into R using R basic functions `read.csv()` or `read.table()`. For example, if you are going to perform assignment test using the sample morphometric data ([*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv)) provided in the pakcage, you would need to add a population column after the existing last column. It can be edited manually (e.g., using Excel) or by R scripts (see below). If your population names are numeric, please make sure to convert them to factor data type using as.factor() function.
+In addition to analyzing genetic-only or integrated data, you can perform the same analysis on non-genetic data so that you could compare the assignment results between data types. A non-genetic data set (collected from source populations) should include 1) sample IDs in the first column, 2) population label^[A column includes population names for each individual. Also be sure to include a column name in table header.] in the **last** column, and 3) non-genetic data in columns between the sample ID and population label columns. The file should be saved in a .csv (comma delimited) or table-like text file that can be read into R using R basic functions `read.csv()` or `read.table()`. For example, if you are going to perform assignment test using the sample morphometric data ([*morphData.csv*](https://raw.githubusercontent.com/alexkychen/assignPOP/master/inst/extdata/morphData.csv)) provided in the pakcage, you would need to add a population column after the existing last column. It can be edited manually (e.g., using Excel) or by R scripts (see below). If your sample IDs and population names are numeric, make sure to convert them to factor data type using as.factor() function.
 
 ```{r, eval=FALSE}
 #Import morphometric data containing sample IDs and features

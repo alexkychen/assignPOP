@@ -64,6 +64,10 @@ accuracy.plot(accuRes_MC, pop=c("all","pop_A","pop_B","pop_C"))
 #Import non-genetic data set. Note that this data set should include a population label in the last column
 infile <- read.csv("YourNonGenetics.csv", header=TRUE)
 
+#Convert your sample ID and population name to factor data type, if they are numeric (optional)
+infile$ID <- as.factor(infile$ID)
+infile$pop <- as.factor(infile$pop)
+
 #Perform Monte-Carlo cross-validation, with transformed data (pca.method=TRUE, transform original data to PCs for dimentionality reduction) as new features to build decision tree predictive models 
 assign.MC(infile, train.inds=c(0.5, 0.7, 0.9), iterations=30, pca.method=TRUE, model="tree",
           dir="ResultFolder_MC/")
