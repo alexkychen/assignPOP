@@ -18,7 +18,7 @@ test_that("Perform K-fold cross-validation, integrated data",{
 })
 unlink("ResKF", re = T)
 
-nongen <- read.csv("testData/varDummy1.csv", header=T)
+nongen <- read.csv("testData/varDummy1.csv", header=T, stringsAsFactors=T)
 pop_label <- c(rep("A",8), rep("B",10), rep("C",6))
 nongen <- cbind(nongen, pop_label)
 
