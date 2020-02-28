@@ -16,7 +16,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
   fileName_vec <- sort(fileName_vec)
   noFiles <- length(fileName_vec)#count number of files
   #Read one of files and get pop names
-  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T)
+  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T, stringsAsFactors=T)
   pops <- names(result01)[4:length(names(result01))] #read column name and get the pop names between 4th to last column
   noPops <- length(pops)#Number of pops
   #create vectors for saving data
@@ -76,9 +76,9 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
   df_mas <- data.frame(matrix(ncol=0,nrow=0))
   for(i in 1:ans_k){
     if(length(train.loci) > 1){
-      oneFile <- read.table(paste0(dir,"Out_",ans_t,"_K",ans_k,"_",i,".txt"), header=T)
+      oneFile <- read.table(paste0(dir,"Out_",ans_t,"_K",ans_k,"_",i,".txt"), header=T, stringsAsFactors=T)
     }else if(length(train.loci)==1){
-      oneFile <- read.table(paste0(dir,"Out_",train.loci,"_K",ans_k,"_",i,".txt"), header=T)
+      oneFile <- read.table(paste0(dir,"Out_",train.loci,"_K",ans_k,"_",i,".txt"), header=T, stringsAsFactors=T)
     }
     sampleSize <- nrow(oneFile)
     fold_n <- rep(paste0("fold_",i),sampleSize)

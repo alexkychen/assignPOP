@@ -10,7 +10,7 @@ accuracy.kfold <- function(dir=NULL){
   fileName_vec <- sort(fileName_vec)
   noFiles <- length(fileName_vec)#count number of files
   #Read one of files and get pop names
-  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T, check.names = F)
+  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T, check.names=F, stringsAsFactors=T)
   pops <- names(result01)[4:length(names(result01))] #read column name and get the pop names between 4th to last column
   noPops <- length(pops)#Number of pops
   #create vectors for saving data
@@ -26,7 +26,7 @@ accuracy.kfold <- function(dir=NULL){
     train.loci[i] <- oneFileName[2]
     KF[i] <- gsub("K","",oneFileName[3])#Remove "k" character in the "K3" string
     fold[i] <- unlist(strsplit(oneFileName[4],split=".txt"))
-    df <- read.table(paste0(dir,fileName_vec[i]),header=T)
+    df <- read.table(paste0(dir,fileName_vec[i]),header=T, stringsAsFactors=T)
     #Calculate overall correct assignment rate
     df$origin.pop <- factor(df$origin.pop, levels=levels(factor(pops)))#ensure origin/pred pop still keeps the same levels as input pops
     df$pred.pop <- factor(df$pred.pop, levels=levels(factor(pops)))#which allows to handle test individuals not assigned to every pop

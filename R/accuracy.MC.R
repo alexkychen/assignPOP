@@ -10,7 +10,7 @@ accuracy.MC <- function(dir=NULL){
   fileName_vec <- sort(fileName_vec)
   noFiles <- length(fileName_vec)#count number of files
   #Read one of files and get pop names
-  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T, check.names = F)
+  result01 <- read.table(paste0(dir,fileName_vec[1]), header=T, check.names=F, stringsAsFactors=T)
   pops <- names(result01)[4:length(names(result01))] #read column name and get the pop names between 4th to last column
   noPops <- length(pops)#Number of pops
   #create vectors for saving data
@@ -26,7 +26,7 @@ accuracy.MC <- function(dir=NULL){
     train.inds[i] <- oneFileName[2]
     train.loci[i] <- oneFileName[3]
     iters[i] <- unlist(strsplit(oneFileName[4],split=".txt"))
-    df <- read.table(paste0(dir,fileName_vec[i]),header=T)
+    df <- read.table(paste0(dir,fileName_vec[i]),header=T,stringsAsFactors=T)
     #Calculate overall correct assignment rate
     #set levels of df$pred.pop and df$origin.pop to pops; handle cases when test individuals are not from every pop. 
     #df$pred.pop <- factor(df$pred.pop, levels=levels(df$origin.pop)) -- use in ver.1.1.4 and earlier; see issue about accurac.MC error 

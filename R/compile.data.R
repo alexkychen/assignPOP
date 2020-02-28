@@ -20,11 +20,11 @@ compile.data <- function(x, add.x, method="common", skipQ = F){
   genoMatrix <- x[[1]]
   if(grepl(pattern=".csv", add.x)){
     cat("  Import a .CSV file.")
-    add.df <- read.csv(add.x, header=T)
+    add.df <- read.csv(add.x, header=T, stringsAsFactors=T)
 
   }else {
     cat("  Import a table which elements separated by space.")
-    add.df <- read.table(add.x, header=T)
+    add.df <- read.table(add.x, header=T, stringsAsFactors=T)
   }
   #Analyze non-genetic data
   varNames <- names(add.df[2:ncol(add.df)])#get variable names (exclude ind ID column)
