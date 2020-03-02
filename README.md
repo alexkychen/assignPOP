@@ -40,7 +40,7 @@ Changes in ver. 1.1.8  (2020.2.28)
 - update following functions to work with R 4.0.0
 - accuracy.MC, accuracy.kfold, assign.matrix, compile.data, membership.plot
 - add stringsAsFactor=T to read.table and read.csv
-- temporarily turn off testthat due to its failure to pass test in Debian system
+- temporarily turn off testthat due to its current failure to pass test in Debian system
 
 <details>
 <summary>History</summary>
