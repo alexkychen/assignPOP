@@ -1,4 +1,4 @@
 library(testthat)
 library(assignPOP)
 
-test_check("assignPOP")
+#test_check("assignPOP")
