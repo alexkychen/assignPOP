@@ -340,14 +340,14 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     #Analyze non-genetic data
     datatype <- "non-genetic"
     #Convert sample ID to factor data type if needed
-    if(!is.factor(x[,1])){
+    if(!is.factor(x1[,1])){
       cat("\n  Convert sample ID to factor. \n")
-      x[,1] <- as.factor(x[,1])
+      x1[,1] <- as.factor(x1[,1])
     }
     #Convert population label to factor if needed
-    if(!is.factor(x[,ncol(x)])){
+    if(!is.factor(x1[,ncol(x1)])){
       cat("\n  Convert population label to factor. \n")
-      x[,ncol(x)] <- as.factor(x[,ncol(x)])
+      x1[,ncol(x1)] <- as.factor(x1[,ncol(x1)])
     }
     #checking pca.method
     if(is.character(pca.method)){
