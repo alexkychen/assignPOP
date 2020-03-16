@@ -36,14 +36,17 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
+Changes in ver. 1.1.9 (2020.3.16)
+- Fix input non-genetic data (x1) error in assign.X
+
+<details>
+<summary>History</summary>
 Changes in ver. 1.1.8  (2020.2.28)
 - update following functions to work with R 4.0.0
 - accuracy.MC, accuracy.kfold, assign.matrix, compile.data, membership.plot
 - add stringsAsFactor=T to read.table and read.csv
 - temporarily turn off testthat due to its current failure to pass test in Debian system
 
-<details>
-<summary>History</summary>
 Changes in ver. 1.1.7  (2019.8.26)
 - add broken-stick method for principal component selection in assign.MC, assign.kfold, and assign.X functions
 - update accuracy.MC, accuracy.kfold, assign.matrix to handle missing levels of predicted population in test results
