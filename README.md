@@ -41,6 +41,7 @@ Changes in ver. 1.1.9 (2020.3.16)
 
 <details>
 <summary>History</summary>
+
 Changes in ver. 1.1.8  (2020.2.28)
 - update following functions to work with R 4.0.0
 - accuracy.MC, accuracy.kfold, assign.matrix, compile.data, membership.plot
