@@ -4,8 +4,12 @@
 \alias{assign.matrix}
 \title{Make an assignment maxtrix from cross-validation results}
 \usage{
-assign.matrix(dir = NULL, train.loci = "all", train.inds = "all",
-  k.fold = "all")
+assign.matrix(
+  dir = NULL,
+  train.loci = "all",
+  train.inds = "all",
+  k.fold = "all"
+)
 }
 \arguments{
 \item{dir}{A character string to specify the folder that has your cross-validation assignment results.}

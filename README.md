@@ -36,6 +36,12 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
+Changes in ver. 1.2.0 (2020.7.24)
+- Add codes to check model name in assign.MC, assign.kfold, assign.X
+- Add text to SVM description
+- Fix cbind/stringsAsFactors issues in several places for R 4.0
+- Able to inject arugments used in models (e.g., gamma in SVM) 
+
 Changes in ver. 1.1.9 (2020.3.16)
 - Fix input non-genetic data (x1) error in assign.X
 
@@ -81,3 +87,8 @@ Chen, K. Y., Marschall, E. A., Sovic, M. G., Fries, A. C., Gibbs, H. L., & Ludsi
 
 ## Previous version
 Previous packages can be found and downloaded at the [releases page](https://github.com/alexkychen/assignPOP/releases)
+
+## Version compatibility (2020.7.24)
+assignPOP version 1.1.9 and older are not fully compatible with newly released R 4.0.0. 
+If you're using R 4.0.0 (or newer), please update your assignPOP to 1.2.0 via this github repo.  
+

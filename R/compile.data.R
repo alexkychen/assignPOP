@@ -100,7 +100,7 @@ compile.data <- function(x, add.x, method="common", skipQ = F){
     #Insert non-genetic data to genoMatrix, if two data sets have exact same ind ID
     if(identical(as.character(add.df_com[,1]),as.character(genoMatrix_com[,1]))){
       #Concatenate three items: new genoMatrix data, new non-geneitc data, and pop name column
-      comMatrix <- cbind(genoMatrix_com[,2:(ncol(genoMatrix_com)-1)], add.df_com[,2:ncol(add.df_com)], genoMatrix_com$popNames_vector)
+      comMatrix <- cbind(genoMatrix_com[,2:(ncol(genoMatrix_com)-1)], add.df_com[,2:ncol(add.df_com)], genoMatrix_com$popNames_vector, stringsAsFactors=T)
       colnames(comMatrix)[ncol(comMatrix)] <- "popNames_vector"#rename the last column
       rownames(comMatrix) <- NULL
     }else {

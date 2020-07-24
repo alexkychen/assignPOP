@@ -9,7 +9,7 @@
 #' @param pca.PCs A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
 #' @param pca.loadings A logical variable (TRUE or FALSE) to determine whether to output the loadings of training data to text files. Default is FALSE. Just a heads-up, the output files could take some storage space, if set TRUE.
 #' @param model A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest". Default is "svm"(support vector machine).
-#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier.
+#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf 
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
 #' @param mplot A logical variable to specify whether making a membership probability plot right after the assignment test is done. Set TRUE to make the plot. Otherwise, it will prompt a question.
@@ -40,6 +40,11 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     stop("Please provide a folder name ending with '/' in argument 'dir' ")
   }else if(substr(dir, start=nchar(dir), stop=nchar(dir))!="/"){
     stop("Please put a forward slash '/' in the end of your folder name (in argument 'dir'). ")
+  }
+  #check model name  
+  model_name <- c("svm", "lda", "naiveBayes", "tree", "randomForest")
+  if(!(model %in% model_name)){
+    stop(paste("Possible typo in model name. Please use one of the following names:",toString(model_name)))
   }
   ##check data type
   if(!is.data.frame(x1)){#check if input x is a list returned from read.genpop(), reduce.allele(), or compile.data()
@@ -88,7 +93,8 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       centering <- attr(trainDataSet,"scaled:center") #Get the mean of each feature
       scaling <- attr(trainDataSet,"scaled:scale") #Get the standard deviation of each feature
       trainDataSet <- as.data.frame(trainDataSet) #Convert matrix to data frame
-      trainDataSet <- cbind(trainDataSet, trainMatrix$popNames_vector);colnames(trainDataSet)[ncol(trainDataSet)] <- "popNames_vector"
+      trainDataSet <- cbind(trainDataSet, trainMatrix$popNames_vector, stringsAsFactors=T)
+      colnames(trainDataSet)[ncol(trainDataSet)] <- "popNames_vector"
       #apply center(mean) and scale(sd) to test data
       testDataSet <- sweep(testDataSet, 2, centering, FUN="-") #substract mean by column 
       testDataSet <- sweep(testDataSet, 2, scaling, FUN="/") #divide sd by column
@@ -101,7 +107,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       PCA_results <- perform.PCA(trainDataSet[,1:ncol(trainDataSet)-1], method=pca.PCs) #Run PCA without label column
       loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
       trainDataSet_PC <- as.data.frame(PCA_results[[2]])
-      trainDataSet_PC <- cbind(trainDataSet_PC, trainDataSet$popNames_vector) ##Will be used for building predictive models
+      trainDataSet_PC <- cbind(trainDataSet_PC, trainDataSet$popNames_vector, stringsAsFactors=T) ##Will be used for building predictive models
       colnames(trainDataSet_PC)[ncol(trainDataSet_PC)] <- "popNames_vector"
       #Convert test data to PC variables based on training's loadings
       testDataSet_matrix <- as.matrix(testDataSet)
@@ -109,7 +115,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       #
       #Peform assignment using one of the following models
       if(model=="svm"){
-        svm.fit <- svm(popNames_vector ~ ., data=trainDataSet_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+        svm.fit <- svm(popNames_vector ~ ., data=trainDataSet_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
         svm.pred <- predict(svm.fit, testDataSet_PC, type="class",prob=T)
         outcome_matrix <- cbind(testIndID, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
         colnames(outcome_matrix)[1:2] <- c("Ind.ID","pred.pop")
@@ -119,7 +125,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="lda"){
-        lda.fit <- lda(popNames_vector ~ ., data=trainDataSet_PC)
+        lda.fit <- lda(popNames_vector ~ ., data=trainDataSet_PC, ...)
         lda.pred <- predict(lda.fit, testDataSet_PC)
         lda.pred.class <- lda.pred$class
         lda.pred.prob <- lda.pred$posterior
@@ -131,7 +137,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="naiveBayes"){
-        nby.model <- naiveBayes(popNames_vector ~ ., data=trainDataSet_PC)
+        nby.model <- naiveBayes(popNames_vector ~ ., data=trainDataSet_PC, ...)
         nby.pred.class <- predict(nby.model,testDataSet_PC,type="class")
         nby.pred.prob <- predict(nby.model,testDataSet_PC,type="raw")
         outcome_matrix <- cbind(testIndID, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -142,7 +148,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="tree"){
-        tree.model <- tree(popNames_vector ~ ., data=trainDataSet_PC)
+        tree.model <- tree(popNames_vector ~ ., data=trainDataSet_PC, ...)
         tree.pred.class <- predict(tree.model,testDataSet_PC,type="class")
         tree.pred.prob <- predict(tree.model,testDataSet_PC,type="vector")
         outcome_matrix <- cbind(testIndID, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -155,7 +161,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="randomForest"){
-        rf.model <- randomForest(popNames_vector ~ ., data=trainDataSet_PC, ntree=ntree, importance=T)
+        rf.model <- randomForest(popNames_vector ~ ., data=trainDataSet_PC, ntree=ntree, importance=T, ...)
         rf.pred.class <- predict(rf.model,testDataSet_PC,type="response")
         rf.pred.prob <- predict(rf.model,testDataSet_PC,type="prob")
         outcome_matrix <- cbind(testIndID, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -186,7 +192,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         PCA_results <- perform.PCA(trainDataSet[,1:ncol(trainDataSet)-1], method=pca.PCs) #Run PCA without label column
         loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
         trainDataSet_PC <- as.data.frame(PCA_results[[2]])
-        trainDataSet_PC <- cbind(trainDataSet_PC, trainDataSet$popNames_vector) ##Will be used for building predictive models
+        trainDataSet_PC <- cbind(trainDataSet_PC, trainDataSet$popNames_vector, stringsAsFactors=T) ##Will be used for building predictive models
         colnames(trainDataSet_PC)[ncol(trainDataSet_PC)] <- "popNames_vector"
         #Convert test data to PC variables based on training's loadings
         testDataSet_matrix <- as.matrix(testDataSet)
@@ -201,7 +207,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         loadings_nongenetics <- PCA_result_nongenetics[[1]] #loadings of non-genetic PCs; apply this to test data
         trainDataSet_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]); colnames(trainDataSet_genetic_PC) <- sub("PC", "genPC", colnames(trainDataSet_genetic_PC))
         trainDataSet_nongenetic_PC <- as.data.frame(PCA_result_nongenetics[[2]]);colnames(trainDataSet_nongenetic_PC) <- sub("PC", "nPC", colnames(trainDataSet_nongenetic_PC))
-        trainDataSet_PC <- cbind(trainDataSet_genetic_PC, trainDataSet_nongenetic_PC, trainDataSet$popNames_vector)#Will use for building predictive models 
+        trainDataSet_PC <- cbind(trainDataSet_genetic_PC, trainDataSet_nongenetic_PC, trainDataSet$popNames_vector, stringsAsFactors=T)#Will use for building predictive models 
         colnames(trainDataSet_PC)[ncol(trainDataSet_PC)] <- "popNames_vector"
         #Convert test data to PC variables based on training's loadings
         testDataSet_genetic_matrix <- as.matrix(testDataSet[,1:otherVar_startPos-1]) #make genetic data matrix
@@ -217,7 +223,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         loadings_genetics <- PCA_result_genetics[[1]] #loadings of genetic PCs; apply this to test data
         trainDataSet_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]); colnames(trainDataSet_genetic_PC) <- sub("PC", "genPC", colnames(trainDataSet_genetic_PC))
         #concatenate genetic PCs and original non-genetic data and popNames_vector; note that dataset has PCs only from genetics
-        trainDataSet_PC <- cbind(trainDataSet_genetic_PC, trainDataSet[,otherVar_startPos:ncol(trainDataSet)])
+        trainDataSet_PC <- cbind(trainDataSet_genetic_PC, trainDataSet[,otherVar_startPos:ncol(trainDataSet)], stringsAsFactors=T)
         colnames(trainDataSet_PC)[ncol(trainDataSet_PC)] <- "popNames_vector"
         #Convert test data (genetic part) to PC variables (scores) based on training 
         testDataSet_genetic_matrix <- as.matrix(testDataSet[,1:otherVar_startPos-1]) #make genetic data matrix
@@ -227,7 +233,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       }
       ##Perform assignment test using one of the following classifiers
       if(model=="svm"){
-        svm.fit <- svm(popNames_vector ~ ., data=trainDataSet_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+        svm.fit <- svm(popNames_vector ~ ., data=trainDataSet_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
         svm.pred <- predict(svm.fit, testDataSet_PC, type="class",prob=T)
         outcome_matrix <- cbind(testIndID, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
         colnames(outcome_matrix)[1:2] <- c("Ind.ID","pred.pop")
@@ -237,7 +243,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="lda"){
-        lda.fit <- lda(popNames_vector ~ ., data=trainDataSet_PC)
+        lda.fit <- lda(popNames_vector ~ ., data=trainDataSet_PC, ...)
         lda.pred <- predict(lda.fit, testDataSet_PC)
         lda.pred.class <- lda.pred$class
         lda.pred.prob <- lda.pred$posterior
@@ -249,7 +255,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="naiveBayes"){
-        nby.model <- naiveBayes(popNames_vector ~ ., data=trainDataSet_PC)
+        nby.model <- naiveBayes(popNames_vector ~ ., data=trainDataSet_PC, ...)
         nby.pred.class <- predict(nby.model,testDataSet_PC,type="class")
         nby.pred.prob <- predict(nby.model,testDataSet_PC,type="raw")
         outcome_matrix <- cbind(testIndID, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -260,7 +266,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="tree"){
-        tree.model <- tree(popNames_vector ~ ., data=trainDataSet_PC)
+        tree.model <- tree(popNames_vector ~ ., data=trainDataSet_PC, ...)
         tree.pred.class <- predict(tree.model,testDataSet_PC,type="class")
         tree.pred.prob <- predict(tree.model,testDataSet_PC,type="vector")
         outcome_matrix <- cbind(testIndID, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -273,7 +279,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
         #
       }else if(model=="randomForest"){
-        rf.model <- randomForest(popNames_vector ~ ., data=trainDataSet_PC, ntree=ntree, importance=T)
+        rf.model <- randomForest(popNames_vector ~ ., data=trainDataSet_PC, ntree=ntree, importance=T, ...)
         rf.pred.class <- predict(rf.model,testDataSet_PC,type="response")
         rf.pred.prob <- predict(rf.model,testDataSet_PC,type="prob")
         outcome_matrix <- cbind(testIndID, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -411,13 +417,13 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
           names(dummyData) <- substring(names(dummyData), 21, 1000L)#extract meaningful wording, or remove some funny wording
           names(dummyData) <- sub("\\b", paste0(name,"."), names(dummyData))#append original variabel name at the beginning
           trainDataSet[,name] <- NULL #remove original factor data column
-          trainDataSet <- cbind(dummyData, trainDataSet) #column bind dummy data while making popName last column
+          trainDataSet <- cbind(dummyData, trainDataSet, stringsAsFactors=T) #column bind dummy data while making popName last column
            #Process for unknown dataset (x2)
           dummyDataU <- as.data.frame(model.matrix( ~ testDataSet[,name]-1, data=testDataSet))
           names(dummyDataU) <- substring(names(dummyDataU), 20, 1000L)
           names(dummyDataU) <- sub("\\b", paste0(name,"."), names(dummyDataU))
           testDataSet[,name] <- NULL
-          testDataSet <- cbind(dummyDataU, testDataSet)
+          testDataSet <- cbind(dummyDataU, testDataSet, stringsAsFactors=T)
         }#if(is.factor(trainMatrix[,name]))
       }# for(name in common_VarNames)
     }else if(grepl(pattern="Y",toupper(ans0))){
@@ -431,13 +437,13 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
           names(dummyData) <- substring(names(dummyData), 21, 1000L)#extract meaningful wording, or remove some funny wording
           names(dummyData) <- sub("\\b", paste0(name,"."), names(dummyData))#append original variabel name at the beginning
           trainDataSet[,name] <- NULL #remove original factor data column
-          trainDataSet <- cbind(dummyData, trainDataSet) #column bind dummy data while making popName last column
+          trainDataSet <- cbind(dummyData, trainDataSet, stringsAsFactors=T) #column bind dummy data while making popName last column
            #Process for unknown dataset (x2)
           dummyDataU <- as.data.frame(model.matrix( ~ testDataSet[,name]-1, data=testDataSet))
           names(dummyDataU) <- substring(names(dummyDataU), 20, 1000L)
           names(dummyDataU) <- sub("\\b", paste0(name,"."), names(dummyDataU))
           testDataSet[,name] <- NULL
-          testDataSet <- cbind(dummyDataU, testDataSet)
+          testDataSet <- cbind(dummyDataU, testDataSet, stringsAsFactors=T)
         }#if(is.factor(x1[,name]))
       }#for(name in common_VarNames)
     }#else if(grepl(pattern="Y",toupper(ans0)))
@@ -448,7 +454,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       centering <- attr(trainDataSet,"scaled:center") #Get the mean of each feature
       scaling <- attr(trainDataSet,"scaled:scale") #Get the standard deviation of each feature
       trainDataSet <- as.data.frame(trainDataSet) #Convert matrix to data frame
-      trainDataSet <- cbind(trainDataSet, popName)
+      trainDataSet <- cbind(trainDataSet, popName, stringsAsFactors=T)
       #apply center(mean) and scale(sd) to test data
       testDataSet <- sweep(testDataSet, 2, centering, FUN="-") #substract mean by column 
       testDataSet <- sweep(testDataSet, 2, scaling, FUN="/") #divide sd by column
@@ -459,7 +465,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       PCA_results <- perform.PCA(trainDataSet[,1:ncol(trainDataSet)-1] ,method=pca.PCs)#Run PCA exclude last column
       loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
       trainDataSet_PC <- as.data.frame(PCA_results[[2]])
-      trainDataSet_PC <- cbind(trainDataSet_PC, popName) ##Will be used for building predicting models
+      trainDataSet_PC <- cbind(trainDataSet_PC, popName, stringsAsFactors=T) ##Will be used for building predicting models
       #Convert test data to PC variables based on training's loadings
       testDataSet_matrix <- as.matrix(testDataSet)
       testDataSet_PC <- as.data.frame(testDataSet_matrix %*% loadings)
@@ -470,7 +476,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     #
     #Perform assignment using one of the following models
     if(model=="svm"){
-      svm.fit <- svm(popName ~ ., data=trainDataSet_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+      svm.fit <- svm(popName ~ ., data=trainDataSet_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
       svm.pred <- predict(svm.fit, testDataSet_PC, type="class",prob=T)
       outcome_matrix <- cbind(testIndID, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
       colnames(outcome_matrix)[1:2] <- c("Ind.ID","pred.pop")
@@ -480,7 +486,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
       #
     }else if(model=="lda"){
-      lda.fit <- lda(popName ~ ., data=trainDataSet_PC)
+      lda.fit <- lda(popName ~ ., data=trainDataSet_PC, ...)
       lda.pred <- predict(lda.fit, testDataSet_PC)
       lda.pred.class <- lda.pred$class
       lda.pred.prob <- lda.pred$posterior
@@ -492,7 +498,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
       #
     }else if(model=="naiveBayes"){
-      nby.model <- naiveBayes(popName ~ ., data=trainDataSet_PC)
+      nby.model <- naiveBayes(popName ~ ., data=trainDataSet_PC, ...)
       nby.pred.class <- predict(nby.model,testDataSet_PC,type="class")
       nby.pred.prob <- predict(nby.model,testDataSet_PC,type="raw")
       outcome_matrix <- cbind(testIndID, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -503,7 +509,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
       #
     }else if(model=="tree"){
-      tree.model <- tree(popName ~ ., data=trainDataSet_PC)
+      tree.model <- tree(popName ~ ., data=trainDataSet_PC, ...)
       tree.pred.class <- predict(tree.model,testDataSet_PC,type="class")
       tree.pred.prob <- predict(tree.model,testDataSet_PC,type="vector")
       outcome_matrix <- cbind(testIndID, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -516,7 +522,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"PC_Loadings.txt"), quote=F)}
       #
     }else if(model=="randomForest"){
-      rf.model <- randomForest(popName ~ ., data=trainDataSet_PC, ntree=ntree, importance=T)
+      rf.model <- randomForest(popName ~ ., data=trainDataSet_PC, ntree=ntree, importance=T, ...)
       rf.pred.class <- predict(rf.model,testDataSet_PC,type="response")
       rf.pred.prob <- predict(rf.model,testDataSet_PC,type="prob")
       outcome_matrix <- cbind(testIndID, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))

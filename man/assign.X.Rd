@@ -4,10 +4,21 @@
 \alias{assign.X}
 \title{Perform a population assignment test on unknown individuals using known data}
 \usage{
-assign.X(x1, x2, dir = NULL, scaled = F, pca.method = "mixed",
-  pca.PCs = "kaiser-guttman", pca.loadings = F, model = "svm",
-  svm.kernel = "linear", svm.cost = 1, ntree = 50, mplot = FALSE,
-  ...)
+assign.X(
+  x1,
+  x2,
+  dir = NULL,
+  scaled = F,
+  pca.method = "mixed",
+  pca.PCs = "kaiser-guttman",
+  pca.loadings = F,
+  model = "svm",
+  svm.kernel = "linear",
+  svm.cost = 1,
+  ntree = 50,
+  mplot = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x1}{An input object containing data from known individuals for building predictive models. It could be a list object returned from the function read.genpop(), reduce.allele() or compile.data(). Or, it could be a data frame containing non-genetic data returned from read.csv() or read.table().}
@@ -26,7 +37,7 @@ assign.X(x1, x2, dir = NULL, scaled = F, pca.method = "mixed",
 
 \item{model}{A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest". Default is "svm"(support vector machine).}
 
-\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier.}
+\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf}
 
 \item{svm.cost}{A number to specify the cost for "svm" method.}
 

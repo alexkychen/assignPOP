@@ -11,7 +11,7 @@
 #' @param pca.PCs A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
 #' @param pca.loadings A logical variable (False or True) to determine whether it prints the loadings of training data to output text files. Default is False, if set True, the overall output files could be large.
 #' @param model A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest".
-#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier.
+#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf 
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
 #' @param multiprocess A logical variable to determine whether using multiprocess. Default is TRUE. If set FALSE, it will only use single core to run the program. 
@@ -41,6 +41,11 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     stop("Please provide a folder name ending with '/' in argument 'dir' ")
   }else if(substr(dir, start=nchar(dir), stop=nchar(dir))!="/"){
     stop("Please put a forward slash '/' in the end of your folder name (in argument 'dir'). ")
+  }
+  #check model name  
+  model_name <- c("svm", "lda", "naiveBayes", "tree", "randomForest")
+  if(!(model %in% model_name)){
+    stop(paste("Possible typo in model name. Please use one of the following names:",toString(model_name)))
   }
   #check data type
   if(!is.data.frame(x)){#check if input x is a list returned from read.genpop(), reduce.allele(), or compile.data()
@@ -118,7 +123,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainLoci <- as.data.frame(scale(genoMatrix_trainLoci))
                 }
                 #Add the pop.Names to the last column
-                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)]);colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
+                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)], stringsAsFactors=T)
+                colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
                 ##
                 trainSetData <- genoMatrix_trainLoci[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainLoci[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -127,16 +133,16 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                 loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                 trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predicting models
+                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predicting models
                 colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                 #Convert test data to PC variables based on training's loadings
                 testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                 testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                 colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -148,7 +154,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -160,7 +166,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -171,7 +177,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -184,7 +190,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -215,7 +221,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainLoci <- as.data.frame(scale(genoMatrix_trainLoci))
                 }
                 #Add the pop.Names to the last column
-                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)]);colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
+                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)], stringsAsFactors=T)
+                colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
                 ##
                 trainSetData <- genoMatrix_trainLoci[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainLoci[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -224,16 +231,16 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                 loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                 trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predicting models
+                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predicting models
                 colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                 #Convert test data to PC variables based on training's loadings
                 testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                 testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                 colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -245,7 +252,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -257,7 +264,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -268,7 +275,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -281,7 +288,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -323,7 +330,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainLoci <- as.data.frame(scale(genoMatrix_trainLoci))
                 }
                 #Add the pop.Names to the last column
-                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)]);colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
+                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)], stringsAsFactors=T)
+                colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
                 ##
                 trainSetData <- genoMatrix_trainLoci[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainLoci[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -332,16 +340,16 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                 loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                 trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predicting models
+                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predicting models
                 colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                 #Convert test data to PC variables based on training's loadings
                 testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                 testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                 colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -353,7 +361,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -365,7 +373,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -376,7 +384,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -389,7 +397,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -420,7 +428,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainLoci <- as.data.frame(scale(genoMatrix_trainLoci))
                 }
                 #Add the pop.Names to the last column
-                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)]);colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
+                genoMatrix_trainLoci <- cbind(genoMatrix_trainLoci, genoMatrix[,ncol(genoMatrix)], stringsAsFactors=T)
+                colnames(genoMatrix_trainLoci)[ncol(genoMatrix_trainLoci)] <- "popNames_vector"
                 ##
                 trainSetData <- genoMatrix_trainLoci[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainLoci[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -429,16 +438,16 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                 loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                 trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predicting models
+                trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predicting models
                 colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                 #Convert test data to PC variables based on training's loadings
                 testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                 testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                 colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -450,7 +459,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -462,7 +471,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -473,7 +482,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -486,7 +495,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -549,7 +558,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainVars <- as.data.frame(scale(genoMatrix_trainVars))
                 }
                 #Add popNames_vector to the last column
-                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector);colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
+                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector, stringsAsFactors=T)
+                colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
                 ##Split entire data into training and test sets
                 trainSetData <- genoMatrix_trainVars[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainVars[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -561,12 +571,12 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                   loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                   trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predictive models
+                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predictive models
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                   testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="independent"){
                   #Perform PCA on training genetic and non-genetic independently
@@ -576,14 +586,14 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_nongenetics <- PCA_result_nongenetics[[1]] #loadings of non-genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   trainSetData_nongenetic_PC <- as.data.frame(PCA_result_nongenetics[[2]]);colnames(trainSetData_nongenetic_PC) <- sub("PC", "nPC", colnames(trainSetData_nongenetic_PC))
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector)#Will use for building predictive models 
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector, stringsAsFactors=T)#Will use for building predictive models 
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)]) #make genetic data matrix
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC))  
                   testSetData_nongenetic_matrix <- as.matrix(testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(testSetData)-1)])
                   testSetData_nongenetic_PC <- as.data.frame(testSetData_nongenetic_matrix %*% loadings_nongenetics);colnames(testSetData_nongenetic_PC) <- sub("PC","nPC",colnames(testSetData_nongenetic_PC))
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="original"){
                   #Perform PCA on only genetic data
@@ -591,18 +601,18 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_genetics <- PCA_result_genetics[[1]] #loadings of genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   #concatenate genetic PCs and original non-genetic data and popNames_vector; note that dataset has PCs only from genetics
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector)
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector, stringsAsFactors=T)
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data (genetic part) to PC variables (scores) based on training 
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)])
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC)) 
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }
                 
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -614,7 +624,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -626,7 +636,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -637,7 +647,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -650,7 +660,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -680,7 +690,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainVars <- as.data.frame(scale(genoMatrix_trainVars))
                 }
                 #Add popNames_vector to the last column
-                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector);colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
+                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector, stringsAsFactors=T)
+                colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
                 ##Split entire data into training and test sets
                 trainSetData <- genoMatrix_trainVars[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainVars[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -691,12 +702,12 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                   loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                   trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predictive models
+                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predictive models
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                   testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="independent"){
                   #Perform PCA on training genetic and non-genetic independently
@@ -706,14 +717,14 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_nongenetics <- PCA_result_nongenetics[[1]] #loadings of non-genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   trainSetData_nongenetic_PC <- as.data.frame(PCA_result_nongenetics[[2]]);colnames(trainSetData_nongenetic_PC) <- sub("PC", "nPC", colnames(trainSetData_nongenetic_PC))
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector)#Will use for building predictive models 
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector, stringsAsFactors=T)#Will use for building predictive models 
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)]) #make genetic data matrix
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC))  
                   testSetData_nongenetic_matrix <- as.matrix(testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(testSetData)-1)])
                   testSetData_nongenetic_PC <- as.data.frame(testSetData_nongenetic_matrix %*% loadings_nongenetics);colnames(testSetData_nongenetic_PC) <- sub("PC","nPC",colnames(testSetData_nongenetic_PC))
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="original"){
                   #Perform PCA on only genetic data
@@ -721,18 +732,18 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_genetics <- PCA_result_genetics[[1]] #loadings of genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   #concatenate genetic PCs and original non-genetic data and popNames_vector; note that dataset has PCs only from genetics
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector)
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector, stringsAsFactors=T)
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data (genetic part) to PC variables (scores) based on training 
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)])
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC)) 
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }
                 
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -744,7 +755,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -756,7 +767,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -767,7 +778,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -780,7 +791,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -822,7 +833,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainVars <- as.data.frame(scale(genoMatrix_trainVars))
                 }
                 #Add popNames_vector to the last column
-                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector);colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
+                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector, stringsAsFactors=T)
+                colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
                 ##Split entire data into training and test sets
                 trainSetData <- genoMatrix_trainVars[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainVars[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -834,12 +846,12 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                   loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                   trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predictive models
+                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predictive models
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                   testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="independent"){
                   #Perform PCA on training genetic and non-genetic independently
@@ -849,14 +861,14 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_nongenetics <- PCA_result_nongenetics[[1]] #loadings of non-genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   trainSetData_nongenetic_PC <- as.data.frame(PCA_result_nongenetics[[2]]);colnames(trainSetData_nongenetic_PC) <- sub("PC", "nPC", colnames(trainSetData_nongenetic_PC))
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector)#Will use for building predictive models 
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector, stringsAsFactors=T)#Will use for building predictive models 
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)]) #make genetic data matrix
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC))  
                   testSetData_nongenetic_matrix <- as.matrix(testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(testSetData)-1)])
                   testSetData_nongenetic_PC <- as.data.frame(testSetData_nongenetic_matrix %*% loadings_nongenetics);colnames(testSetData_nongenetic_PC) <- sub("PC","nPC",colnames(testSetData_nongenetic_PC))
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="original"){
                   #Perform PCA on only genetic data
@@ -864,18 +876,18 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_genetics <- PCA_result_genetics[[1]] #loadings of genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   #concatenate genetic PCs and original non-genetic data and popNames_vector; note that dataset has PCs only from genetics
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector)
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector, stringsAsFactors=T)
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data (genetic part) to PC variables (scores) based on training 
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)])
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC)) 
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }
                 
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -887,7 +899,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -899,7 +911,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -910,7 +922,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -923,7 +935,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -953,7 +965,8 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   genoMatrix_trainVars <- as.data.frame(scale(genoMatrix_trainVars))
                 }
                 #Add popNames_vector to the last column
-                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector);colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
+                genoMatrix_trainVars <- cbind(genoMatrix_trainVars, genoMatrix$popNames_vector, stringsAsFactors=T)
+                colnames(genoMatrix_trainVars)[ncol(genoMatrix_trainVars)] <- "popNames_vector"
                 ##Split entire data into training and test sets
                 trainSetData <- genoMatrix_trainVars[-fold_index[[i]],]#Get the training set data (training individuals/loci)
                 testSetData <- genoMatrix_trainVars[fold_index[[i]],]#Get the test set data (test individuals/loci)
@@ -964,12 +977,12 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs) #Run PCA without label column
                   loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
                   trainSetData_PC <- as.data.frame(PCA_results[[2]])
-                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector) ##Will be used for building predictive models
+                  trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popNames_vector, stringsAsFactors=T) ##Will be used for building predictive models
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
                   testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="independent"){
                   #Perform PCA on training genetic and non-genetic independently
@@ -979,14 +992,14 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_nongenetics <- PCA_result_nongenetics[[1]] #loadings of non-genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   trainSetData_nongenetic_PC <- as.data.frame(PCA_result_nongenetics[[2]]);colnames(trainSetData_nongenetic_PC) <- sub("PC", "nPC", colnames(trainSetData_nongenetic_PC))
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector)#Will use for building predictive models 
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData_nongenetic_PC, trainSetData$popNames_vector, stringsAsFactors=T)#Will use for building predictive models 
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data to PC variables based on training's loadings
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)]) #make genetic data matrix
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC))  
                   testSetData_nongenetic_matrix <- as.matrix(testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(testSetData)-1)])
                   testSetData_nongenetic_PC <- as.data.frame(testSetData_nongenetic_matrix %*% loadings_nongenetics);colnames(testSetData_nongenetic_PC) <- sub("PC","nPC",colnames(testSetData_nongenetic_PC))
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData_nongenetic_PC, testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }else if(pca.method=="original"){
                   #Perform PCA on only genetic data
@@ -994,18 +1007,18 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   loadings_genetics <- PCA_result_genetics[[1]] #loadings of genetic PCs; apply this to test data
                   trainSetData_genetic_PC <- as.data.frame(PCA_result_genetics[[2]]);colnames(trainSetData_genetic_PC) <- sub("PC", "genPC", colnames(trainSetData_genetic_PC))
                   #concatenate genetic PCs and original non-genetic data and popNames_vector; note that dataset has PCs only from genetics
-                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector)
+                  trainSetData_PC <- cbind(trainSetData_genetic_PC, trainSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], trainSetData$popNames_vector, stringsAsFactors=T)
                   colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popNames_vector"
                   #Convert test data (genetic part) to PC variables (scores) based on training 
                   testSetData_genetic_matrix <- as.matrix(testSetData[,1:length(trainLocusIndex_genoMatrix)])
                   testSetData_genetic_PC <- as.data.frame(testSetData_genetic_matrix %*% loadings_genetics);colnames(testSetData_genetic_PC)<-sub("PC", "genPC", colnames(testSetData_genetic_PC)) 
-                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector)
+                  testSetData_PC <- cbind(testSetData_genetic_PC, testSetData[,(length(trainLocusIndex_genoMatrix)+1):(ncol(trainSetData)-1)], testSetData$popNames_vector, stringsAsFactors=T)
                   colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popNames_vector"
                 }
                 
                 #Use training to build models and test on test individuals
                 if(model=="svm"){
-                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+                  svm.fit <- svm(popNames_vector ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
                   svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
                   colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -1017,7 +1030,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                 }else if(model=="knn"){
                   
                 }else if (model=="lda"){
-                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC)
+                  lda.fit <- lda(popNames_vector ~ ., data=trainSetData_PC, ...)
                   lda.pred <- predict(lda.fit, testSetData_PC)
                   lda.pred.class <- lda.pred$class
                   lda.pred.prob <- lda.pred$posterior
@@ -1029,7 +1042,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="naiveBayes"){
-                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC)
+                  nby.model <- naiveBayes(popNames_vector ~ ., data=trainSetData_PC, ...)
                   nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
                   nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -1040,7 +1053,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="tree"){
-                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC)
+                  tree.model <- tree(popNames_vector ~ ., data=trainSetData_PC, ...)
                   tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
                   tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -1053,7 +1066,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
                   if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_",f,"_K",k,"_",i,".txt"), quote=F)}
                   #
                 }else if(model=="randomForest"){
-                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+                  rf.model <- randomForest(popNames_vector ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
                   rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
                   rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
                   outcome_matrix <- cbind(testIndID, testSetData_PC$popNames_vector, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -1176,7 +1189,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           names(dummyData) <- substring(names(dummyData), 19, 1000L)#extract meaningful wording, or remove some funny wording
           names(dummyData) <- sub("\\b", paste0(name,"."), names(dummyData))#append original variabel name at the beginning
           dataMatrix[,name] <- NULL #remove original factor data column
-          dataMatrix <- cbind(dummyData, dataMatrix) #column bind dummy data while making popName last column
+          dataMatrix <- cbind(dummyData, dataMatrix, stringsAsFactors=T) #column bind dummy data while making popName last column
         }
       }
     }else if(grepl(pattern="Y",toupper(ans0))){
@@ -1189,7 +1202,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           names(dummyData) <- substring(names(dummyData), 19, 1000L)#extract meaningful wording, or remove some funny wording
           names(dummyData) <- sub("\\b", paste0(name,"."), names(dummyData))#append original variabel name at the beginning
           dataMatrix[,name] <- NULL #remove original factor data column
-          dataMatrix <- cbind(dummyData, dataMatrix) #column bind dummy data while making popName last column
+          dataMatrix <- cbind(dummyData, dataMatrix, stringsAsFactors=T) #column bind dummy data while making popName last column
         }
       }
     }
@@ -1214,7 +1227,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
     if(scaled){
       cat("\n  Scaling and centering entire data set...")
       dataMatrix_scaled <- as.data.frame(scale(dataMatrix[,1:(ncol(dataMatrix)-1)]))
-      dataMatrix <- cbind(dataMatrix_scaled, dataMatrix$popName);colnames(dataMatrix)[ncol(dataMatrix)] <- "popName"
+      dataMatrix <- cbind(dataMatrix_scaled, dataMatrix$popName, stringsAsFactors=T);colnames(dataMatrix)[ncol(dataMatrix)] <- "popName"
     }
     #Loop each fold
     for(k in k.fold){
@@ -1240,12 +1253,12 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs)#Run PCA on training without label
             loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
             trainSetData_PC <- as.data.frame(PCA_results[[2]])
-            trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popName) ##Will be used for building predicting models
+            trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popName, stringsAsFactors=T) ##Will be used for building predicting models
             colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popName"
             #Convert test data to PC variables based on training's loadings
             testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
             testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-            testSetData_PC <- cbind(testSetData_PC, testSetData$popName)
+            testSetData_PC <- cbind(testSetData_PC, testSetData$popName, stringsAsFactors=T)
             colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popName"
           }else if(pca.method==F){
             trainSetData_PC <- trainSetData
@@ -1253,7 +1266,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           }
           #Use training to build models and test on test individuals
           if(model=="svm"){
-            svm.fit <- svm(popName ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+            svm.fit <- svm(popName ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
             svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
             colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -1264,7 +1277,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           }else if(model=="knn"){
             
           }else if(model=="lda"){
-            lda.fit <- lda(popName ~ ., data=trainSetData_PC)
+            lda.fit <- lda(popName ~ ., data=trainSetData_PC, ...)
             lda.pred <- predict(lda.fit, testSetData_PC)
             lda.pred.class <- lda.pred$class
             lda.pred.prob <- lda.pred$posterior
@@ -1275,7 +1288,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_1_K",k,"_",i,".txt"), quote=F)}
             #
           }else if(model=="naiveBayes"){
-            nby.model <- naiveBayes(popName ~ ., data=trainSetData_PC)
+            nby.model <- naiveBayes(popName ~ ., data=trainSetData_PC, ...)
             nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
             nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -1285,7 +1298,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_1_K",k,"_",i,".txt"), quote=F)}
             #
           }else if(model=="tree"){
-            tree.model <- tree(popName ~ ., data=trainSetData_PC)
+            tree.model <- tree(popName ~ ., data=trainSetData_PC, ...)
             tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
             tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -1297,7 +1310,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_1_K",k,"_",i,".txt"), quote=F)}
             #
           }else if(model=="randomForest"){
-            rf.model <- randomForest(popName ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+            rf.model <- randomForest(popName ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
             rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
             rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))
@@ -1321,12 +1334,12 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             PCA_results <- perform.PCA(trainSetData[,1:ncol(trainSetData)-1], method=pca.PCs)#Run PCA on training without label
             loadings <- PCA_results[[1]] #loadings (coefficience) of variables and PCs; apply this to test data
             trainSetData_PC <- as.data.frame(PCA_results[[2]])
-            trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popName) ##Will be used for building predicting models
+            trainSetData_PC <- cbind(trainSetData_PC, trainSetData$popName, stringsAsFactors=T) ##Will be used for building predicting models
             colnames(trainSetData_PC)[ncol(trainSetData_PC)] <- "popName"
             #Convert test data to PC variables based on training's loadings
             testSetData_matrix <- as.matrix(testSetData[,1:ncol(testSetData)-1])
             testSetData_PC <- as.data.frame(testSetData_matrix %*% loadings)
-            testSetData_PC <- cbind(testSetData_PC, testSetData$popName)
+            testSetData_PC <- cbind(testSetData_PC, testSetData$popName, stringsAsFactors=T)
             colnames(testSetData_PC)[ncol(testSetData_PC)] <- "popName"
           }else if(pca.method==F){
             trainSetData_PC <- trainSetData
@@ -1334,7 +1347,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           }
           #Use training to build models and test on test individuals
           if(model=="svm"){
-            svm.fit <- svm(popName ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F)
+            svm.fit <- svm(popName ~ ., data=trainSetData_PC, kernel=svm.kernel, cost=svm.cost, prob=T, scale=F, ...)
             svm.pred <- predict(svm.fit, testSetData_PC, type="class",prob=T)
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(svm.pred), attr(svm.pred,"probabilities"))#combine output to data frame
             colnames(outcome_matrix)[1:3] <- c("Ind.ID","origin.pop","pred.pop")
@@ -1345,7 +1358,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
           }else if(model=="knn"){
             
           }else if(model=="lda"){
-            lda.fit <- lda(popName ~ ., data=trainSetData_PC)
+            lda.fit <- lda(popName ~ ., data=trainSetData_PC, ...)
             lda.pred <- predict(lda.fit, testSetData_PC)
             lda.pred.class <- lda.pred$class
             lda.pred.prob <- lda.pred$posterior
@@ -1356,7 +1369,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_1_K",k,"_",i,".txt"), quote=F)}
             #
           }else if(model=="naiveBayes"){
-            nby.model <- naiveBayes(popName ~ ., data=trainSetData_PC)
+            nby.model <- naiveBayes(popName ~ ., data=trainSetData_PC, ...)
             nby.pred.class <- predict(nby.model,testSetData_PC,type="class")
             nby.pred.prob <- predict(nby.model,testSetData_PC,type="raw")
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(nby.pred.class), as.data.frame(nby.pred.prob))
@@ -1366,7 +1379,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_1_K",k,"_",i,".txt"), quote=F)}
             #
           }else if(model=="tree"){
-            tree.model <- tree(popName ~ ., data=trainSetData_PC)
+            tree.model <- tree(popName ~ ., data=trainSetData_PC, ...)
             tree.pred.class <- predict(tree.model,testSetData_PC,type="class")
             tree.pred.prob <- predict(tree.model,testSetData_PC,type="vector")
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(tree.pred.class), as.data.frame(tree.pred.prob))
@@ -1378,7 +1391,7 @@ assign.kfold <- function(x, k.fold = c(3,4,5), train.loci=c(0.1,0.25,0.5, 1), lo
             if(pca.loadings){ write.table(as.data.frame(loadings), file = paste0(dir,"Loadings_1_K",k,"_",i,".txt"), quote=F)}
             #
           }else if(model=="randomForest"){
-            rf.model <- randomForest(popName ~ ., data=trainSetData_PC, ntree=ntree, importance=T)
+            rf.model <- randomForest(popName ~ ., data=trainSetData_PC, ntree=ntree, importance=T, ...)
             rf.pred.class <- predict(rf.model,testSetData_PC,type="response")
             rf.pred.prob <- predict(rf.model,testSetData_PC,type="prob")
             outcome_matrix <- cbind(testIndID, testSetData_PC$popName, as.data.frame(rf.pred.class), as.data.frame(rf.pred.prob))

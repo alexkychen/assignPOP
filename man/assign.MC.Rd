@@ -4,12 +4,26 @@
 \alias{assign.MC}
 \title{Population assignment test using Monte-Carlo cross-validation}
 \usage{
-assign.MC(x, train.inds = c(0.5, 0.7, 0.9), train.loci = c(0.1, 0.25,
-  0.5, 1), loci.sample = "fst", iterations = 20, dir = NULL,
-  scaled = FALSE, pca.method = "mixed", pca.PCs = "kaiser-guttman",
-  pca.loadings = F, model = "svm", svm.kernel = "linear",
-  svm.cost = 1, ntree = 50, multiprocess = TRUE, processors = 999,
-  skipQ = FALSE, ...)
+assign.MC(
+  x,
+  train.inds = c(0.5, 0.7, 0.9),
+  train.loci = c(0.1, 0.25, 0.5, 1),
+  loci.sample = "fst",
+  iterations = 20,
+  dir = NULL,
+  scaled = FALSE,
+  pca.method = "mixed",
+  pca.PCs = "kaiser-guttman",
+  pca.loadings = F,
+  model = "svm",
+  svm.kernel = "linear",
+  svm.cost = 1,
+  ntree = 50,
+  multiprocess = TRUE,
+  processors = 999,
+  skipQ = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An input object which should be the object (list) returned from the function read.genpop(), reduce.allele(), or compile.data(). It could also be a data frame (with column name) returned from read.csv() or read.table() if you're analyzing non-genetic data, such as morphormetrics, chemistry data. The non-genetic data frame should have sample ID in the first column and population label in the last column.}
@@ -34,7 +48,7 @@ assign.MC(x, train.inds = c(0.5, 0.7, 0.9), train.loci = c(0.1, 0.25,
 
 \item{model}{A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest". Default is "svm"(support vector machine).}
 
-\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier.}
+\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf}
 
 \item{svm.cost}{A number to specify the cost for "svm" method.}
 

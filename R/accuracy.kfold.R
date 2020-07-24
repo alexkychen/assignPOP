@@ -47,7 +47,7 @@ accuracy.kfold <- function(dir=NULL){
     assign.rate.each[i,] <- popCorrectRate_vec
   }#for(i in 1:noFiles)
   #concatenate all data
-  assign_rate_df <- cbind(KF, fold, train.loci, assign.rate.all, assign.rate.each)
+  assign_rate_df <- cbind(KF, fold, train.loci, assign.rate.all, assign.rate.each, stringsAsFactors=T)
   names(assign_rate_df)[5:ncol(assign_rate_df)] <- paste0("assign.rate.",pops)
   #output result
   write.table(assign_rate_df, file=paste0(dir,"Rate_of_",nrow(assign_rate_df),"_tests_",noPops,"_pops.txt"), quote=F, row.names=F )
