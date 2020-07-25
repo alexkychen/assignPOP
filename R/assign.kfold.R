@@ -11,7 +11,7 @@
 #' @param pca.PCs A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
 #' @param pca.loadings A logical variable (False or True) to determine whether it prints the loadings of training data to output text files. Default is False, if set True, the overall output files could be large.
 #' @param model A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest".
-#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf 
+#' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
 #' @param multiprocess A logical variable to determine whether using multiprocess. Default is TRUE. If set FALSE, it will only use single core to run the program. 
