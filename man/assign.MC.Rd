@@ -48,7 +48,7 @@ assign.MC(
 
 \item{model}{A character string to specify which classifier to use for creating predictive models. The current options include "lda", "svm", "naiveBayes", "tree", and "randomForest". Default is "svm"(support vector machine).}
 
-\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details.}
+\item{svm.kernel}{A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf}
 
 \item{svm.cost}{A number to specify the cost for "svm" method.}
 
