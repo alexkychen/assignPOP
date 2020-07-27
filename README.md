@@ -89,6 +89,6 @@ Chen, K. Y., Marschall, E. A., Sovic, M. G., Fries, A. C., Gibbs, H. L., & Ludsi
 Previous packages can be found and downloaded at the [releases page](https://github.com/alexkychen/assignPOP/releases)
 
 ## Version compatibility (2020.7.24)
-assignPOP version 1.1.9 and older are not fully compatible with newly released R 4.0.0. 
+assignPOP version 1.1.9 and earlier are not fully compatible with newly released R 4.0.0. 
 If you're using R 4.0.0 (or newer), please update your assignPOP to 1.2.0.  
 
