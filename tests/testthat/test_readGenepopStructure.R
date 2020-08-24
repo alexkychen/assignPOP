@@ -9,7 +9,7 @@ test_that("read.Genepop imports Genepop file as a list", {
 
 test_that("read.Structure imports Structure file as a list",{
   expect_output(str(read.Structure("testData/StructureEx1.txt")),"List of 3")
-  expect_output(str(read.Structure("testData/StructureEx1.txt", haploid = T)),"List of 3")
+  expect_output(str(read.Structure("testData/StructureEx1.txt", ploidy = 2)),"List of 3")
   expect_output(str(read.Structure("testData/StructureEx2.txt")),"List of 3")
-  expect_output(str(read.Structure("testData/StructureEx2.txt", haploid = T)),"List of 3")
+  expect_output(str(read.Structure("testData/StructureEx2.txt", ploidy = 2)),"List of 3")
 })

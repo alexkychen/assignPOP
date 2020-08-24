@@ -4,10 +4,6 @@
 #' @param x A returned object (a list) from the function read.genpop().
 #' @param p A threshold of variance for the alleles to be removed. For example, if p = 0.95 (default setting), an allele occupied more than 95 percents across all the samples will be removed.
 #' @return This function return the same object as the function read.genpop() except that the number of columns in the matrix [[1]] is reduced and so is the locus name [[3]].
-#' @examples 
-#' genin <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
-#' reduce_infile <- reduce.allele(genin, p = 0.95)
-#' #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 #' @export
 #'
 reduce.allele <- function(x, p = 0.95){
@@ -27,14 +23,17 @@ reduce.allele <- function(x, p = 0.95){
       }
     }
   }
-  #cat(colToRemove)
+  #check if all loci variance less than p
+  if(length(colToRemove)==0){
+    stop("All loci have most abudnant alleles less than p threshold. Nothing to be removed.")
+  }
   #Remove columns (alleles) that have low variance
   genoMatrix <- genoMatrix[-colToRemove]
   #Count new number of columns
   newNoAlleles <- ncol(genoMatrix) - 1
   #Count how many columns are removed
   noColumnsRemoved <- noAlleles - newNoAlleles
-
+  
   #check if any locus is gone (all alleles gone) and edit the locus name vector
   newLocusNames <- NULL
   newAlleleLeft <- names(genoMatrix) #get remaining allele names
@@ -52,5 +51,5 @@ reduce.allele <- function(x, p = 0.95){
   cat(paste0("\n  ",newNoLocus," loci remaining" ))
   cat("\n\n")
   return(list(genoMatrix, x[[2]], newLocusNames))#x[[2]]is individual ID vector, x[[3]] is locus name
-
+  
 }

@@ -4,12 +4,12 @@
 \alias{read.Structure}
 \title{Read Structure format file}
 \usage{
-read.Structure(x, haploid = FALSE)
+read.Structure(x, ploidy = 2)
 }
 \arguments{
 \item{x}{STRUCTURE file or path to the file. The filename extension (e.g., .txt) should be included.}
 
-\item{haploid}{A logical variable (TRUE or FALSE) to specify whether your dataset is haploid data. Default is FALSE.}
+\item{ploidy}{An integer of 1, 2, 3, or 4, to indicate haploid, diploid, triploid, or tetraploid data. Default is 2 (diploid).}
 }
 \value{
 This function returns a list comprising three elements. 1. YOU_NAME_IT$DataMatrix: A matrix of genetic data with a population name label ($popNameVector) in the last column. 2. YOU_NAME_IT$SampleID: A vector of sample ID. 3. YOU_NAME_IT$LocusName: A vector of locus name.

@@ -36,6 +36,12 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
+Changes in ver. 1.2.1 (2020.8.24)
+- Update read.Genepop to increase file reading speed (~40 times faster)
+- Update read.Structure to increase file reading speed (~90 times faster)
+- read.Structure now also can handle triploid and tetraploid organisms (see arg. ploidy)
+- fix bug in allele.reduce to handle small p threshold across all loci
+
 Changes in ver. 1.2.0 (2020.7.24)
 - Add codes to check model name in assign.MC, assign.kfold, assign.X
 - Add text to SVM description

@@ -10,170 +10,112 @@
 #' @references Rousset, F. 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106
 #' @import stringr
 #' @importFrom reshape2 melt
-#' @importFrom utils setTxtProgressBar txtProgressBar packageVersion
-#' @examples 
-#' genpop <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
-#' #Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
+#' @importFrom utils packageVersion
 #' @export
 #'
-read.Genepop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
+read.Genepop <- function(x, pop.names=NULL, haploid = FALSE, pos=1){
   dataType <- NULL
   df <- readLines(x)
-  df <- df[-1]#skip the first line file info
-  popIndex <- grep("pop",df,ignore.case=TRUE)
+  df <- df[-1] #remove first line of file description
+  popIndex <- grep("pop", df, ignore.case=T)#get "pop" tag index
   noPops <- length(popIndex)
-  if(length(pop.names)==0){ #check if pop.names is specified, if not, assign pop names
-    pop.names <- paste0("pop.",seq_along(1:noPops))
-  } else if(length(pop.names)>0){ #check if pop.names and number of pop match
-    if(!length(pop.names)==noPops){
-      stop("Hey, your 'pop.names' and number of pop in data not match...")
-      } }
   
-  #Extract locus name, save locus names in vector "locusNames"
-  if (popIndex[1] == 2) {
+  #check out pop name and verify number of pops
+  if(length(pop.names)==0){
+    pop.names <- paste0("pop.", seq_along(1:noPops))  
+  }else if(length(pop.names)>0){
+    if(!length(pop.names) == noPops){
+      stop("Lengths of 'pop.names' and 'pop' in file not match...")
+    }
+  }
+  
+  #Extract locus names and save them in locusNames 
+  if(popIndex[1]==2){ #for one-row locus format
     locusNames <- str_trim(df[1],side="both")
-    locusNames <- strsplit(locusNames,",")[[1]]
-  } else if (popIndex[1] > 2) {
+    locusNames <- strsplit(locusNames, ",")[[1]]
+  }else if(popIndex[1] > 2){ #for multi-row locus format
     index <- popIndex[1] - 1
     locusNames <- df[1:index]
   }
-  locusNames <- str_trim(locusNames,side="both")
+  locusNames <- str_trim(locusNames, side="both")
   noLocus <- length(locusNames)
   
-  #Get index for individuals and save in a nested list "pop_all"
-  for (i in 1:noPops){
-    if (i < noPops){
-      start <- popIndex[i] + 1; end <- popIndex[i+1] - 1
-      assign(paste0("pop_",i,"_index"), start : end, envir=as.environment(pos) )
-    } else if (i == noPops){
-      start <- popIndex[i] + 1; end <- length(df)
-      assign(paste0("pop_",i,"_index"), start : end, envir=as.environment(pos) )
+  #Get index for individuals
+  for(i in 1:noPops){
+    start <- popIndex[i] + 1
+    if(i < noPops){
+      end <- popIndex[i+1] - 1
+      
+    }else if(i == noPops){
+      end <- length(df)
     }
+    assign(paste0("pop_", i, "_index"), start:end, envir=as.environment(pos))
   }
-  pop_all <- lapply(paste0("pop_", seq_along(1:noPops),"_index"), FUN = get )
+  pop_all <- lapply(paste0("pop_",seq_along(1:noPops),"_index"), FUN=get)
   
-  #save individual index in one vector "ind_all_index"
-  ind_all_index <- NULL
-  for (i in 1:noPops){
-    ind_all_index <- c(ind_all_index, pop_all[[i]])
-  }
+  #save individal index in one vector 
+  ind_all_index <- unlist(pop_all)
+  #count total number of individuals
   noInds <- length(ind_all_index)
   
-  #extract individual data
+  #extract individual genetic data
   ind_df <- df[ind_all_index]
-  #split individual ID and genotype data
-  id_vector <- NULL
-  geno_list <- list()
-  for(i in 1:noInds){
-    id_n_genotype <- strsplit(ind_df[i],",")[[1]]
-    id <- str_trim(id_n_genotype[1], side="both")
-    id_vector <- c(id_vector,id)
-    geno <- str_trim(id_n_genotype[2], side="both")
-    geno <- gsub("\\s+"," ",geno)#clean extra space or change tabs to one single space between loci
-    geno <- strsplit(geno," ")[[1]]#make each locus an element
-    geno <- list(geno)
-    geno_list <- c(geno_list, geno)#geno_list becomes a concatenation of lists of individual genotype 
+  #separate individual ID and genetic data
+  ind_df <- strsplit(ind_df, split = ",")
+  #get individual ID
+  id_vector <- unlist(lapply(ind_df,`[[`,1))
+  #clear extra space on both side of id, if exist
+  id_vector <- str_trim(id_vector, side="both")
+  
+  #get genotype data
+  cat("\n  Converting data format...\n")
+  geno_list <- unlist(lapply(ind_df,`[[`,2))
+  geno_list <- str_trim(geno_list, side="both")
+  #separate each locus by spaces or tabs 
+  geno_list <- strsplit(geno_list, split="[ \t]+", perl=T)
+  #convert nested list to matrix; high computing step
+  geno_mx <- matrix(unlist(geno_list), nrow=noInds, byrow=T)
+  
+  #check number of digits in one locus (if fewer or equal to 3, set haploid=T)
+  locusCharSize <- nchar(geno_mx[1,1])
+  if(locusCharSize <= 3){
+    haploid = T
   }
   
-  #Get alleles of each locus across individuals
-  #create an empty data frame
-  genoMatrix <- data.frame(matrix(ncol=0,nrow=noInds))
-  #Setup progress bar
-  pb <- txtProgressBar(min = 0, max = noLocus, style = 3)
-  #Save missing locus index in a vector
-  missLocusIndex <- NULL
-  for(m in 1:noLocus){
-    oneLocus_vector <- NULL
-    setTxtProgressBar(pb, m)
-    #Process for haploid data
-    if(haploid){
-      dataType <- "haploid"
-      for(n in 1:noInds){
-        eachlocus <- geno_list[[n]][m]
-        if(eachlocus=="00" | eachlocus=="000"){
-          eachlocus=NA
-        }
-        oneLocus_vector <- c(oneLocus_vector, eachlocus)
-        
-      }#for(n in 1:noInds)
-      #check if a locus is missing data or has only one allele across all individuals, if so, save the locus index
-      oneLocus_check <- NULL
-      oneLocus_check <- oneLocus_vector[!is.na(oneLocus_vector)]
-      if(length(unique(oneLocus_check)) <= 1){
-        missLocusIndex <- c(missLocusIndex,m)
-        #If not missing data, process data
-      }else {
-        #Convert one locus dataset to dummy locus variables
-        oneLocusDf <- data.frame(oneLocus_vector)
-        dummyLocusMatrix <- as.data.frame(model.matrix( ~ oneLocus_vector-1,data = oneLocusDf))
-        #Insert rows if there is missing data
-        dummyLocusMatrix <- dummyLocusMatrix[match(rownames(oneLocusDf),rownames(dummyLocusMatrix)),]
-        rownames(dummyLocusMatrix) <- rownames(oneLocusDf)
-        #Edit locus name
-        names(dummyLocusMatrix) <- substring(names(dummyLocusMatrix), 16, 1000L)
-        names(dummyLocusMatrix) <- sub("\\b", paste0(locusNames[m],"_"), names(dummyLocusMatrix))
-        #Append new locus variables to genoMatrix
-        genoMatrix <- cbind(genoMatrix, dummyLocusMatrix)
-      }
-      genoMatrix[is.na(genoMatrix)] <- 0
-    #Process for diploid data
-    }else if(!haploid){
-      dataType <- "diploid"
-      for(n in 1:noInds){
-        eachlocus <- geno_list[[n]][m]
-        noChar <- nchar(eachlocus)
-        diploid <- substring(eachlocus, c(1,(noChar/2)+1), c(noChar/2,noChar))
-        for(j in c(1,2)){
-          if(diploid[j] == "00" | diploid[j] == "000"){
-            diploid[j] = NA
-          }
-        }#for(j in c(1,2))
-        oneLocus_vector <- c(oneLocus_vector, diploid)
-      }#for(n in 1:noInds)
-      #check if locus is missing data or has only one allele across individuals
-      oneLocus_check <- NULL
-      oneLocus_check <- oneLocus_vector[!is.na(oneLocus_vector)]
-      if(length(unique(oneLocus_check)) <= 1){
-        missLocusIndex <- c(missLocusIndex, m)
-      }else {
-        #Convert to data frame and create dummy variables
-        oneLocusDf <- data.frame(oneLocus_vector)
-        dummyLocusMatrix <- as.data.frame(model.matrix( ~ oneLocus_vector-1,data = oneLocusDf))
-        #Insert rows if there is missing data
-        dummyLocusMatrix <- dummyLocusMatrix[match(rownames(oneLocusDf),rownames(dummyLocusMatrix)),]
-        rownames(dummyLocusMatrix) <- rownames(oneLocusDf)
-        #Replace NA with 0
-        dummyLocusMatrix[is.na(dummyLocusMatrix)] <- 0
-        #Add n and n+1 rows (each row is haploid of diploid individual) to one row in a new data frame; 
-        newDummyLocusMatrix <- NULL
-        for(i in 1:nrow(dummyLocusMatrix)){
-          if( i %% 2 == 1){ #process 1st, 3rd, 5th...row (add to i+1th row)
-            eachIndGenotype <- dummyLocusMatrix[i,] + dummyLocusMatrix[i+1,]
-            newDummyLocusMatrix <- rbind(newDummyLocusMatrix, eachIndGenotype)
-          }
-        }
-        #Reorder rownames
-        rownames(newDummyLocusMatrix) <- seq(1:noInds)
-        newDummyLocusMatrix <- newDummyLocusMatrix / 2
-        #Edit column(locus) names
-        names(newDummyLocusMatrix) <- substring(names(newDummyLocusMatrix), 16, 1000L)
-        names(newDummyLocusMatrix) <- sub("\\b", paste0(locusNames[m],"_"), names(newDummyLocusMatrix))
-        #Append to genoMatrix
-        genoMatrix <- cbind(genoMatrix, newDummyLocusMatrix)
-      }
-    }#else #if(haplid) 
-    
-  }#for(m in 1:noLocus)
-  
+  #apply one-hot encoding for genetic data; high computing step
+  cat("\n  Encoding genetic data...\n")
+  if(haploid){
+    dataType <- "haploid"
+    onehot_list <- apply(geno_mx,2 ,genepop_onehot, ploidy=1, noChar=locusCharSize)
+  }else{
+    dataType <- "diploid"
+    onehot_list <- apply(geno_mx,2 ,genepop_onehot, ploidy=2, noChar=locusCharSize)
+  }
+  #check if entire list is NA
+  if(all(is.na(onehot_list))){
+    stop("Entire NA data due to identical genotype across samples.")
+  }
+  #check and remove locus that is NA
+  LocusNA_idx <- which(is.na(onehot_list))
+  #remove NA locus if exists
+  if(length(LocusNA_idx)>0){
+    onehot_list <- onehot_list[-LocusNA_idx]
+    #get locus name
+    locusNames <- locusNames[-LocusNA_idx]
+  }
+  #change dataframe's colnames 
+  if(length(onehot_list) == length(locusNames)){
+    for(i in 1:length(locusNames)){
+      names(onehot_list[[i]]) <- paste0(locusNames[i],"_",names(onehot_list[[i]]))
+    }
+  }else{
+    stop("Oops, lengths of onehot_list and locusNames differ.")
+  }
+  #concatenate dataframe in onehot_list
+  genoMatrix <- do.call(cbind, onehot_list)
   #count number of columns (alleles) in genetic data matrix
   noLociVar <- ncol(genoMatrix)
-  #Remove locus name if it's missing data across individuals
-  noMissLocusIndex <- length(missLocusIndex)
-  if(!noMissLocusIndex==0){
-    locusNames <- locusNames[-missLocusIndex]
-  }
-  #close progrss bar
-  close(pb)
+  
   #Create pop name vector and concatenate to the genoMatrix
   popNames_vector <- NULL
   for (i in 1:noPops){
@@ -208,4 +150,42 @@ read.Genepop <- function(x, pop.names = NULL, haploid = FALSE, pos=1){
   names(finalList) <- c("DataMatrix", "SampleID" , "LocusName")
   return(finalList)
   
+}
+
+########################################
+# Genepop genetic data one-hot encoding
+########################################
+genepop_onehot <- function(oneLoc, ploidy=NULL, noChar=NULL){
+  #x is character string vector of a locus
+  #oneLoc <- geno_mx[,2]
+  if(length(unique(oneLoc))==1){
+    onehotDF <- NA
+  }else{
+    #for haploid data
+    if(ploidy==1){
+      #convert one locus vector to dataframe
+      oneLocDF <- data.frame(oneLoc, stringsAsFactors = T)
+      #get one-hot encoding dataframe
+      onehotDF <- as.data.frame(model.matrix(~0+oneLocDF[,1]))
+      names(onehotDF) <- levels(oneLocDF$oneLoc)
+      
+      #for diploid data  
+    }else if(ploidy==2){
+      #separate alleles
+      alleles <- strsplit(oneLoc, split=paste0("(?<=.{",noChar/2,"})"), perl=T)
+      alleles <- unlist(alleles)
+      #convert one locus to dataframe
+      alleles_DF <- data.frame(alleles, stringsAsFactors = T)
+      onehotMX <- model.matrix(~0+alleles_DF[,1])
+      onehotDF <- as.data.frame((onehotMX[c(T,F),] + onehotMX[c(F,T),])/2)
+      rownames(onehotDF) <- NULL
+      names(onehotDF) <- levels(alleles_DF$alleles)
+      
+    }
+    #remove missing data
+    if(any(c("0","00","000","0000","000000") %in% names(onehotDF))){
+      onehotDF <- onehotDF[ , -which(names(onehotDF) %in% c("0","00","000","0000","000000"))]
+    }
+  }
+  return(onehotDF)
 }

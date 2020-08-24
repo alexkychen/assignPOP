@@ -21,8 +21,3 @@ This function returns a new object (list) that comprises 5 items. [[1]] data mat
 \description{
 This function allows you to combine genetic and other non-genetic data, such as morphometrics, of the observations for assignment tests.
 }
-\examples{
-genin <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
-comin <- compile.data(x=genin, add.x=system.file("extdata/TinyVars.csv", package="assignPOP"))
-#Change file 'TinyVars' to 'morphData' to get the example used in the tutorial.
-}

@@ -23,8 +23,6 @@ This function allows you to import a GENEPOP format file into R. Population name
 }
 \examples{
 # infile <- read.Genepop("Your_Genepop_File.txt", pop.names=c("pop_A", "pop_B", "pop_C"))
-genpop <- read.Genepop(system.file("extdata/TinyGenepop.txt", package="assignPOP"))
-#Change file 'TinyGenepop' to 'simGenepop' to get the example used in the tutorial.
 }
 \references{
 Rousset, F. 2008. Genepop'007: a complete reimplementation of the Genepop software for Windows and Linux. Mol. Ecol. Resources 8: 103-106
