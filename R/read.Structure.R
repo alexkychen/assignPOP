@@ -134,8 +134,18 @@ read.Structure <- function(x, ploidy = 2){
 #######################################
 structure_onehot <- function(oneLoc, ploidy=NULL){
   #oneLoc <- genoMatrix[,1]
+  
+  #if a locus across samples has one allele
   if(length(unique(oneLoc))==1){
-    onehotDF <- NA
+    #if all NA
+    if("-9" %in% oneLoc){
+      onehotMX <- NA
+    #if only one allele
+    }else{
+      onehotMX <- as.data.frame(rep(1,length(oneLoc)))
+      names(onehotMX) <- oneLoc[1]
+    }
+    
   }else{
     #below also process for haploid
     oneLocDF <- data.frame(oneLoc, stringsAsFactors=T)
@@ -154,7 +164,7 @@ structure_onehot <- function(oneLoc, ploidy=NULL){
     names(onehotMX) <- levels(oneLocDF$oneLoc)
     #remove missing alleles (-9)
     if("-9" %in% names(onehotMX)){
-      onehotMX <- onehotMX[, -which(names(onehotMX)=="-9")]
+      onehotMX <- onehotMX[, -which(names(onehotMX)=="-9"), drop=FALSE]
     }
   }
   return(onehotMX)

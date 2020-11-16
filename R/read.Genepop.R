@@ -157,20 +157,53 @@ read.Genepop <- function(x, pop.names=NULL, haploid = FALSE, pos=1){
 ########################################
 genepop_onehot <- function(oneLoc, ploidy=NULL, noChar=NULL){
   #x is character string vector of a locus
-  #oneLoc <- geno_mx[,2]
+  #sample test
+  #oneLoc <- geno_mx[,3] #multi-alleles 
+  #oneLoc <- geno_mx[,4] #all NA
+  #oneLoc <- geno_mx[,5] #single allele
+  
+  #check if only one allele
+  oneAllele <- FALSE
   if(length(unique(oneLoc))==1){
-    onehotDF <- NA
-  }else{
-    #for haploid data
-    if(ploidy==1){
+    oneAllele <- TRUE
+  }
+  
+  #if dataset is haploid
+  if(ploidy==1){
+    #if only one allele
+    if(oneAllele){
+      #if all NA 
+      if(any(c("0","00","000","0000","000000") %in% oneLoc)){
+        onehotDF <- NA
+      }else{
+        onehotDF <- as.data.frame(rep(1, length(oneLoc)))
+        names(onehotDF) <- oneLoc[1]
+      }
+      #multi-alleles    
+    }else{
       #convert one locus vector to dataframe
       oneLocDF <- data.frame(oneLoc, stringsAsFactors = T)
       #get one-hot encoding dataframe
       onehotDF <- as.data.frame(model.matrix(~0+oneLocDF[,1]))
       names(onehotDF) <- levels(oneLocDF$oneLoc)
-      
-      #for diploid data  
-    }else if(ploidy==2){
+      #remove missing data
+      if(any(c("0","00","000","0000","000000") %in% names(onehotDF))){
+        onehotDF <- onehotDF[ , -which(names(onehotDF) %in% c("0","00","000","0000","000000"))]
+      }
+    }
+    #if dataset is diploid
+  }else if(ploidy==2){
+    #if only one allele
+    if(oneAllele){
+      #if all NA
+      if(any(c("0","00","000","0000","000000") %in% oneLoc)){
+        onehotDF <- NA
+      }else{
+        onehotDF <- as.data.frame(rep(1, length(oneLoc)))
+        names(onehotDF) <- substr(oneLoc[1],1,as.integer(noChar/2))
+      }
+      #if multi-alleles  
+    }else{
       #separate alleles
       alleles <- strsplit(oneLoc, split=paste0("(?<=.{",noChar/2,"})"), perl=T)
       alleles <- unlist(alleles)
@@ -180,11 +213,11 @@ genepop_onehot <- function(oneLoc, ploidy=NULL, noChar=NULL){
       onehotDF <- as.data.frame((onehotMX[c(T,F),] + onehotMX[c(F,T),])/2)
       rownames(onehotDF) <- NULL
       names(onehotDF) <- levels(alleles_DF$alleles)
-      
-    }
-    #remove missing data
-    if(any(c("0","00","000","0000","000000") %in% names(onehotDF))){
-      onehotDF <- onehotDF[ , -which(names(onehotDF) %in% c("0","00","000","0000","000000"))]
+      #remove missing data
+      if(any(c("0","00","000","0000","000000") %in% names(onehotDF))){
+        onehotDF <- onehotDF[ , -which(names(onehotDF) %in% c("0","00","000","0000","000000")), drop=FALSE]
+        #drop=FALSE allows to keep it as data frame. Otherwise, only one column will become a vector
+      }
     }
   }
   return(onehotDF)

@@ -36,6 +36,13 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
+Changes in ver. 1.2.2 (2020.11.6)
+- Update read.Genepop and read.Structure - locus has only one allele across samples will be kept
+- (will need to use reduce.allele to remove single-allele or low variance loci)
+
+<details>
+<summary>History</summary>
+
 Changes in ver. 1.2.1 (2020.8.24)
 - Update read.Genepop to increase file reading speed (~40 times faster)
 - Update read.Structure to increase file reading speed (~90 times faster)
@@ -50,9 +57,6 @@ Changes in ver. 1.2.0 (2020.7.24)
 
 Changes in ver. 1.1.9 (2020.3.16)
 - Fix input non-genetic data (x1) error in assign.X
-
-<details>
-<summary>History</summary>
 
 Changes in ver. 1.1.8  (2020.2.28)
 - update following functions to work with R 4.0.0

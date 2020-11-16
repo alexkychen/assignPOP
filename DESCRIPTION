@@ -2,7 +2,7 @@ Package: assignPOP
 Type: Package
 Title: Population Assignment using Genetic, Non-Genetic or Integrated Data in a
     Machine Learning Framework
-Version: 1.2.1
+Version: 1.2.2
 Author: Kuan-Yu (Alex) Chen [aut, cre], Elizabeth A. Marschall [aut], Michael
     G. Sovic [aut], Anthony C. Fries [aut], H. Lisle Gibbs [aut], Stuart A. Ludsin
     [aut]
