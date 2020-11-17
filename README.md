@@ -37,8 +37,8 @@ Please visit our tutorial website for more infomration
 
 ## What's new
 Changes in ver. 1.2.2 (2020.11.6)
-- Update read.Genepop and read.Structure - locus has only one allele across samples will be kept
-- (will need to use reduce.allele to remove single-allele or low variance loci)
+- Update read.Genepop and read.Structure - locus has only one allele across samples will be kept. Use reduce.allele to remove single-allele or low variance loci.
+- In ver. 1.2.1, errors might be generated when running assign.MC (and other assignment test functions) due to single-allele loci.
 
 <details>
 <summary>History</summary>
