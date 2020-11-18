@@ -188,7 +188,7 @@ genepop_onehot <- function(oneLoc, ploidy=NULL, noChar=NULL){
       names(onehotDF) <- levels(oneLocDF$oneLoc)
       #remove missing data
       if(any(c("0","00","000","0000","000000") %in% names(onehotDF))){
-        onehotDF <- onehotDF[ , -which(names(onehotDF) %in% c("0","00","000","0000","000000"))]
+        onehotDF <- onehotDF[ , -which(names(onehotDF) %in% c("0","00","000","0000","000000")), drop=FALSE]
       }
     }
     #if dataset is diploid

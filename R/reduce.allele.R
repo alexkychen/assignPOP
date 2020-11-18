@@ -38,7 +38,7 @@ reduce.allele <- function(x, p = 0.95){
   newLocusNames <- NULL
   newAlleleLeft <- names(genoMatrix) #get remaining allele names
   for(j in 1:length(locusNames)){
-    checking <- grep(paste0(locusNames[j],"_"), newAlleleLeft)
+    checking <- grep(paste0("^",locusNames[j],"_"), newAlleleLeft)
     if(!length(checking)==0){
       newLocusNames <- c(newLocusNames,locusNames[j])
     }
