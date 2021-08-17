@@ -4,6 +4,7 @@
 #' @param x1 An input object containing data from known individuals for building predictive models. It could be a list object returned from the function read.genpop(), reduce.allele() or compile.data(). Or, it could be a data frame containing non-genetic data returned from read.csv() or read.table().
 #' @param x2 An input object containing data from unknown individuals to be predicted. It could be a list object returned from read.genpop(), reduce.allele(), or compile.data(). Or, it could be a data frame containing non-genetic data returned from read.csv() or read.table(). The x1 and x2 should be the same type (both are either lists or data frames). 
 #' @param dir A character string to specify the folder name for saving output files. A slash at the end must be included (e.g., dir="YourFolderName/"). Otherwise, the files will be saved under your working directory.
+#' @param common A logical variable (TRUE or FALSE) to specify whether exclusively using features, the name of which is in common, between known and unknown data sets. Default is TRUE. If it is FALSE, it will stop performing analysis when inconsistent feature names were found.  
 #' @param scaled A logical variable (TRUE or FALSE) to specify whether to center (make mean of each feature to 0) and scale (make standard deviation of each feature to 1) the dataset before performing PCA and cross-validation. Default is FALSE. As genetic data has converted to numeric data between 0 and 1, to scale or not to scale the genetic data should not be critical. However, it is recommended to set scaled=TRUE when integrated data contains various scales of features.  
 #' @param pca.method Either a character string ("mixed", "independent", or "original") or logical variable (TRUE or FALSE) to specify how to perform PCA on non-genetic data (PCA is always performed on genetic data). The character strings are used when analyzing integrated (genetic plus non-genetic) data. If using "mixed" (default), PCA is perfromed across the genetic and non-genetic data, resulting in each PC summarizing mixed variations of genetic and non-genetic data. If using "independent", PCA is independently performed on non-genetic data. Genetic PCs and non-genetic PCs are then used as new features. If using "original", original non-genetic data and genetic PCs are used as features. The logical variable is used when analyzing non-genetic data.If TRUE, it performs PCA on the training data and applys the loadings to the test data. Scores of training and test data will be used as new features. 
 #' @param pca.PCs A criterion ("Kaiser-Guttman","broken-stick", or numeric) to retain number of PCs. By default, it uses Kaiser-Guttman criterion that any PC has the eigenvalue greater than 1 will be retained as the new variable/feature. Users can set an integer to specify the number of PCs to be retained.
@@ -12,7 +13,8 @@
 #' @param svm.kernel A character string to specify which kernel to be used when using "svm" classifier. Default is "linear". Other options include "polynomial", "radial", and "sigmoid". Look up R pacakge e1071 for more details about SVM, or see a guidance at https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf 
 #' @param svm.cost A number to specify the cost for "svm" method.
 #' @param ntree A integer to specify how many trees to build when using "randomForest" method.
-#' @param mplot A logical variable to specify whether making a membership probability plot right after the assignment test is done. Set TRUE to make the plot. Otherwise, it will prompt a question.
+#' @param mplot A logical variable (TRUE or FALSE) to specify whether making a membership probability plot right after the assignment test is done. Default is TRUE.
+#' @param skipQ A logical variable (TRUE or FALSE) to skip data type checking on non-genetic data. Default is FALSE and will prompt questions to confirm data type. If it is TRUE, it will skip the confirmation and use data type by default (integer and float will be numeric data).
 #' @param ... Other arguments that could be potentially used for various models 
 #' @return This function outputs assignment results and other analytical information in text files that will be saved under your designated folder. It also outputs a membership probability plot, if permitted.
 #' @import stringr
@@ -29,8 +31,8 @@
 #' @importFrom utils packageVersion
 #' @export
 #' 
-assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="kaiser-guttman", pca.loadings=F, 
-                     model="svm", svm.kernel="linear", svm.cost=1, ntree=50, mplot=FALSE, ...){
+assign.X <- function(x1, x2, dir=NULL, common=T, scaled=F, pca.method="mixed", pca.PCs="kaiser-guttman", pca.loadings=F, 
+                     model="svm", svm.kernel="linear", svm.cost=1, ntree=50, mplot=T, skipQ=F, ...){
   #check if x1 and x2 are the same type
   if(!class(x1)==class(x2)){
     stop("Input data sets are not the same type. Enter '?assign.X' to see description of x1 and x2 arguments")
@@ -70,13 +72,9 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       common_VarName <- trainVarName
       trainDataSet <- trainMatrix
       testDataSet <- testMatrix[,1:ncol(testMatrix)-1]
-    }else {
+    }else{
       cat("\n  Known and unknown datasets have unequal features.")
-      ans0 <- readline(" Continue and use common features for assignment? (enter Y/N): ")
-      if(grepl(pattern="N", toupper(ans0))){
-        warning("Program stops. Please revise your feature names accordingly.")
-        on.exit()
-      }else if(grepl(pattern="Y",toupper(ans0))){
+      if(common){
         cat("\n  Automatically identify common features between datasets...")
         #Identify common features and modify datasets
         common_VarName <- intersect(trainVarName, testVarName)#Identify common feature names
@@ -84,6 +82,9 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
         trainDataSet <- trainMatrix[keepTrainVars]
         testDataSet <- testMatrix[common_VarName]
         cat("\n  ",length(common_VarName),"features are used for assignment.")
+      }else{
+        warning("Program stops. Please revise your feature names accordingly.")
+        on.exit()
       }
     } 
     #center and scale the training data if scaled=T
@@ -315,15 +316,8 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     #Print some message to R console
     cat("\n  Assignment test is done! See results in your designated folder.")
     cat("\n  Predicted populations and probabilities are saved in [AssignmentResult.txt]")
-    #Make a membership probability plot if answer is "Y"
+    #Make a membership probability plot if mplot is TRUE
     if(mplot){
-      ans1 <- "Y"
-    }else{
-      ans1 <- readline("  Do you want to make a membership probability plot now? (enter Y/N): ")
-    }
-    if(grepl(pattern ="N", toupper(ans1))){
-      on.exit()
-    }else if(grepl(pattern ="Y", toupper(ans1))){
       value <- NULL; variable <- NULL; Ind.ID <- NULL
       ndf <- melt(outcome_matrix, id.vars=c("Ind.ID","pred.pop")) #Reshape the data, making probabilities in one single column (var name="value")
       stackplot <- ggplot(ndf, aes(x=Ind.ID, y=value, fill=variable))+
@@ -340,7 +334,7 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
               axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
               axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
       return(stackplot)
-    }#else if(grepl(pattern ="Y", toupper(ans1)))
+    }
     
   }else if(is.data.frame(x1)){
     #Analyze non-genetic data
@@ -385,7 +379,11 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
       varType <- class(x1[[var]]) #use double square brackets to turn one-column data frame to a vector 
       cat(paste0("  ",var,"(",varType,")"))
     }
-    ans0 <- readline("  Are they correct? (enter Y/N): ")
+    if(skipQ){
+      ans0 <- "Yes"
+    }else{
+      ans0 <- readline("  Are they correct? (enter Y/N): ")
+    }
     if(grepl(pattern="N", toupper(ans0))){
       cat("  please enter variable names for changing data type (separate names by a whitespace if multiple)\n")
       ans1 <- readline("  enter here: ")
@@ -561,13 +559,6 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
     cat("\n  Predicted populations and probabilities are saved in [AssignmentResult.txt]")
     #Make a membership probability plot if answer is "Y"
     if(mplot){
-      ans1 <- "Y"
-    }else{
-      ans1 <- readline("  Do you want to make a membership probability plot now? (enter Y/N): ")
-    }
-    if(grepl(pattern="N", toupper(ans1))){
-      on.exit()
-    }else if(grepl(pattern="Y", toupper(ans1))){
       value <- NULL; variable <- NULL; Ind.ID <- NULL
       ndf <- melt(outcome_matrix, id.vars=c("Ind.ID","pred.pop")) #Reshape the data, making probabilities in one single column (var name="value")
       stackplot <- ggplot(ndf, aes(x=Ind.ID, y=value, fill=variable))+
@@ -584,6 +575,6 @@ assign.X <- function(x1, x2, dir=NULL, scaled=F, pca.method="mixed", pca.PCs="ka
               axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
               axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
       return(stackplot)
-    }#else if(grepl(pattern="Y", toupper(ans1)))
+    }
   }#else if(is.data.frame(x1))
 }#End

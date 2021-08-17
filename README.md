@@ -36,12 +36,15 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
-Changes in ver. 1.2.2 (2020.11.6)
-- Update read.Genepop and read.Structure - locus has only one allele across samples will be kept. Use reduce.allele to remove single-allele or low variance loci.
-- In ver. 1.2.1, errors might be generated when running assign.MC (and other assignment test functions) due to existence of single-allele loci. (fixed in ver. 1.2.2)
+Changes in ver. 1.2.3 (2021.8.17)
+- Update assign.X - (1)Add argument 'common' to specify whether stopping the analysis when inconsistent features between data sets were found. (2)Add argument 'skipQ' to skip data type checking on non-genetic data. (3)Modify argument 'mplot' to handle membership probability plot output.
 
 <details>
 <summary>History</summary>
+
+Changes in ver. 1.2.2 (2020.11.6)
+- Update read.Genepop and read.Structure - locus has only one allele across samples will be kept. Use reduce.allele to remove single-allele or low variance loci.
+- In ver. 1.2.1, errors might be generated when running assign.MC (and other assignment test functions) due to existence of single-allele loci. (fixed in ver. 1.2.2)
 
 Changes in ver. 1.2.1 (2020.8.24)
 - Update read.Genepop to increase file reading speed (~40 times faster)

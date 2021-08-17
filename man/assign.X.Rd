@@ -8,6 +8,7 @@ assign.X(
   x1,
   x2,
   dir = NULL,
+  common = T,
   scaled = F,
   pca.method = "mixed",
   pca.PCs = "kaiser-guttman",
@@ -16,7 +17,8 @@ assign.X(
   svm.kernel = "linear",
   svm.cost = 1,
   ntree = 50,
-  mplot = FALSE,
+  mplot = T,
+  skipQ = F,
   ...
 )
 }
@@ -26,6 +28,8 @@ assign.X(
 \item{x2}{An input object containing data from unknown individuals to be predicted. It could be a list object returned from read.genpop(), reduce.allele(), or compile.data(). Or, it could be a data frame containing non-genetic data returned from read.csv() or read.table(). The x1 and x2 should be the same type (both are either lists or data frames).}
 
 \item{dir}{A character string to specify the folder name for saving output files. A slash at the end must be included (e.g., dir="YourFolderName/"). Otherwise, the files will be saved under your working directory.}
+
+\item{common}{A logical variable (TRUE or FALSE) to specify whether exclusively using features, the name of which is in common, between known and unknown data sets. Default is TRUE. If it is FALSE, it will stop performing analysis when inconsistent feature names were found.}
 
 \item{scaled}{A logical variable (TRUE or FALSE) to specify whether to center (make mean of each feature to 0) and scale (make standard deviation of each feature to 1) the dataset before performing PCA and cross-validation. Default is FALSE. As genetic data has converted to numeric data between 0 and 1, to scale or not to scale the genetic data should not be critical. However, it is recommended to set scaled=TRUE when integrated data contains various scales of features.}
 
@@ -43,7 +47,9 @@ assign.X(
 
 \item{ntree}{A integer to specify how many trees to build when using "randomForest" method.}
 
-\item{mplot}{A logical variable to specify whether making a membership probability plot right after the assignment test is done. Set TRUE to make the plot. Otherwise, it will prompt a question.}
+\item{mplot}{A logical variable (TRUE or FALSE) to specify whether making a membership probability plot right after the assignment test is done. Default is TRUE.}
+
+\item{skipQ}{A logical variable (TRUE or FALSE) to skip data type checking on non-genetic data. Default is FALSE and will prompt questions to confirm data type. If it is TRUE, it will skip the confirmation and use data type by default (integer and float will be numeric data).}
 
 \item{...}{Other arguments that could be potentially used for various models}
 }
