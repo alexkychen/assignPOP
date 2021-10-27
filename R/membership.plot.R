@@ -4,12 +4,14 @@
 #' @param dir A character string to specify the folder that has your K-fold cross-validation assignment results. A slash should be entered at the end.
 #' @param style An option for output style. If style=1, it creates the plot which individuals on the x-axis are in random order. If style=2, individuals are sorted by probabilities within each population. If style=3, individuals of different folds are in seperate plots. If style=4, individuals are separated by fold and sorted by probability.
 #' @param non.genetic A logical variable to specify if data are non-genetic. Set it TRUE if you're analyzing non-genetic alone.
+#' @param plot.k A number to specify which K of the data set should be plotted. If not given, it will prompt the question.
+#' @param plot.loci The proportion of training loci used in your K-fold cross-validation analysis. Specify one of the numbers here to skip question prompt.
 #' @return This function returns a stacked-bar plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @import ggplot2
 #' @importFrom reshape2 melt
 #' @importFrom stats reorder
 #' @export
-membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
+membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE, plot.k=NULL, plot.loci=NULL){
   Ind.ID <- NULL; value <- NULL; variable <- NULL #some NULL variable to handle R CMD check
   #Read all "Out_*" file names in a specified directory
   fileName_vec <- list.files(path=dir, pattern="Out_*")
@@ -34,6 +36,13 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
   #Check if k.fold only has one level or multiple levels
   if(length(k.fold) == 1){
     ans_k <- k.fold
+    #when plot.k argument is given 
+  }else if(is.numeric(plot.k) & length(plot.k) == 1){
+    plot.k <- as.integer(plot.k)
+    ans_k <- plot.k
+    if(!ans_k %in% k.fold){
+      stop("Your plot.k entry does not exist.")
+    }
   }else{
     cat("\n  K = ");cat(paste0(k.fold," "));cat(" are found.") #print out detected "K" on console
     ans_k <- readline("  Please enter one of the K numbers: ") #ask user to enter one of the K numbers
@@ -42,18 +51,27 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       stop("Your entry is not correct.")
     }
   }
-
+  
   #Check training loci proportions (levels) or if it is non-genetic data only
   if(length(train.loci) > 1){
-    cat(paste0("\n  ", length(train.loci)," proportions of training loci are found."))
-    cat("\n  Levels[train.loci]: ");cat(paste0(train.loci," "))
-    ans_t <- readline("  Please enter one of the proportions: ")
-    ans_t <- str_trim(ans_t, side="both")
-    if(!ans_t %in% train.loci){
-      stop("Your entry is not correct.")
+    if(is.numeric(plot.loci) & length(plot.loci) == 1){
+      ans_t <- plot.loci
+      if(!ans_t %in% train.loci){
+        stop("Your plot.loci entry is not correct.")
+      }
+    }else{
+      cat(paste0("\n  ", length(train.loci)," proportions of training loci are found."))
+      cat("\n  Levels[train.loci]: ");cat(paste0(train.loci," "))
+      ans_t <- readline("  Please enter one of the proportions: ")
+      ans_t <- str_trim(ans_t, side="both")
+      if(!ans_t %in% train.loci){
+        stop("Your entry is not correct.")
+      }
     }
+    
     pltext <- paste0(" , training locus proportion = ",ans_t)
-  #If there is only one proportion of training loci or it is non-genetic data only  
+    
+    #If there is only one proportion of training loci or it is non-genetic data only  
   }else if(length(train.loci)==1){
     if(non.genetic){
       ans_t <- "N"
@@ -85,7 +103,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
     oneFile <- cbind(oneFile, fold_n)
     df_mas <- rbind(df_mas, oneFile)
   }
-
+  
   if(is.null(style)){
     cat("\n  Finally, select one of the output styles.")
     cat("\n  [1] Random order (Individuals on x-axis are in random order)")
@@ -98,7 +116,7 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
       stop("Your entry is not correct.")
     }
   }
-
+  
   if(style==2){ # Individuals are sorted based on the probability of their own populations
     #Separate inds among pops and sort
     df_mas_2 <- data.frame(matrix(ncol=0,nrow=0))
@@ -123,13 +141,13 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
             plot.title = element_text(hjust=0.5),
             axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
-            #plot.title = element_text(size=16, vjust=0.8),
-            #legend.text = element_text(size=14),
-            #strip.text.x = element_text(size=16),
-            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+    #plot.title = element_text(size=16, vjust=0.8),
+    #legend.text = element_text(size=14),
+    #strip.text.x = element_text(size=16),
+    #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+    #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
-
+    
   }else if(style==3){ #Individuals are separated by each fold
     ndf <- melt(df_mas, id.vars=c("Ind.ID","origin.pop","pred.pop","fold_n"))#Reshape the data, making probabilities in one single column (var name="value")
     stackplot <- ggplot(ndf, aes(x=Ind.ID, y=value, fill=variable))+
@@ -145,13 +163,13 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
             plot.title = element_text(hjust=0.5),
             axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
-            #plot.title = element_text(size=16, vjust=0.8),
-            #legend.text = element_text(size=14),
-            #strip.text.x = element_text(size=16),
-            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+    #plot.title = element_text(size=16, vjust=0.8),
+    #legend.text = element_text(size=14),
+    #strip.text.x = element_text(size=16),
+    #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+    #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
-
+    
   }else if(style==4){ #Individuals are separated by fold and sorted by probability
     df_mas_4 <- data.frame(matrix(ncol=0,nrow=0))
     for(p in pops){
@@ -175,13 +193,13 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
             plot.title = element_text(hjust=0.5),
             axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
-            #plot.title = element_text(size=16, vjust=0.8),
-            #legend.text = element_text(size=14),
-            #strip.text.x = element_text(size=16),
-            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+    #plot.title = element_text(size=16, vjust=0.8),
+    #legend.text = element_text(size=14),
+    #strip.text.x = element_text(size=16),
+    #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+    #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
-
+    
   }else {
     ndf <- melt(df_mas, id.vars=c("Ind.ID","origin.pop","pred.pop","fold_n"))#Reshape the data, making probabilities in one single column (var name="value")
     stackplot <- ggplot(ndf, aes(x=Ind.ID, y=value, fill=variable))+
@@ -197,11 +215,11 @@ membership.plot <- function(dir=NULL, style=NULL, non.genetic=FALSE){
             strip.background = element_rect(colour="black", fill="white", linetype="solid"),#change facet title background color
             plot.title = element_text(hjust=0.5),
             axis.title.x = element_blank(), axis.text.x = element_text(angle = 90))
-            #legend.text = element_text(size=14),
-            #strip.text.x = element_text(size=16),
-            #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
-            #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
+    #legend.text = element_text(size=14),
+    #strip.text.x = element_text(size=16),
+    #axis.title.y = element_text(size=16), axis.text.y = element_text(size=14, colour="black"),
+    #axis.title.x = element_blank(), axis.text.x = element_text(angle=90, size=7) )
     return(stackplot)
   }
-
+  
 } #End
