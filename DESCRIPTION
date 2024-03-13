@@ -2,7 +2,7 @@ Package: assignPOP
 Type: Package
 Title: Population Assignment using Genetic, Non-Genetic or Integrated Data in a
     Machine Learning Framework
-Version: 1.2.4
+Version: 1.3.0
 Author: Kuan-Yu (Alex) Chen [aut, cre], Elizabeth A. Marschall [aut], Michael
     G. Sovic [aut], Anthony C. Fries [aut], H. Lisle Gibbs [aut], Stuart A. Ludsin
     [aut]
@@ -27,6 +27,7 @@ Imports:
     reshape2,
     stringr,
     tree,
+    rlang,
 Suggests:
     gtable,
     iterators,
@@ -36,5 +37,5 @@ Suggests:
     rmarkdown,
     testthat
 License: GPL (>= 2)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
 Encoding: UTF-8

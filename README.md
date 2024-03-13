@@ -1,4 +1,3 @@
-[![Travis-CI Build Status](https://travis-ci.org/alexkychen/assignPOP.svg?branch=master)](https://travis-ci.org/alexkychen/assignPOP)
 [![CRAN status](http://www.r-pkg.org/badges/version/assignPOP)](https://cran.r-project.org/package=assignPOP)
 [![GitHub release](https://img.shields.io/github/release/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/releases)
 [![license](https://img.shields.io/github/license/alexkychen/assignPOP.svg)](https://github.com/alexkychen/assignPOP/blob/master/LICENSE.md)
@@ -36,11 +35,15 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
-Changes in ver. 1.2.4 (2021.10.27)
-- Update membership.plot - add argument 'plot.k' and 'plot.loci' to skip related question prompt.
+Changes in ver. 1.3.0 (2024.3.13)
+- Update accuracy.plot - adjust ggplot's aes_string() due to its deprecation. 
+- Update testthat test_accuracy and test_membership to pass CRAN evaluations.
 
 <details>
 <summary>History</summary>
+
+Changes in ver. 1.2.4 (2021.10.27)
+- Update membership.plot - add argument 'plot.k' and 'plot.loci' to skip related question prompt.
 
 Changes in ver. 1.2.3 (2021.8.17)
 - Update assign.X - (1)Add argument 'common' to specify whether stopping the analysis when inconsistent features between data sets were found. (2)Add argument 'skipQ' to skip data type checking on non-genetic data. (3)Modify argument 'mplot' to handle membership probability plot output.

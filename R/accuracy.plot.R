@@ -6,6 +6,7 @@
 #' @return This function returns a boxplot plot using the ggplot2 library. Users can modified the plot (e.g., change color, text, etc.) using functions provided by ggplot2 library.
 #' @import ggplot2
 #' @importFrom reshape2 melt
+#' @importFrom rlang .data
 #' @examples
 #' Your_df <- read.table(system.file("extdata/Rate.txt", package="assignPOP"), header=TRUE)
 #' accuracy.plot(Your_df, pop="all")
@@ -14,6 +15,8 @@
 accuracy.plot <- function(df, pop="all"){
   #claim variables
   train.inds <- NULL; train.loci <- NULL; value <- NULL; KF <- NULL 
+  #claim variables for aes use
+  train_inds <- "train.inds"; train_loci <- "train.loci"; KF_ <- "KF"
   #validate specified pop names
   df_popName <- substring(colnames(df)[4:ncol(df)], 13, 1000L)
   if(!all(pop %in% df_popName)){ #if specified pop name not in df 
@@ -43,7 +46,8 @@ accuracy.plot <- function(df, pop="all"){
       col <- paste0("assign.rate.",pop)
       #see if multiple levels of train loci used.(e.g.,10%, 20%...of loci)
       if(length(unique(df$train.loci)) > 1 ){
-        boxplot <- ggplot(df, aes_string(y=col, x="train.inds", fill="train.loci"))+
+        ## boxplot <- ggplot(df, aes_string(y=col, x="train.inds", fill="train.loci"))+ # aes_string is deprecated in ggplot2 3.0
+        boxplot <- ggplot(df, aes(y=.data[[col]], x=.data[[train_inds]], fill=.data[[train_loci]]))+
           geom_boxplot()+
           xlab(x_label) + ylab("Assignment accuracy")+
           scale_fill_discrete(name="Prop. of\ntrain loci",guide=guide_legend(reverse=TRUE))+
@@ -58,7 +62,7 @@ accuracy.plot <- function(df, pop="all"){
         return(boxplot)
       #see if only one level of train loci used (e.g.,used all loci)
       }else if(length(unique(df$train.loci))==1){
-        boxplot <- ggplot(df, aes_string(y=col, x="train.inds"))+
+        boxplot <- ggplot(df, aes(y=.data[[col]], x=.data[[train_inds]]))+
           geom_boxplot()+
           xlab(x_label) + ylab("Assignment accuracy")+
           theme_bw()+
@@ -133,7 +137,7 @@ accuracy.plot <- function(df, pop="all"){
       col <- paste0("assign.rate.",pop)
       #
       if(length(unique(df$train.loci)) > 1 ){ #see if multiple levels of train loci used.(e.g.,10%, 20%...of loci)
-        boxplot <- ggplot(df, aes_string(y=col, x="KF" ,fill="train.loci"))+
+        boxplot <- ggplot(df, aes(y=.data[[col]], x=.data[[KF_]] ,fill=.data[[train_loci]]))+
           geom_boxplot()+
           #geom_point(size=5, position=dodge)+
           xlab("K") + ylab("Assignment accuracy")+
@@ -149,7 +153,7 @@ accuracy.plot <- function(df, pop="all"){
         return(boxplot)
         
       }else if(length(unique(df$train.loci))==1){ #see if only one level of train loci used (e.g.,used all loci)
-        boxplot <- ggplot(df, aes_string(y=col, x="KF"))+
+        boxplot <- ggplot(df, aes(y=.data[[col]], x=.data[[KF_]]))+
           geom_boxplot()+
           xlab("K") + ylab("Assignment accuracy")+
           theme_bw()+
