@@ -1,4 +1,4 @@
-#' Estimate assignment accuracies of Monte-Carlo cross-validation results
+#' Estimate assignment accuracy of Monte-Carlo cross-validation results
 #'
 #' This function allows you to estimate assignment accuracies of Monte-Carlo cross-validation results. The output results can be used to make assignment accuracy plots (use function accuracy.plot).
 #' @param dir A character string to specify the folder that has your Monte-Carlo cross-validation results. A slash should be included at the end (e.g., dir="YourFolderName/").
