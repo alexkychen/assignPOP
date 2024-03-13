@@ -2,7 +2,7 @@
 % Please edit documentation in R/accuracy.MC.R
 \name{accuracy.MC}
 \alias{accuracy.MC}
-\title{Estimate assignment accuracies of Monte-Carlo cross-validation results}
+\title{Estimate assignment accuracy of Monte-Carlo cross-validation results}
 \usage{
 accuracy.MC(dir = NULL)
 }

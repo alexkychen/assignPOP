@@ -37,7 +37,7 @@ Please visit our tutorial website for more infomration
 ## What's new
 Changes in ver. 1.3.0 (2024.3.13)
 - Update accuracy.plot - adjust ggplot's aes_string() due to its deprecation. 
-- Update testthat test_accuracy and test_membership to pass CRAN evaluations.
+- Update testthat test_accuracy and test_membership to meet ggplot2 3.5.0 requirements
 
 <details>
 <summary>History</summary>
