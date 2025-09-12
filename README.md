@@ -35,12 +35,15 @@ Please visit our tutorial website for more infomration
 * [http://alexkychen.github.io/assignPOP/](http://alexkychen.github.io/assignPOP/)
 
 ## What's new
-Changes in ver. 1.3.0 (2024.3.13)
-- Update accuracy.plot - adjust ggplot's aes_string() due to its deprecation. 
-- Update testthat test_accuracy and test_membership to meet ggplot2 3.5.0 requirements
+Changes in ver. 1.3.1 (2025.9.13)
+- Update testthat test_accuracy and test_membership to meet ggplot2 4.0.0 requirements.
+- Minor update the Authors' format in DESCRIPTION file.
 
 <details>
 <summary>History</summary>
+Changes in ver. 1.3.0 (2024.3.13)
+- Update accuracy.plot - adjust ggplot's aes_string() due to its deprecation. 
+- Update testthat test_accuracy and test_membership to meet ggplot2 3.5.0 requirements
 
 Changes in ver. 1.2.4 (2021.10.27)
 - Update membership.plot - add argument 'plot.k' and 'plot.loci' to skip related question prompt.
